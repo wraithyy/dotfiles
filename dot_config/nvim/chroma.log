@@ -1,0 +1,825 @@
+INFO:     [11-03-2025 16:32:54] Set chroma_server_nofile to 65535
+INFO:     [11-03-2025 16:32:54] Set chroma_server_nofile to 65535
+DEBUG:    [11-03-2025 16:32:55] Starting component System
+DEBUG:    [11-03-2025 16:32:55] Starting component System
+DEBUG:    [11-03-2025 16:32:55] Starting component OpenTelemetryClient
+DEBUG:    [11-03-2025 16:32:55] Starting component SqliteDB
+DEBUG:    [11-03-2025 16:32:55] Starting component OpenTelemetryClient
+DEBUG:    [11-03-2025 16:32:55] Starting component SqliteDB
+DEBUG:    [11-03-2025 16:32:55] Starting component SimpleQuotaEnforcer
+DEBUG:    [11-03-2025 16:32:55] Starting component Posthog
+DEBUG:    [11-03-2025 16:32:55] Starting component SimpleRateLimitEnforcer
+DEBUG:    [11-03-2025 16:32:55] Starting component LocalSegmentManager
+DEBUG:    [11-03-2025 16:32:55] Starting component LocalExecutor
+DEBUG:    [11-03-2025 16:32:55] Starting component SegmentAPI
+DEBUG:    [11-03-2025 16:32:55] Starting component SimpleAsyncRateLimitEnforcer
+DEBUG:    [11-03-2025 16:32:55] Starting component SimpleQuotaEnforcer
+DEBUG:    [11-03-2025 16:32:55] Starting component Posthog
+DEBUG:    [11-03-2025 16:32:55] Starting component SimpleRateLimitEnforcer
+DEBUG:    [11-03-2025 16:32:55] Starting component LocalSegmentManager
+DEBUG:    [11-03-2025 16:32:55] Starting component LocalExecutor
+DEBUG:    [11-03-2025 16:32:55] Starting component SegmentAPI
+DEBUG:    [11-03-2025 16:32:55] Starting component SimpleAsyncRateLimitEnforcer
+INFO:     [11-03-2025 16:32:55] Started server process [31962]
+INFO:     [11-03-2025 16:32:55] Waiting for application startup.
+INFO:     [11-03-2025 16:32:55] Started server process [31961]
+INFO:     [11-03-2025 16:32:55] Waiting for application startup.
+INFO:     [11-03-2025 16:32:55] Application startup complete.
+INFO:     [11-03-2025 16:32:55] Application startup complete.
+INFO:     [11-03-2025 16:32:55] Uvicorn running on http://localhost:59104 (Press CTRL+C to quit)
+INFO:     [11-03-2025 16:32:55] Uvicorn running on http://localhost:59105 (Press CTRL+C to quit)
+INFO:     [11-03-2025 16:32:55] 127.0.0.1:59156 - "GET /api/v1/heartbeat HTTP/1.1" 200
+INFO:     [11-03-2025 16:32:55] 127.0.0.1:59155 - "GET /api/v1/heartbeat HTTP/1.1" 200
+INFO:     [11-03-2025 16:32:55] 127.0.0.1:59159 - "GET /api/v2/auth/identity HTTP/1.1" 200
+INFO:     [11-03-2025 16:32:55] 127.0.0.1:59160 - "GET /api/v2/auth/identity HTTP/1.1" 200
+INFO:     [11-03-2025 16:32:55] 127.0.0.1:59159 - "GET /api/v2/tenants/default_tenant HTTP/1.1" 200
+INFO:     [11-03-2025 16:32:55] 127.0.0.1:59160 - "GET /api/v2/tenants/default_tenant HTTP/1.1" 200
+INFO:     [11-03-2025 16:32:55] 127.0.0.1:59159 - "GET /api/v2/tenants/default_tenant/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+INFO:     [11-03-2025 16:32:55] 127.0.0.1:59160 - "GET /api/v2/tenants/default_tenant/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+INFO:     [11-03-2025 16:33:32] 127.0.0.1:59238 - "GET /api/v2/tenants/default_tenant/databases/default_database/collections/22d7e0593186c08700618b55b1113d9bca1e662f0eaa5e663730ef490ae1e07 HTTP/1.1" 400
+INFO:     [11-03-2025 16:33:32] 127.0.0.1:59239 - "GET /api/v2/tenants/default_tenant/databases/default_database/collections/22d7e0593186c08700618b55b1113d9bca1e662f0eaa5e663730ef490ae1e07 HTTP/1.1" 400
+ERROR:    [11-03-2025 16:33:32] Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 111, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 106, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 124, in receive
+    return receiver.item
+           ^^^^^^^^^^^^^
+AttributeError: 'MemoryObjectItemReceiver' object has no attribute 'item'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 147, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 126, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/opentelemetry/instrumentation/asgi/__init__.py", line 743, in __call__
+    await self.app(scope, otel_receive, otel_send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 181, in __call__
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 181, in __call__
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 120, in catch_exceptions_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 153, in call_next
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 173, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.6/Frameworks/Python.framework/Versions/3.12/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 175, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 144, in check_http_version_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 153, in call_next
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 134, in async_wrapper
+    return await f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 829, in get_collection
+    await to_thread.run_sync(
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2461, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 962, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 150, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/api/segment.py", line 103, in wrapper
+    return self._rate_limit_enforcer.rate_limit(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/rate_limit/simple_rate_limit/__init__.py", line 24, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/api/segment.py", line 316, in get_collection
+    raise InvalidCollectionException(f"Collection {name} does not exist.")
+chromadb.errors.InvalidCollectionException: Collection 22d7e0593186c08700618b55b1113d9bca1e662f0eaa5e663730ef490ae1e07 does not exist.
+ERROR:    [11-03-2025 16:33:32] Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 111, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 106, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 124, in receive
+    return receiver.item
+           ^^^^^^^^^^^^^
+AttributeError: 'MemoryObjectItemReceiver' object has no attribute 'item'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 147, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 126, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/opentelemetry/instrumentation/asgi/__init__.py", line 743, in __call__
+    await self.app(scope, otel_receive, otel_send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 181, in __call__
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 181, in __call__
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 120, in catch_exceptions_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 153, in call_next
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 173, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.6/Frameworks/Python.framework/Versions/3.12/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 175, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 144, in check_http_version_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 153, in call_next
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 134, in async_wrapper
+    return await f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 829, in get_collection
+    await to_thread.run_sync(
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2461, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 962, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 150, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/api/segment.py", line 103, in wrapper
+    return self._rate_limit_enforcer.rate_limit(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/rate_limit/simple_rate_limit/__init__.py", line 24, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/api/segment.py", line 316, in get_collection
+    raise InvalidCollectionException(f"Collection {name} does not exist.")
+chromadb.errors.InvalidCollectionException: Collection 22d7e0593186c08700618b55b1113d9bca1e662f0eaa5e663730ef490ae1e07 does not exist.
+INFO:     [11-03-2025 16:33:32] Shutting down
+INFO:     [11-03-2025 16:33:32] Shutting down
+INFO:     [11-03-2025 16:33:32] Waiting for application shutdown.
+DEBUG:    [11-03-2025 16:33:32] Stopping component System
+DEBUG:    [11-03-2025 16:33:32] Stopping component SegmentAPI
+DEBUG:    [11-03-2025 16:33:32] Stopping component LocalExecutor
+DEBUG:    [11-03-2025 16:33:32] Stopping component LocalSegmentManager
+DEBUG:    [11-03-2025 16:33:32] Stopping component SimpleAsyncRateLimitEnforcer
+DEBUG:    [11-03-2025 16:33:32] Stopping component SimpleRateLimitEnforcer
+DEBUG:    [11-03-2025 16:33:32] Stopping component Posthog
+DEBUG:    [11-03-2025 16:33:32] Stopping component SimpleQuotaEnforcer
+DEBUG:    [11-03-2025 16:33:32] Stopping component SqliteDB
+DEBUG:    [11-03-2025 16:33:32] Stopping component OpenTelemetryClient
+INFO:     [11-03-2025 16:33:32] Application shutdown complete.
+INFO:     [11-03-2025 16:33:32] Finished server process [31962]
+INFO:     [11-03-2025 16:33:32] Waiting for application shutdown.
+DEBUG:    [11-03-2025 16:33:32] Stopping component System
+DEBUG:    [11-03-2025 16:33:32] Stopping component SegmentAPI
+DEBUG:    [11-03-2025 16:33:32] Stopping component LocalExecutor
+DEBUG:    [11-03-2025 16:33:32] Stopping component LocalSegmentManager
+DEBUG:    [11-03-2025 16:33:32] Stopping component SimpleAsyncRateLimitEnforcer
+DEBUG:    [11-03-2025 16:33:32] Stopping component SimpleRateLimitEnforcer
+DEBUG:    [11-03-2025 16:33:32] Stopping component Posthog
+DEBUG:    [11-03-2025 16:33:32] Stopping component SimpleQuotaEnforcer
+DEBUG:    [11-03-2025 16:33:32] Stopping component SqliteDB
+DEBUG:    [11-03-2025 16:33:32] Stopping component OpenTelemetryClient
+INFO:     [11-03-2025 16:33:32] Application shutdown complete.
+INFO:     [11-03-2025 16:33:32] Finished server process [31961]
+INFO:     [11-03-2025 18:43:35] Set chroma_server_nofile to 65535
+DEBUG:    [11-03-2025 18:43:35] Starting component System
+DEBUG:    [11-03-2025 18:43:35] Starting component OpenTelemetryClient
+DEBUG:    [11-03-2025 18:43:35] Starting component SqliteDB
+DEBUG:    [11-03-2025 18:43:35] Starting component SimpleQuotaEnforcer
+DEBUG:    [11-03-2025 18:43:35] Starting component Posthog
+DEBUG:    [11-03-2025 18:43:35] Starting component SimpleRateLimitEnforcer
+DEBUG:    [11-03-2025 18:43:35] Starting component LocalSegmentManager
+DEBUG:    [11-03-2025 18:43:35] Starting component LocalExecutor
+DEBUG:    [11-03-2025 18:43:35] Starting component SegmentAPI
+DEBUG:    [11-03-2025 18:43:35] Starting component SimpleAsyncRateLimitEnforcer
+INFO:     [11-03-2025 18:43:35] Started server process [40965]
+INFO:     [11-03-2025 18:43:35] Waiting for application startup.
+INFO:     [11-03-2025 18:43:35] Application startup complete.
+INFO:     [11-03-2025 18:43:35] Uvicorn running on http://localhost:60410 (Press CTRL+C to quit)
+INFO:     [11-03-2025 18:43:35] 127.0.0.1:60421 - "GET /api/v1/heartbeat HTTP/1.1" 200
+INFO:     [11-03-2025 18:43:36] 127.0.0.1:60423 - "GET /api/v2/auth/identity HTTP/1.1" 200
+INFO:     [11-03-2025 18:43:36] 127.0.0.1:60423 - "GET /api/v2/tenants/default_tenant HTTP/1.1" 200
+INFO:     [11-03-2025 18:43:36] 127.0.0.1:60423 - "GET /api/v2/tenants/default_tenant/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+INFO:     [11-03-2025 18:43:40] 127.0.0.1:60423 - "GET /api/v2/tenants/default_tenant/databases/default_database/collections/22d7e0593186c08700618b55b1113d9bca1e662f0eaa5e663730ef490ae1e07 HTTP/1.1" 400
+ERROR:    [11-03-2025 18:43:40] Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 111, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 106, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 124, in receive
+    return receiver.item
+           ^^^^^^^^^^^^^
+AttributeError: 'MemoryObjectItemReceiver' object has no attribute 'item'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 147, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 126, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/opentelemetry/instrumentation/asgi/__init__.py", line 743, in __call__
+    await self.app(scope, otel_receive, otel_send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 181, in __call__
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 181, in __call__
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 120, in catch_exceptions_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 153, in call_next
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 173, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.6/Frameworks/Python.framework/Versions/3.12/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 175, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 144, in check_http_version_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 153, in call_next
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 134, in async_wrapper
+    return await f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 829, in get_collection
+    await to_thread.run_sync(
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2461, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 962, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 150, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/api/segment.py", line 103, in wrapper
+    return self._rate_limit_enforcer.rate_limit(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/rate_limit/simple_rate_limit/__init__.py", line 24, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/api/segment.py", line 316, in get_collection
+    raise InvalidCollectionException(f"Collection {name} does not exist.")
+chromadb.errors.InvalidCollectionException: Collection 22d7e0593186c08700618b55b1113d9bca1e662f0eaa5e663730ef490ae1e07 does not exist.
+INFO:     [11-03-2025 18:43:40] Shutting down
+INFO:     [11-03-2025 18:43:40] Waiting for application shutdown.
+DEBUG:    [11-03-2025 18:43:40] Stopping component System
+DEBUG:    [11-03-2025 18:43:40] Stopping component SegmentAPI
+DEBUG:    [11-03-2025 18:43:40] Stopping component LocalExecutor
+DEBUG:    [11-03-2025 18:43:40] Stopping component LocalSegmentManager
+DEBUG:    [11-03-2025 18:43:40] Stopping component SimpleAsyncRateLimitEnforcer
+DEBUG:    [11-03-2025 18:43:40] Stopping component SimpleRateLimitEnforcer
+DEBUG:    [11-03-2025 18:43:40] Stopping component Posthog
+DEBUG:    [11-03-2025 18:43:40] Stopping component SimpleQuotaEnforcer
+DEBUG:    [11-03-2025 18:43:40] Stopping component SqliteDB
+DEBUG:    [11-03-2025 18:43:40] Stopping component OpenTelemetryClient
+INFO:     [11-03-2025 18:43:40] Application shutdown complete.
+INFO:     [11-03-2025 18:43:40] Finished server process [40965]
+INFO:     [11-03-2025 18:44:14] Set chroma_server_nofile to 65535
+DEBUG:    [11-03-2025 18:44:14] Starting component System
+DEBUG:    [11-03-2025 18:44:14] Starting component OpenTelemetryClient
+DEBUG:    [11-03-2025 18:44:14] Starting component SqliteDB
+DEBUG:    [11-03-2025 18:44:14] Starting component SimpleQuotaEnforcer
+DEBUG:    [11-03-2025 18:44:14] Starting component Posthog
+DEBUG:    [11-03-2025 18:44:14] Starting component SimpleRateLimitEnforcer
+DEBUG:    [11-03-2025 18:44:14] Starting component LocalSegmentManager
+DEBUG:    [11-03-2025 18:44:14] Starting component LocalExecutor
+DEBUG:    [11-03-2025 18:44:14] Starting component SegmentAPI
+DEBUG:    [11-03-2025 18:44:14] Starting component SimpleAsyncRateLimitEnforcer
+INFO:     [11-03-2025 18:44:14] Started server process [41092]
+INFO:     [11-03-2025 18:44:14] Waiting for application startup.
+INFO:     [11-03-2025 18:44:14] Application startup complete.
+INFO:     [11-03-2025 18:44:14] Uvicorn running on http://localhost:60436 (Press CTRL+C to quit)
+INFO:     [11-03-2025 18:44:14] 127.0.0.1:60445 - "GET /api/v1/heartbeat HTTP/1.1" 200
+INFO:     [11-03-2025 18:44:14] 127.0.0.1:60447 - "GET /api/v2/auth/identity HTTP/1.1" 200
+INFO:     [11-03-2025 18:44:14] 127.0.0.1:60447 - "GET /api/v2/tenants/default_tenant HTTP/1.1" 200
+INFO:     [11-03-2025 18:44:14] 127.0.0.1:60447 - "GET /api/v2/tenants/default_tenant/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+INFO:     [11-03-2025 18:44:18] 127.0.0.1:60447 - "GET /api/v2/tenants/default_tenant/databases/default_database/collections/22d7e0593186c08700618b55b1113d9bca1e662f0eaa5e663730ef490ae1e07 HTTP/1.1" 400
+ERROR:    [11-03-2025 18:44:18] Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 111, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 106, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 124, in receive
+    return receiver.item
+           ^^^^^^^^^^^^^
+AttributeError: 'MemoryObjectItemReceiver' object has no attribute 'item'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 147, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 126, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/opentelemetry/instrumentation/asgi/__init__.py", line 743, in __call__
+    await self.app(scope, otel_receive, otel_send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 181, in __call__
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 181, in __call__
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 120, in catch_exceptions_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 153, in call_next
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 173, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.6/Frameworks/Python.framework/Versions/3.12/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 175, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 144, in check_http_version_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 153, in call_next
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 134, in async_wrapper
+    return await f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 829, in get_collection
+    await to_thread.run_sync(
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2461, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 962, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 150, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/api/segment.py", line 103, in wrapper
+    return self._rate_limit_enforcer.rate_limit(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/rate_limit/simple_rate_limit/__init__.py", line 24, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/api/segment.py", line 316, in get_collection
+    raise InvalidCollectionException(f"Collection {name} does not exist.")
+chromadb.errors.InvalidCollectionException: Collection 22d7e0593186c08700618b55b1113d9bca1e662f0eaa5e663730ef490ae1e07 does not exist.
+INFO:     [11-03-2025 18:44:18] Shutting down
+INFO:     [11-03-2025 18:44:18] Waiting for application shutdown.
+DEBUG:    [11-03-2025 18:44:18] Stopping component System
+DEBUG:    [11-03-2025 18:44:18] Stopping component SegmentAPI
+DEBUG:    [11-03-2025 18:44:18] Stopping component LocalExecutor
+DEBUG:    [11-03-2025 18:44:18] Stopping component LocalSegmentManager
+DEBUG:    [11-03-2025 18:44:18] Stopping component SimpleAsyncRateLimitEnforcer
+DEBUG:    [11-03-2025 18:44:18] Stopping component SimpleRateLimitEnforcer
+DEBUG:    [11-03-2025 18:44:18] Stopping component Posthog
+DEBUG:    [11-03-2025 18:44:18] Stopping component SimpleQuotaEnforcer
+DEBUG:    [11-03-2025 18:44:18] Stopping component SqliteDB
+DEBUG:    [11-03-2025 18:44:18] Stopping component OpenTelemetryClient
+INFO:     [11-03-2025 18:44:18] Application shutdown complete.
+INFO:     [11-03-2025 18:44:18] Finished server process [41092]
+INFO:     [11-03-2025 19:15:53] Set chroma_server_nofile to 65535
+DEBUG:    [11-03-2025 19:15:53] Starting component System
+DEBUG:    [11-03-2025 19:15:53] Starting component OpenTelemetryClient
+DEBUG:    [11-03-2025 19:15:53] Starting component SqliteDB
+DEBUG:    [11-03-2025 19:15:53] Starting component SimpleQuotaEnforcer
+DEBUG:    [11-03-2025 19:15:53] Starting component Posthog
+DEBUG:    [11-03-2025 19:15:53] Starting component SimpleRateLimitEnforcer
+DEBUG:    [11-03-2025 19:15:53] Starting component LocalSegmentManager
+DEBUG:    [11-03-2025 19:15:53] Starting component LocalExecutor
+DEBUG:    [11-03-2025 19:15:53] Starting component SegmentAPI
+DEBUG:    [11-03-2025 19:15:53] Starting component SimpleAsyncRateLimitEnforcer
+INFO:     [11-03-2025 19:15:53] Started server process [56520]
+INFO:     [11-03-2025 19:15:53] Waiting for application startup.
+INFO:     [11-03-2025 19:15:53] Application startup complete.
+INFO:     [11-03-2025 19:15:53] Uvicorn running on http://localhost:61909 (Press CTRL+C to quit)
+INFO:     [11-03-2025 19:15:53] 127.0.0.1:61919 - "GET /api/v1/heartbeat HTTP/1.1" 200
+INFO:     [11-03-2025 19:15:53] 127.0.0.1:61921 - "GET /api/v2/auth/identity HTTP/1.1" 200
+INFO:     [11-03-2025 19:15:53] 127.0.0.1:61921 - "GET /api/v2/tenants/default_tenant HTTP/1.1" 200
+INFO:     [11-03-2025 19:15:53] 127.0.0.1:61921 - "GET /api/v2/tenants/default_tenant/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+INFO:     [11-03-2025 19:15:58] 127.0.0.1:61921 - "GET /api/v2/tenants/default_tenant/databases/default_database/collections/22d7e0593186c08700618b55b1113d9bca1e662f0eaa5e663730ef490ae1e07 HTTP/1.1" 400
+ERROR:    [11-03-2025 19:15:58] Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 111, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 106, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 124, in receive
+    return receiver.item
+           ^^^^^^^^^^^^^
+AttributeError: 'MemoryObjectItemReceiver' object has no attribute 'item'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 147, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/streams/memory.py", line 126, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/opentelemetry/instrumentation/asgi/__init__.py", line 743, in __call__
+    await self.app(scope, otel_receive, otel_send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 181, in __call__
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 181, in __call__
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 120, in catch_exceptions_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 153, in call_next
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 173, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.6/Frameworks/Python.framework/Versions/3.12/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 175, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 144, in check_http_version_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 153, in call_next
+    raise app_exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/base.py", line 140, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/fastapi/routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 134, in async_wrapper
+    return await f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 829, in get_collection
+    await to_thread.run_sync(
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2461, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 962, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 150, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/api/segment.py", line 103, in wrapper
+    return self._rate_limit_enforcer.rate_limit(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/rate_limit/simple_rate_limit/__init__.py", line 24, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wraithy/.local/pipx/venvs/vectorcode/lib/python3.12/site-packages/chromadb/api/segment.py", line 316, in get_collection
+    raise InvalidCollectionException(f"Collection {name} does not exist.")
+chromadb.errors.InvalidCollectionException: Collection 22d7e0593186c08700618b55b1113d9bca1e662f0eaa5e663730ef490ae1e07 does not exist.
+INFO:     [11-03-2025 19:15:58] Shutting down
+INFO:     [11-03-2025 19:15:58] Waiting for application shutdown.
+DEBUG:    [11-03-2025 19:15:58] Stopping component System
+DEBUG:    [11-03-2025 19:15:58] Stopping component SegmentAPI
+DEBUG:    [11-03-2025 19:15:58] Stopping component LocalExecutor
+DEBUG:    [11-03-2025 19:15:58] Stopping component LocalSegmentManager
+DEBUG:    [11-03-2025 19:15:58] Stopping component SimpleAsyncRateLimitEnforcer
+DEBUG:    [11-03-2025 19:15:58] Stopping component SimpleRateLimitEnforcer
+DEBUG:    [11-03-2025 19:15:58] Stopping component Posthog
+DEBUG:    [11-03-2025 19:15:58] Stopping component SimpleQuotaEnforcer
+DEBUG:    [11-03-2025 19:15:58] Stopping component SqliteDB
+DEBUG:    [11-03-2025 19:15:58] Stopping component OpenTelemetryClient
+INFO:     [11-03-2025 19:15:58] Application shutdown complete.
+INFO:     [11-03-2025 19:15:58] Finished server process [56520]
