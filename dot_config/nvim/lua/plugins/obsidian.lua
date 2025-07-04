@@ -1,5 +1,6 @@
 local wk = require("which-key")
 wk.add({
+
 	{ "<leader>o", group = "󰎚 Obsidian" },
 	{ "<leader>on", "<cmd>ObsidianNew<CR>", desc = "󱞁 New Note" },
 	{ "<leader>oq", "<cmd>ObsidianQuickSwitch<CR>", desc = "󰈙 Quick open note" },
@@ -11,14 +12,13 @@ return {
 	"epwalsh/obsidian.nvim",
 	version = "*", -- recommended, use latest release instead of latest commit
 	event = {
-		"BufReadPre " .. vim.fn.expand("~") .. "Notes/**/*.md",
-		"BufNewFile " .. vim.fn.expand("~") .. "Notes/**/*.md",
+		"BufReadPre " .. vim.fn.expand("~") .. "/Notes/**/*.md",
+		"BufNewFile " .. vim.fn.expand("~") .. "/Notes/**/*.md",
 	},
-	cmd = { "ObsidianOpen", "ObsidianQuickSwitch", "ObsidianNew" },
+	cmd = { "ObsidianOpen", "ObsidianQuickSwitch", "ObsidianNew", "ObsidianSearch" },
 	dependencies = {
 		-- Required.
 		"nvim-lua/plenary.nvim",
-
 		-- see below for full list of optional dependencies 👇
 	},
 	opts = {
@@ -29,6 +29,7 @@ return {
 		ui = { enable = false },
 		completion = {
 			nvim_cmp = true,
+			min_chars = 2,
 		},
 		picker = {
 			-- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', or 'mini.pick'.
@@ -66,13 +67,6 @@ return {
 		end,
 	},
 	config = function(_, opts)
-		package.loaded["nvim-cmp"] = package.loaded["blink.compat"]
 		require("obsidian").setup(opts)
-		local cmp = require("cmp")
-		cmp.register_source("obsidian", require("cmp_obsidian").new())
-		cmp.register_source("obsidian_new", require("cmp_obsidian_new").new())
-		cmp.register_source("obsidian_tags", require("cmp_obsidian_tags").new())
-
-		-- WhichKey mapování
 	end,
 }

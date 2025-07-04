@@ -1,0 +1,46 @@
+# Ghostty configuration converted from WezTerm
+
+# Theme
+theme = catppuccin-mocha
+
+# Font configuration
+font-family = "JetBrains Mono Nerd Font"
+font-size = 12.5
+# font-style = demibold
+font-thicken = true
+
+# Background and transparency
+background-opacity = 0.95
+background = #1e1e2e
+
+# Cursor
+cursor-color = #ffd966
+
+# Text rendering - match WezTerm line_height = 1.1
+adjust-cell-height = 10%
+adjust-cell-width = 0%
+
+
+# Window configuration
+window-padding-x = 10
+window-padding-y = 5
+window-decoration = true
+window-colorspace = srgb
+
+# macOS specific
+macos-non-native-fullscreen = false
+macos-titlebar-style = tabs
+
+# Window size
+window-width = 180
+window-height = 60
+
+# Keybindings
+keybind = ctrl+shift+space=ignore
+keybind = cmd+w=close_surface
+
+# Close confirmation
+confirm-close-surface = false
+
+# Terminal features
+shell-integration = detect
