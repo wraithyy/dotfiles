@@ -47,6 +47,51 @@ return {
 
 						{ "fancy_filetype", ts_icon = "" },
 						{ "fancy_cwd", substitute_home = true },
+						{
+							function()
+								-- Check if Copilot is available and enabled
+								local copilot_ok, copilot_api = pcall(require, "copilot.api")
+								if copilot_ok then
+									local status = copilot_api.status.data
+									if status.status == "Normal" then
+										return "  Copilot" -- Copilot active
+									elseif status.status == "InProgress" then
+										return "  Copilot" -- Copilot working
+									else
+										-- Copilot not available, try Codeium
+										local codeium_ok, codeium = pcall(require, "codeium.virtual_text")
+										if codeium_ok and codeium.enabled() then
+											return "󰘦 Codeium" -- Codeium as fallback
+										else
+											return "" -- No AI completion
+										end
+									end
+								else
+									-- Copilot not available, try Codeium
+									local codeium_ok, codeium = pcall(require, "codeium.virtual_text")
+									if codeium_ok and codeium.enabled() then
+										return "󰘦 Codeium" -- Codeium as fallback
+									else
+										return "" -- No AI completion
+									end
+								end
+							end,
+							color = function()
+								local copilot_ok, copilot_api = pcall(require, "copilot.api")
+								if copilot_ok then
+									local status = copilot_api.status.data
+									if status.status == "Normal" then
+										return { fg = "#00FF00", gui = "bold" } -- Zelená pro Copilot
+									elseif status.status == "InProgress" then
+										return { fg = "#FFD700", gui = "bold" } -- Žlutá pro Copilot working
+									else
+										return { fg = "#00CED1", gui = "bold" } -- Cyan pro Codeium fallback
+									end
+								else
+									return { fg = "#00CED1", gui = "bold" } -- Cyan pro Codeium
+								end
+							end,
+						},
 						-- {
 						-- 	function()
 						-- 		local status = require("neocodeium").get_status()

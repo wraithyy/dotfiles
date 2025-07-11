@@ -34,7 +34,7 @@ return {
 				end,
 			},
 			virtual_text = {
-				enabled = true,
+				enabled = false, -- Start disabled, will be enabled as fallback
 
 				-- These are the defaults
 

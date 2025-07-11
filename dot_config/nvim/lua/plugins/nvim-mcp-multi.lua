@@ -1,6 +1,7 @@
 return {
 	dir = "/Users/wraithy/Development/nvim-mcp-multi",
 	name = "nvim-mcp-multi",
+	enabled = false,
 	lazy = false, -- Okamžité načtení
 	config = function()
 		require("nvim-mcp-multi").setup({

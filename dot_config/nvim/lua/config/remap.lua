@@ -29,22 +29,6 @@ vim.keymap.set("n", "<Leader>q", function()
 	end
 end, { noremap = true, silent = true, desc = "Close all other buffers" })
 vim.keymap.set("n", "<space>", "<nop>")
--- -- Number remaps --
--- vim.keymap.set("n", "+", "1", { noremap = true })
--- vim.keymap.set("n", "ě", "2", { noremap = true })
--- vim.keymap.set("n", "š", "3", { noremap = true })
--- vim.keymap.set("n", "č", "4", { noremap = true })
--- vim.keymap.set("n", "ř", "5", { noremap = true })
--- vim.keymap.set("n", "ž", "6", { noremap = true })
--- vim.keymap.set("n", "ý", "7", { noremap = true })
--- vim.keymap.set("n", "á", "8", { noremap = true })
--- vim.keymap.set("n", "í", "9", { noremap = true })
--- vim.keymap.set("n", "é", "0", { noremap = true })
--- vim.keymap.set("n", "ú", "/", { noremap = true })
--- vim.keymap.set("n", "ů", ";", { noremap = true })
---
--- vim.keymap.set("n", "9", "{", { noremap = true })
--- vim.keymap.set("n", "0", "}", { noremap = true })
 
 -- Drag line --
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")

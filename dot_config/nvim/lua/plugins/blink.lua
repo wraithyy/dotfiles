@@ -43,9 +43,6 @@ return {
 					"buffer",
 					"ripgrep",
 					"emoji",
-					"obsidian",
-					"obsidian_tags",
-					"obsidian_new",
 					"avante_commands",
 					"avante_mentions",
 					"avante_files",
@@ -197,18 +194,6 @@ return {
 						name = "Emoji",
 						score_offset = 15, -- the higher the number, the higher the priority
 						opts = { insert = true }, -- Insert emoji (default) or complete its name
-					},
-					obsidian = {
-						name = "obsidian",
-						module = "blink.compat.source",
-					},
-					obsidian_new = {
-						name = "obsidian_new",
-						module = "blink.compat.source",
-					},
-					obsidian_tags = {
-						name = "obsidian_tags",
-						module = "blink.compat.source",
 					},
 					-- Example on how to configure dadbod found in the main repo
 					-- https://github.com/kristijanhusak/vim-dadbod-completion
