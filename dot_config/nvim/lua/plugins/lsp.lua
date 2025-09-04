@@ -61,7 +61,7 @@ return {
 		dependencies = { "williamboman/mason.nvim" },
 		opts = {
 			ensure_installed = { "eslint", "rust_analyzer", "biome" },
-			automatic_enable = false
+			automatic_enable = false,
 		},
 	},
 	{
@@ -113,6 +113,10 @@ return {
 			})
 
 			lspconfig.biome.setup({
+				on_attach = on_attach,
+				capabilities = capabilities,
+			})
+			lspconfig.astro.setup({
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})

@@ -1,0 +1,32 @@
+gui:
+  theme:
+    lightTheme: false
+    activeBorderColor:
+      - "#89b4fa" # blue
+      - bold
+    inactiveBorderColor:
+      - "#6c7086" # surface0
+    selectedLineBgColor:
+      - "#313244" # surface1
+    selectedRangeBgColor:
+      - "#45475a" # surface2
+    cherryPickedCommitBgColor:
+      - "#94e2d5"
+    cherryPickedCommitFgColor:
+      - "#1e1e2e"
+    unstagedChangesColor:
+      - "#f38ba8" # red
+  nerdFontsVersion: "3"
+  border: rounded
+
+git:
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+keybinding:
+ universal:
+    quit: "q"
+    return: "<esc>"
+    nextTab: "ú"
+    prevTab: ")"
+

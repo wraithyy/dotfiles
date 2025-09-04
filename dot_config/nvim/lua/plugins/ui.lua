@@ -49,47 +49,32 @@ return {
 						{ "fancy_cwd", substitute_home = true },
 						{
 							function()
-								-- Check if Copilot is available and enabled
+								-- Simplified AI provider status
 								local copilot_ok, copilot_api = pcall(require, "copilot.api")
-								if copilot_ok then
-									local status = copilot_api.status.data
-									if status.status == "Normal" then
-										return "  Copilot" -- Copilot active
-									elseif status.status == "InProgress" then
-										return "  Copilot" -- Copilot working
-									else
-										-- Copilot not available, try Codeium
-										local codeium_ok, codeium = pcall(require, "codeium.virtual_text")
-										if codeium_ok and codeium.enabled() then
-											return "󰘦 Codeium" -- Codeium as fallback
-										else
-											return "" -- No AI completion
-										end
-									end
-								else
-									-- Copilot not available, try Codeium
-									local codeium_ok, codeium = pcall(require, "codeium.virtual_text")
-									if codeium_ok and codeium.enabled() then
-										return "󰘦 Codeium" -- Codeium as fallback
-									else
-										return "" -- No AI completion
-									end
+								if copilot_ok and copilot_api.status.data.status == "Normal" then
+									return "  Copilot"
+								elseif copilot_ok and copilot_api.status.data.status == "InProgress" then
+									return "  Copilot"
 								end
+
+								local codeium_ok, codeium = pcall(require, "codeium.virtual_text")
+								if codeium_ok and codeium.enabled() then
+									return "󰘦 Codeium"
+								end
+
+								return ""
 							end,
 							color = function()
 								local copilot_ok, copilot_api = pcall(require, "copilot.api")
 								if copilot_ok then
-									local status = copilot_api.status.data
-									if status.status == "Normal" then
-										return { fg = "#00FF00", gui = "bold" } -- Zelená pro Copilot
-									elseif status.status == "InProgress" then
-										return { fg = "#FFD700", gui = "bold" } -- Žlutá pro Copilot working
-									else
-										return { fg = "#00CED1", gui = "bold" } -- Cyan pro Codeium fallback
+									local status = copilot_api.status.data.status
+									if status == "Normal" then
+										return { fg = "#00FF00", gui = "bold" }
+									elseif status == "InProgress" then
+										return { fg = "#FFD700", gui = "bold" }
 									end
-								else
-									return { fg = "#00CED1", gui = "bold" } -- Cyan pro Codeium
 								end
+								return { fg = "#00CED1", gui = "bold" }
 							end,
 						},
 						-- {
@@ -154,6 +139,7 @@ return {
 		lazy = false,
 		opts = {
 			transparent_background = true,
+			flavour = "mocha", -- latte, frappe, macchiato, mocha
 			color_overrides = {
 				all = {
 					-- Map your custom colors to Catppuccin equivalents
@@ -267,6 +253,11 @@ return {
 				mason = true,
 				noice = true,
 				blink_cmp = true,
+				markview = true,
+				snacks = {
+					enabled = false,
+					indent_scope_color = "", -- catppuccin color (eg. `lavender`) Default: text
+				},
 				mini = {
 					enabled = true,
 					indentscope_color = "",

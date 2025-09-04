@@ -44,24 +44,37 @@ return {
 				window = {
 					width = 0.4,
 				},
+				-- Add context selection configuration
+				selection = function(source)
+					local select = require("CopilotChat.select")
+					return select.visual(source) or select.buffer(source)
+				end,
+				-- Enable snacks.picker for prompts and models
 				prompts = {
-					Explain = {
-						prompt = "/COPILOT_EXPLAIN Write an explanation for the active selection as paragraphs of text.",
+					picker = "snacks",
+				},
+				-- Add modern mappings
+				mappings = {
+					submit_prompt = {
+						normal = "<CR>",
+						insert = "<CR>",
 					},
-					Review = {
-						prompt = "/COPILOT_REVIEW Review the selected code.",
+					accept_diff = {
+						normal = "<C-y>",
+						insert = "<C-y>",
 					},
-					Fix = {
-						prompt = "/COPILOT_GENERATE There is a problem in this code. Rewrite the code to fix the problem.",
+					yank_diff = {
+						normal = "gy",
+						register = '"',
 					},
-					Optimize = {
-						prompt = "/COPILOT_GENERATE Optimize the selected code to improve performance and readability.",
+					show_diff = {
+						normal = "gd",
 					},
-					Docs = {
-						prompt = "/COPILOT_GENERATE Please add documentation comment for the selection.",
+					show_system_prompt = {
+						normal = "gp",
 					},
-					Tests = {
-						prompt = "/COPILOT_GENERATE Please generate tests for my code.",
+					show_user_selection = {
+						normal = "gs",
 					},
 				},
 			}
@@ -69,86 +82,101 @@ return {
 		config = function(_, opts)
 			local chat = require("CopilotChat")
 			chat.setup(opts)
-			
+
 			-- Setup keymaps with which-key
 			local wk = require("which-key")
 			wk.add({
-				{ "<leader>a", group = "AI" },
-				{ "<leader>aa", function() require("CopilotChat").toggle() end, desc = "Toggle CopilotChat" },
-				{ "<leader>ax", function() require("CopilotChat").reset() end, desc = "Reset CopilotChat" },
-				{ "<leader>aq", function()
-					local input = vim.fn.input("Quick Chat: ")
-					if input ~= "" then
-						require("CopilotChat").ask(input)
-					end
-				end, desc = "Quick Chat" },
-				{ "<leader>ap", function()
-					-- Simple command menu without complex picker
-					local prompts = {
-						"Explain - Write an explanation for the active selection",
-						"Review - Review the selected code",
-						"Fix - Fix problems in this code",
-						"Optimize - Optimize for performance and readability", 
-						"Docs - Add documentation comment",
-						"Tests - Generate tests for my code",
-					}
-					
-					local prompt_map = {
-						["Explain"] = "/COPILOT_EXPLAIN Write an explanation for the active selection as paragraphs of text.",
-						["Review"] = "/COPILOT_REVIEW Review the selected code.",
-						["Fix"] = "/COPILOT_GENERATE There is a problem in this code. Rewrite the code to fix the problem.",
-						["Optimize"] = "/COPILOT_GENERATE Optimize the selected code to improve performance and readability.",
-						["Docs"] = "/COPILOT_GENERATE Please add documentation comment for the selection.",
-						["Tests"] = "/COPILOT_GENERATE Please generate tests for my code.",
-					}
-					
-					vim.ui.select(prompts, {
-						prompt = "Select AI prompt:",
-					}, function(choice)
-						if choice then
-							local key = choice:match("^(%w+)")
-							if prompt_map[key] then
-								require("CopilotChat").ask(prompt_map[key])
-							end
+				{ "<leader>a", group = "AI", icon = "🤖" },
+				{
+					"<leader>aa",
+					function()
+						require("CopilotChat").toggle()
+					end,
+					desc = "Toggle CopilotChat",
+					icon = "💬",
+				},
+				{
+					"<leader>ax",
+					function()
+						require("CopilotChat").reset()
+					end,
+					desc = "Reset CopilotChat",
+					icon = "🔄",
+				},
+				{
+					"<leader>aq",
+					function()
+						local input = vim.fn.input("Quick Chat: ")
+						if input ~= "" then
+							require("CopilotChat").ask(input)
 						end
-					end)
-				end, desc = "Prompt Actions" },
-				{ "<leader>at", function()
-					local providers = {
-						{ 
-							name = "🤖 Copilot",
-							action = function()
-								require("copilot.command").enable()
-								local codeium_ok, codeium = pcall(require, "codeium.virtual_text")
-								if codeium_ok then
-									codeium.set_enabled(false)
-								end
-								vim.notify("Switched to Copilot", vim.log.levels.INFO)
-							end,
-						},
-						{
-							name = "🔮 Codeium",
-							action = function()
-								require("copilot.suggestion").dismiss()
-								require("copilot.command").disable()
-								local codeium_ok, codeium = pcall(require, "codeium.virtual_text")
-								if codeium_ok then
-									codeium.set_enabled(true)
-								end
-								vim.notify("Switched to Codeium", vim.log.levels.INFO)
-							end,
-						},
-					}
-					
-					vim.ui.select(providers, {
-						prompt = "Select AI Provider:",
-						format_item = function(item) return item.name end,
-					}, function(choice)
-						if choice then
-							choice.action()
-						end
-					end)
-				end, desc = "Select AI Provider" },
+					end,
+					desc = "Quick Chat",
+					icon = "⚡",
+				},
+				{
+					"<leader>ap",
+					function()
+						-- Use CopilotChatPrompts command with snacks.picker
+						vim.cmd("CopilotChatPrompts")
+					end,
+					desc = "Prompt Actions",
+					icon = "📝",
+				},
+				-- { "<leader>at", function()
+				-- 	local providers = {
+				-- 		{
+				-- 			name = "🤖 Copilot",
+				-- 			action = function()
+				-- 				local copilot_ok, copilot = pcall(require, "copilot.command")
+				-- 				if copilot_ok then
+				-- 					copilot.enable()
+				-- 				end
+				-- 				local codeium_ok, codeium = pcall(require, "codeium.virtual_text")
+				-- 				if codeium_ok and codeium.set_enabled then
+				-- 					codeium.set_enabled(false)
+				-- 				end
+				-- 				vim.notify("Switched to Copilot", vim.log.levels.INFO)
+				-- 			end,
+				-- 		},
+				-- 		{
+				-- 			name = "🔮 Codeium",
+				-- 			action = function()
+				-- 				local suggestion_ok, suggestion = pcall(require, "copilot.suggestion")
+				-- 				if suggestion_ok and suggestion.dismiss then
+				-- 					suggestion.dismiss()
+				-- 				end
+				-- 				local copilot_ok, copilot = pcall(require, "copilot.command")
+				-- 				if copilot_ok and copilot.disable then
+				-- 					copilot.disable()
+				-- 				end
+				-- 				local codeium_ok, codeium = pcall(require, "codeium.virtual_text")
+				-- 				if codeium_ok and codeium.set_enabled then
+				-- 					codeium.set_enabled(true)
+				-- 				end
+				-- 				vim.notify("Switched to Codeium", vim.log.levels.INFO)
+				-- 			end,
+				-- 		},
+				-- 	}
+				--
+				-- 	vim.ui.select(providers, {
+				-- 		prompt = "Select AI Provider:",
+				-- 		format_item = function(item) return item.name end,
+				-- 	}, function(choice)
+				-- 		if choice then
+				-- 			choice.action()
+				-- 		end
+				-- 	end)
+				-- end, desc = "Select AI Provider", icon = "🔄" },
+				-- -- Add model selector
+				{
+					"<leader>am",
+					function()
+						vim.cmd("CopilotChatModels")
+					end,
+					desc = "Select AI Model",
+					icon = "🎯",
+				},
 			})
 		end,
 	},

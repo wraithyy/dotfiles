@@ -39,7 +39,7 @@ window-width = 180
 window-height = 60
 
 # Keybindings
-keybind = ctrl+shift+space=ignore
+keybind = ctrl+shift+space=unbind
 keybind = cmd+w=close_surface
 
 # Close confirmation

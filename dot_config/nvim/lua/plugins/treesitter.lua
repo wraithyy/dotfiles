@@ -13,6 +13,7 @@ return {
 			require("nvim-treesitter.configs").setup({
 				-- Zde si nastavíš jazyky, které chceš používat
 				ensure_installed = {
+					"astro",
 					"c",
 					"lua",
 					"python",
