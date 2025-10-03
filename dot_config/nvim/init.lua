@@ -12,6 +12,7 @@ require("config.highlight_on_yank")
 require("config.autoroot")
 require("config.remap")
 require("config.diagnostics-design")
+require("config.title")
 vim.opt.relativenumber = true
 
 vim.opt.termguicolors = true
