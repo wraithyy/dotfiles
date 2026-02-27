@@ -1,4 +1,5 @@
 # Rychlé zobrazení promptu (instant prompt)
+
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -29,12 +30,18 @@ export PNPM_HOME="/Users/wraithy/Library/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 #export OPENAI_API_KEY={{ onepasswordRead "op://47q7ov7jcalclpmkqfopl6m3n4/OPENAI_KEY/credential" }}
 export ANTHROPIC_API_KEY={{ onepasswordRead "op://47q7ov7jcalclpmkqfopl6m3n4/Anthropic key/credential" }}
-
+export NUGET_USERNAME={{ onepasswordRead "op://47q7ov7jcalclpmkqfopl6m3n4/SKODA NUGET/username"}}
+export NUGET_PASSWORD={{ onepasswordRead "op://47q7ov7jcalclpmkqfopl6m3n4/SKODA NUGET/credential" }}
 export XDG_CONFIG_HOME="$HOME/.config"
 # Aliasové zkratky
 alias v="nvim"
 alias dev="cd ~/Development/Trask"
 alias tmuxa="tmux attach-session -t \$(tmux list-sessions -F '#{session_name}' | fzf)"
+alias clauded="claude --dangerously-skip-permissions"
 
 # Powerlevel10k config
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/wraithy/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+ export PATH="$HOME/.local/bin:$PATH"

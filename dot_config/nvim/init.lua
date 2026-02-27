@@ -7,6 +7,15 @@ end
 vim.print = _G.dd
 print("Ahoj Wraithy")
 
+-- Workaround: prevent E216 when vim.lsp.enable runs concurrently
+-- Some plugin load orders can trigger a race where `doautoall nvim.lsp.enable FileType`
+-- fires before the augroup exists. Pre-create a no-op group/autocmd so the call is safe.
+pcall(function()
+  local grp = vim.api.nvim_create_augroup("nvim.lsp.enable", { clear = false })
+  -- Use a no-op callback; it will be replaced when vim.lsp.enable() sets real ones.
+  vim.api.nvim_create_autocmd("FileType", { group = grp, callback = function() end })
+end)
+
 require("config.lazy")
 require("config.highlight_on_yank")
 require("config.autoroot")

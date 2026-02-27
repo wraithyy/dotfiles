@@ -47,3 +47,4 @@ confirm-close-surface = false
 
 # Terminal features
 shell-integration = detect
+keybind = shift+enter=text:\x1b\r

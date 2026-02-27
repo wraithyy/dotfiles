@@ -1,4 +1,5 @@
 -- Kompletní moderní LSP config s podporou lazy.nvim a typescript-tools.nvim
+-- Aktualizováno na Neovim 0.11 API: používá vim.lsp.config + vim.lsp.enable místo lspconfig.setup
 
 local function lsp_highlight_document(client)
 	if client.server_capabilities.documentHighlightProvider then
@@ -60,7 +61,7 @@ return {
 		event = { "BufReadPre", "BufNewFile" },
 		dependencies = { "williamboman/mason.nvim" },
 		opts = {
-			ensure_installed = { "eslint", "rust_analyzer", "biome" },
+			ensure_installed = { "eslint", "rust_analyzer", "biome", "marksman" },
 			automatic_enable = false,
 		},
 	},
@@ -71,9 +72,19 @@ return {
 			"williamboman/mason-lspconfig.nvim",
 		},
 		config = function()
-			local lspconfig = require("lspconfig")
+			local util = require("lspconfig.util")
+			local lsp = vim.lsp
 
-			local eslint_root = require("lspconfig.util").root_pattern(
+			local function enable_server(server, overrides)
+				local ok, def = pcall(require, "lspconfig.server_configurations." .. server)
+				if not ok then
+					return
+				end
+				local cfg = vim.tbl_deep_extend("force", def.default_config or {}, overrides or {})
+				lsp.enable(lsp.config(cfg))
+			end
+
+			local eslint_root = util.root_pattern(
 				".eslintrc.js",
 				".eslintrc.cjs",
 				".eslintrc.json",
@@ -95,10 +106,10 @@ return {
 				local cwd = vim.loop.cwd()
 				local root = eslint_root(cwd)
 				if root and has_eslint_config(root) then
-					lspconfig.eslint.setup({
+					enable_server("eslint", {
 						on_attach = on_attach,
 						capabilities = capabilities,
-						root_dir = function()
+						root_dir = function(_)
 							return root
 						end,
 					})
@@ -107,16 +118,23 @@ return {
 
 			setup_eslint_if_needed()
 
-			lspconfig.rust_analyzer.setup({
+			enable_server("rust_analyzer", {
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
 
-			lspconfig.biome.setup({
+			enable_server("biome", {
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
-			lspconfig.astro.setup({
+
+			-- Markdown LSP
+			enable_server("marksman", {
+				on_attach = on_attach,
+				capabilities = capabilities,
+				-- marksman handles 'markdown'; for mdx we typically rely on formatters or mdx-specific servers
+			})
+			enable_server("astro", {
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
