@@ -1,3 +1,8 @@
+# Fallback pro terminály bez ghostty terminfo (např. Raspberry Pi)
+if [[ "$TERM" == "xterm-ghostty" ]] && ! infocmp xterm-ghostty &>/dev/null 2>&1; then
+  export TERM=xterm-256color
+fi
+
 # Rychlé zobrazení promptu (instant prompt)
 
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
@@ -18,26 +23,33 @@ plugins=(
   zsh-autosuggestions
   sudo
   alias-finder
+{{- if eq .chezmoi.os "darwin" }}
   yarn
+{{- end }}
   zsh-syntax-highlighting # Vždy jako poslední
 )
 
 source $ZSH/oh-my-zsh.sh
 
-# Vlastní proměnné a aliasy (radši dej do ~/.oh-my-zsh/custom/*.zsh, ale můžeš i tady)
-export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.codeium/windsurf/bin:$PATH"
-export PNPM_HOME="/Users/wraithy/Library/pnpm"
-export PATH="$PNPM_HOME:$PATH"
+# PATH
+export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
 export XDG_CONFIG_HOME="$HOME/.config"
-# Aliasové zkratky
+
+{{- if eq .chezmoi.os "darwin" }}
+# macOS-specific
+export PNPM_HOME="$HOME/Library/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+export PATH="$HOME/.codeium/windsurf/bin:$PATH"
+export PATH="$HOME/.rd/bin:$PATH"
+{{- end }}
+
+# Aliasy
 alias v="nvim"
-alias dev="cd ~/Development/Trask"
 alias tmuxa="tmux attach-session -t \$(tmux list-sessions -F '#{session_name}' | fzf)"
 alias clauded="claude --dangerously-skip-permissions"
+{{- if eq .chezmoi.os "darwin" }}
+alias dev="cd ~/Development/Trask"
+{{- end }}
 
 # Powerlevel10k config
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/wraithy/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
- export PATH="$HOME/.local/bin:$PATH"
