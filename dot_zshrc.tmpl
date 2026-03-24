@@ -51,5 +51,8 @@ alias clauded="claude --dangerously-skip-permissions"
 alias dev="cd ~/Development/Trask"
 {{- end }}
 
+# Lokální config (mimo chezmoi - např. OpenClaw, secrets, machine-specific)
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
 # Powerlevel10k config
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
