@@ -83,3 +83,5 @@ First A, then B, then C sequentially when they don't depend on each other.
 | Terraform, IaC, cloud resources | `terraform-expert` |
 | SEO, meta tags, structured data, sitemaps | `seo-specialist` |
 | Deep a11y audit, WCAG compliance, ARIA patterns | `accessibility-specialist` |
+| AI tools config (Claude Code, OpenClaw, ACP, MCP) | `ai-tooling-expert` |
+| Context optimization, memory management, token efficiency | `ai-context-optimizer` |

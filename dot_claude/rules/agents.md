@@ -49,6 +49,12 @@ Located in `~/.claude/agents/`:
 | api-designer | OpenAPI 3.1, REST conventions, contract-first | API design, documentation |
 | tech-writer | ADRs, RFCs, technical specs, runbooks | Technical documentation |
 
+### AI Tooling & Automation
+| Agent | Purpose | When to Use |
+|-------|---------|-------------|
+| ai-tooling-expert | Claude Code, OpenClaw, ACP, MCP config and workflow automation | Setting up, configuring, or troubleshooting AI tools |
+| ai-context-optimizer | Context window optimization, memory management, token efficiency | Optimizing prompts, reducing token waste, memory hygiene |
+
 ## Immediate Agent Usage
 
 No user prompt needed:
