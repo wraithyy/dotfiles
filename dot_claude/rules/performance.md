@@ -1,26 +1,13 @@
 # Performance Optimization
 
-## Model Selection Strategy
+## Model Selection for Subagents
 
-**Opus 4.6** (`claude-opus-4-6`) — Main session orchestrator:
-- Runs as the primary Claude Code session
-- Orchestrates subagents via the Task tool
-- Decides which model each subagent should use
-
-**Haiku 4.5** (`claude-haiku-4-5-20251001`) — Fast and cheap:
-- File reads, searches, and lookups
-- Lightweight worker agents with frequent invocation
-- Tasks where speed and cost matter more than depth
-
-**Sonnet 4.6** (`claude-sonnet-4-6`) — Primary workhorse:
-- Code generation, reviews, and refactoring
-- Most subagent tasks (default choice)
-- Complex multi-file changes
-
-**Opus 4.6** (for subagents, use sparingly):
-- Genuinely hard architectural decisions
-- Tasks where Sonnet repeatedly fails
-- Deep reasoning requirements — escalate deliberately, not by default
+| Task type | Model |
+|-----------|-------|
+| Simple search, file reads, grep, docs lookup | `haiku` |
+| Code writing, reviews, tests, refactoring, build fixes | `sonnet` |
+| Complex architecture decisions, deep cross-system analysis | keep in main session (opus) |
+| Deep reasoning where sonnet failed, complex multi-file refactor | `opus` (last resort) |
 
 ## Context Window Management
 
