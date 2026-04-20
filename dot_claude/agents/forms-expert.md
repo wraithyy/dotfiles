@@ -2,6 +2,7 @@
 name: forms-expert
 description: Forms specialist for React Hook Form, TanStack Form, Zod validation, multi-step forms, field arrays, and type-safe form patterns. Use when implementing complex forms, validation schemas, dynamic fields, wizard flows, or debugging RHF + Zod / TanStack Form integration issues.
 tools: ["Read", "Grep", "Glob"]
+model: sonnet
 ---
 
 # Forms Expert

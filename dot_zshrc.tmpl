@@ -45,11 +45,131 @@ export PATH="$HOME/.rd/bin:$PATH"
 
 # Aliasy
 alias v="nvim"
-alias tmuxa="tmux attach-session -t \$(tmux list-sessions -F '#{session_name}' | fzf)"
 alias clauded="claude --dangerously-skip-permissions"
+export DISABLE_AUTO_TITLE='true'
 {{- if eq .chezmoi.os "darwin" }}
 alias dev="cd ~/Development/Trask"
 {{- end }}
+
+# tmux + tmuxp + fzf workflow
+_tmux_goto() {
+  local target="$1"
+  if [[ -n "$TMUX" ]]; then
+    tmux switch-client -t "=$target"
+    return $?
+  fi
+  if ! tmux attach-session -t "=$target"; then
+    print -u2 "[tmux] attach failed for '$target'"
+    print -u2 "  TMUX='$TMUX'  TTY=$(tty)  TERM=$TERM"
+    print -u2 "  tmux: $(command -v tmux) ($(tmux -V))"
+    print -u2 "  hint: stale server? zkus: tmux kill-server && work"
+    return 1
+  fi
+}
+
+_t_gen_lines() {
+  local dim=$'\e[2m' reset=$'\e[0m'
+  local sess_cwd
+  sess_cwd=$(tmux list-panes -a -F '#{session_name}|#{pane_current_path}' 2>/dev/null \
+             | awk -F'|' '!seen[$1]++ {print}')
+  if [[ -n "$sess_cwd" ]]; then
+    printf '%s\n' "${dim}── running sessions ──${reset}"
+    while IFS='|' read -r s cwd; do
+      cwd="${cwd/#$HOME/~}"
+      printf '🟢 %-20s %s→ %s%s\n' "$s" "$dim" "$cwd" "$reset"
+    done <<< "$sess_cwd"
+    printf '\n'
+  fi
+
+  if command -v tmuxp >/dev/null && [[ -d "$HOME/.config/tmuxp" ]]; then
+    local tpls=("$HOME/.config/tmuxp/"*.yaml(N))
+    if (( ${#tpls} )); then
+      printf '%s\n' "${dim}── templates ──${reset}"
+      for f in $tpls; do
+        local fname; fname="$(basename "${f%.yaml}")"
+        local dname; dname=$(awk '/^display_name:/ {gsub(/"/,""); sub(/^display_name:[[:space:]]*/,""); print; exit}' "$f" 2>/dev/null)
+        printf '🧩 %s|%s\n' "${dname:-$fname}" "$fname"
+      done
+      printf '\n'
+    fi
+  fi
+
+  printf '%s\n' "${dim}── new ──${reset}"
+  printf '➕ new (empty session)\n'
+}
+
+t() {
+  command -v fzf >/dev/null || { echo "fzf missing"; return 1; }
+
+  local reload_cmd="zsh -c 'source $HOME/.zshrc 2>/dev/null; _t_gen_lines'"
+
+  local sel
+  sel=$(_t_gen_lines | fzf --ansi \
+    --delimiter '|' \
+    --with-nth 1 \
+    --layout=reverse \
+    --prompt='tmux ❯ ' \
+    --header='enter=pick · x=kill · esc=cancel' \
+    --bind "x:execute-silent(
+      sel={}
+      [[ \"\$sel\" != '🟢 '* ]] && exit 0
+      name=\"\${sel#🟢 }\"; name=\"\${name%% *}\"
+      tmux kill-session -t \"=\$name\" 2>/dev/null
+    )+reload($reload_cmd)" \
+    --preview '
+      sel={}
+      case "$sel" in
+        "🟢 "*)
+          name="${sel#🟢 }"; name="${name%% *}"
+          tmux list-windows -t "=$name" 2>/dev/null ;;
+        "🧩 "*)
+          tpl="${sel#*|}"; tpl="${tpl%% *}"
+          f="$HOME/.config/tmuxp/${tpl}.yaml"
+          if command -v bat &>/dev/null; then bat --color=always --style=plain "$f"
+          else cat "$f"; fi ;;
+        "➕ "*) printf "New empty session in %s\n" "$PWD" ;;
+        *) ;;
+      esac' \
+    --preview-window=right:60%) || return
+
+  case "$sel" in
+    "🟢 "*)
+      local name="${sel#🟢 }"; name="${name%% *}"
+      _tmux_goto "$name"
+      ;;
+    "🧩 "*)
+      local tpl_file; tpl_file="${sel#*|}"
+      local default_name; default_name="$(basename "$PWD")"
+      local sname
+      read -r "sname?Session name [${default_name}]: " </dev/tty
+      sname="${sname:-$default_name}"
+      if ! tmux has-session -t "=$sname" 2>/dev/null; then
+        tmuxp load "$tpl_file" -s "$sname" -d || return 1
+      fi
+      _tmux_goto "$sname"
+      ;;
+    "➕ "*)
+      local default_name; default_name="$(basename "$PWD")"
+      local ename
+      read -r "ename?Session name [${default_name}]: " </dev/tty
+      ename="${ename:-$default_name}"
+      if ! tmux has-session -t "=$ename" 2>/dev/null; then
+        tmux new-session -d -s "$ename" || return 1
+      fi
+      _tmux_goto "$ename"
+      ;;
+    *) return 0 ;;
+  esac
+}
+
+work() {
+  command -v tmuxp >/dev/null || { echo "tmuxp missing"; return 1; }
+  local name="work-$(basename "$PWD")"
+  if ! tmux has-session -t "=$name" 2>/dev/null; then
+    tmuxp load dev -s "$name" -d || return 1
+  fi
+  _tmux_goto "$name"
+}
 
 # Lokální config (mimo chezmoi - např. OpenClaw, secrets, machine-specific)
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

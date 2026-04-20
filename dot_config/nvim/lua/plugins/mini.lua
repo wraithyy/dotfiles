@@ -3,6 +3,7 @@ return {
 	{
 		"echasnovski/mini.map",
 		version = "*", -- použijte poslední stabilní verzi
+		enabled = false,
 		config = function()
 			local map = require("mini.map")
 			local diagnostic_integration = map.gen_integration.diagnostic({

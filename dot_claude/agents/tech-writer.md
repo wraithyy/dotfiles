@@ -2,6 +2,7 @@
 name: tech-writer
 description: Technical documentation specialist for Architecture Decision Records (ADR), RFCs, technical specifications, and stakeholder documentation. Use when writing ADRs, design documents, technical proposals, API documentation for teams, or onboarding guides.
 tools: ["Read", "Grep", "Glob"]
+model: opus
 ---
 
 # Technical Writer

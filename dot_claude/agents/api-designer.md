@@ -2,6 +2,7 @@
 name: api-designer
 description: API design specialist for OpenAPI/Swagger specs, REST conventions, versioning strategies, and contract-first development. Use when designing new APIs, reviewing API contracts, writing OpenAPI specs, or establishing API governance in corporate environments.
 tools: ["Read", "Grep", "Glob"]
+model: sonnet
 ---
 
 # API Designer

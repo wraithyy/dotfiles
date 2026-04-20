@@ -2,6 +2,7 @@
 name: react-expert
 description: React architecture specialist for hooks, state management (TanStack Query, Zustand, Jotai), TanStack Router, component design, and patterns. Use when designing component architecture, choosing state management, reviewing hooks usage, or refactoring React code.
 tools: ["Read", "Grep", "Glob", "Bash"]
+model: sonnet
 ---
 
 # React Expert

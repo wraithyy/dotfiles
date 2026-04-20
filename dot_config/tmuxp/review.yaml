@@ -1,0 +1,16 @@
+display_name: review (diff + git + gh)
+session_name: review
+windows:
+  - window_name: Review
+    layout: main-vertical
+    focus: true
+    panes:
+      - shell_command: nvim
+        focus: true
+      - ""
+  - window_name: GIT
+    panes:
+      - lazygit
+  - window_name: PR
+    panes:
+      - ""

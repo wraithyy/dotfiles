@@ -2,12 +2,22 @@
 
 ## Model Selection for Subagents
 
+Target distribution: **70% Haiku / 20% Sonnet / 10% Opus**.
+
+| Agent tier | Model | Examples |
+|-----------|-------|---------|
+| Mechanical — narrow, rule-check | `haiku` | build-error-resolver, doc-updater, refactor-cleaner, e2e-runner, accessibility-specialist |
+| Implementation — code write, review | `sonnet` | react-expert, fe-specialist, code-reviewer, security-reviewer, tdd-guide, all other workers |
+| Architecture — deep reasoning | `opus` | architect, planner, ai-context-optimizer, ai-tooling-expert, tech-writer |
+
 | Task type | Model |
 |-----------|-------|
-| Simple search, file reads, grep, docs lookup | `haiku` |
-| Code writing, reviews, tests, refactoring, build fixes | `sonnet` |
-| Complex architecture decisions, deep cross-system analysis | keep in main session (opus) |
-| Deep reasoning where sonnet failed, complex multi-file refactor | `opus` (last resort) |
+| Grep, file reads, docs lookup, formatting | `haiku` |
+| Code writing, reviews, tests, refactoring | `sonnet` |
+| Architecture decisions, cross-system analysis | `opus` (main session) |
+| Deep reasoning where sonnet failed | `opus` (last resort for subagent) |
+
+When `opusplan` is active, the main session already routes planning→Opus and implementation→Sonnet via the model alias. Do not pass `model: opus` to worker agents unless Sonnet reasoning failed on this specific task.
 
 ## Context Window Management
 

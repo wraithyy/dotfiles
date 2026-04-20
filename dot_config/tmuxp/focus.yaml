@@ -1,0 +1,10 @@
+display_name: focus (nvim + shell)
+session_name: focus
+windows:
+  - window_name: Focus
+    layout: main-horizontal
+    focus: true
+    panes:
+      - shell_command: nvim
+        focus: true
+      - ""

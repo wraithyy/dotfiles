@@ -2,6 +2,7 @@
 name: docker-expert
 description: Docker and containerization specialist for Dockerfile optimization, multi-stage builds, docker-compose, image security, and container best practices. Use for writing Dockerfiles, composing local environments, optimizing build times, and container security reviews.
 tools: ["Read", "Grep", "Glob", "Bash"]
+model: sonnet
 ---
 
 # Docker Expert

@@ -2,6 +2,7 @@
 name: nodejs-expert
 description: Node.js and server-side JavaScript specialist for API design, Express/Fastify/Hono, TanStack Start, middleware patterns, and backend architecture. Use for backend JS/TS code, API endpoints, server architecture, and Node.js-specific patterns.
 tools: ["Read", "Grep", "Glob", "Bash"]
+model: sonnet
 ---
 
 # Node.js / Server-Side JavaScript Expert

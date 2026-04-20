@@ -1,16 +1,51 @@
 {
+  "env": {
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
+  },
   "permissions": {
     "allow": [
       "WebFetch(domain:github.com)",
+      "WebFetch(domain:react.dev)",
+      "WebFetch(domain:tanstack.com)",
+      "WebFetch(domain:nextjs.org)",
+      "WebFetch(domain:developer.mozilla.org)",
+      "WebFetch(domain:web.dev)",
+      "WebFetch(domain:tailwindcss.com)",
+      "WebFetch(domain:anthropic.com)",
       "mcp__time_time_get-current-time",
       "mcp__context7__resolve-library-id",
       "mcp__context7__get-library-docs",
+      "mcp__chrome-devtools__*",
+      "mcp__playwright__*",
+      "mcp__webclaw__*",
+      "mcp__browser-mcp__*",
       "Bash(find:*)",
       "Bash(grep:*)",
       "Bash(ls:*)",
-      "Bash(npx eslint:*)"
-    ]
+      "Bash(cat:*)",
+      "Bash(npx eslint:*)",
+      "Bash(pnpm install)",
+      "Bash(pnpm run *:*)",
+      "Bash(pnpm test *:*)",
+      "Bash(pnpm tsc *:*)",
+      "Bash(npm run *:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx biome *:*)",
+      "Bash(npx prettier *:*)",
+      "Bash(npx vitest *:*)",
+      "Bash(npx playwright *:*)",
+      "Bash(npx knip:*)",
+      "Bash(npx depcheck:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git stash list)"
+    ],
+    "defaultMode": "auto"
   },
+  "model": "opusplan",
 {{- if eq .chezmoi.os "darwin" }}
   "hooks": {
     "PermissionRequest": [
@@ -37,6 +72,38 @@
         ]
       }
     ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/fe-post-edit.sh",
+            "timeout": 60
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/fe-post-edit.sh",
+            "timeout": 60
+          }
+        ]
+      },
+      {
+        "matcher": "MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/fe-post-edit.sh",
+            "timeout": 60
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "matcher": "*",
@@ -51,17 +118,42 @@
     ]
   },
 {{- end }}
-  "model": "claude-opus-4-6",
   "statusLine": {
     "type": "command",
-    "command": "npx -y ccstatusline@latest",
+    "command": "npx ccstatusline@1",
     "padding": 0
   },
-  "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"
+  "enabledPlugins": {
+    "caveman@caveman": true,
+    "frontend-design@claude-plugins-official": true,
+    "context-mode@scottconverse-context-mode": true,
+    "andrej-karpathy-skills@karpathy-skills": true,
+    "understand-anything@understand-anything": true
   },
-  "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true,
-  "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"
-  }}
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    },
+    "scottconverse-context-mode": {
+      "source": {
+        "source": "github",
+        "repo": "scottconverse/context-mode"
+      }
+    },
+    "karpathy-skills": {
+      "source": {
+        "source": "github",
+        "repo": "forrestchang/andrej-karpathy-skills"
+      }
+    },
+    "understand-anything": {
+      "source": {
+        "source": "github",
+        "repo": "Lum1104/Understand-Anything"
+      }
+    }
+  }
+}

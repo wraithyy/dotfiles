@@ -2,6 +2,7 @@
 name: css-expert
 description: CSS and styling specialist for Tailwind, responsive design, animations, and design systems. Use for styling reviews, Tailwind optimization, responsive layout issues, animation performance, and design token architecture.
 tools: ["Read", "Grep", "Glob"]
+model: sonnet
 ---
 
 # CSS Expert

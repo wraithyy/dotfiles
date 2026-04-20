@@ -2,6 +2,7 @@
 name: seo-specialist
 description: SEO specialist for technical SEO, structured data, meta tags, Core Web Vitals, sitemaps, and search engine optimization for React/TanStack applications. Use when implementing SEO, reviewing meta tags, writing structured data schemas, or auditing technical SEO health.
 tools: ["Read", "Grep", "Glob", "Bash"]
+model: sonnet
 ---
 
 # SEO Specialist

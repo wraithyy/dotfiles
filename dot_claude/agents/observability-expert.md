@@ -2,6 +2,7 @@
 name: observability-expert
 description: Observability specialist for structured logging, OpenTelemetry, Prometheus metrics, Grafana dashboards, and alerting. Use when implementing logging strategy, setting up tracing, designing metrics, writing Grafana dashboards, or troubleshooting production observability gaps.
 tools: ["Read", "Grep", "Glob", "Bash"]
+model: sonnet
 ---
 
 # Observability Expert

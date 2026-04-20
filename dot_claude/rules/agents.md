@@ -31,21 +31,20 @@ Located in `~/.claude/agents/`:
 | Agent | Purpose | When to Use |
 |-------|---------|-------------|
 | nodejs-expert | TanStack Start, Hono, Express/Fastify, server functions | Node.js/JS backend, API routes |
-| java-expert | Spring Boot, JPA, MapStruct, testing | Java services |
-| dotnet-expert | ASP.NET Core, MediatR, EF Core, C# patterns | .NET services |
-| python-expert | FastAPI, Pydantic v2, SQLAlchemy async, pytest | Python services |
+
+> Java, .NET, Python, Go, Terraform, database agents disabled. Restore from `~/.claude/agents-disabled/` when needed.
 
 ### Infrastructure & DevOps
 | Agent | Purpose | When to Use |
 |-------|---------|-------------|
 | cicd-expert | GitHub Actions, GitLab CI, Jenkins pipelines | CI/CD setup and optimization |
 | docker-expert | Multi-stage builds, Compose, security | Containerization |
-| terraform-expert | IaC, modules, state, cloud resources | Infrastructure as code |
 | observability-expert | OpenTelemetry, Prometheus, Grafana, structured logging | Monitoring, alerting |
 
-### Design & Documentation
+### Analysis & Documentation
 | Agent | Purpose | When to Use |
 |-------|---------|-------------|
+| it-analyst | Requirements analysis, structured docs, Jira task breakdown | Business/IT analysis, requirements gathering |
 | api-designer | OpenAPI 3.1, REST conventions, contract-first | API design, documentation |
 | tech-writer | ADRs, RFCs, technical specs, runbooks | Technical documentation |
 

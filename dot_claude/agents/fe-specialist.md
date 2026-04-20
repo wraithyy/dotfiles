@@ -2,6 +2,7 @@
 name: fe-specialist
 description: Frontend performance and accessibility specialist for React, TanStack Router, Vite, and Next.js. Use PROACTIVELY for Core Web Vitals, bundle optimization, React rendering issues, and WCAG/ARIA accessibility audits.
 tools: ["Read", "Grep", "Glob", "Bash"]
+model: sonnet
 ---
 
 # Frontend Specialist

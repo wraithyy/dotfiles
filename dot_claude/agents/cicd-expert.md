@@ -2,6 +2,7 @@
 name: cicd-expert
 description: CI/CD pipeline specialist for GitHub Actions, GitLab CI, and Jenkins. Use for writing, reviewing, and optimizing pipelines, caching strategies, secrets management, parallelization, and deployment workflows.
 tools: ["Read", "Grep", "Glob", "Bash"]
+model: sonnet
 ---
 
 # CI/CD Expert

@@ -2,6 +2,7 @@
 name: accessibility-specialist
 description: Accessibility (a11y) specialist for WCAG 2.1/2.2 AA compliance, ARIA patterns, keyboard navigation, screen reader testing, and inclusive design. Use for comprehensive accessibility audits, ARIA implementation, focus management, color contrast analysis, and accessible component patterns.
 tools: ["Read", "Grep", "Glob", "Bash"]
+model: haiku
 ---
 
 # Accessibility Specialist

@@ -1,0 +1,12 @@
+display_name: ops (logs + metrics + shell)
+session_name: ops
+windows:
+  - window_name: Monitor
+    layout: even-horizontal
+    focus: true
+    panes:
+      - ""
+      - ""
+  - window_name: Shell
+    panes:
+      - ""

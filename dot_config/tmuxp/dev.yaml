@@ -1,0 +1,26 @@
+# Layout:
+#  +-------------------+----------+
+#  |                   |          |  window: NeoVIM/Claude
+#  |      nvim (60%)   |  claude  |
+#  |                   |          |
+#  +-------------------+----------+
+#  |    zsh (default)             |  window: Terminal
+#  +------------------------------+
+#  |          lazygit             |  window: GIT
+#  +------------------------------+
+display_name: workspace
+session_name: dev
+windows:
+  - window_name: "NeoVIM/Claude"
+    layout: main-vertical
+    focus: true
+    panes:
+      - shell_command: nvim
+        focus: true
+      - claude
+  - window_name: Terminal
+    panes:
+      - ""
+  - window_name: GIT
+    panes:
+      - lazygit
