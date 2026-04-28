@@ -22,6 +22,7 @@ require("config.autoroot")
 require("config.remap")
 require("config.diagnostics-design")
 require("config.title")
+require("config.auto-save")
 vim.opt.relativenumber = true
 
 vim.opt.termguicolors = true
@@ -46,12 +47,6 @@ vim.api.nvim_create_autocmd("LspProgress", {
 		})
 	end,
 })
--- vim.api.nvim_create_autocmd("VimEnter", {
--- 	callback = function()
--- 		require("snacks").dashboard()
--- 	end,
--- })
-
 vim.opt.guicursor = {
 	"n-v-c:block", -- Normal, visual, command-line: block cursor
 	"i-ci-ve:ver25", -- Insert, command-line insert, visual-exclude: vertical bar cursor with 25% width
@@ -60,6 +55,19 @@ vim.opt.guicursor = {
 	"a:blinkwait700-blinkoff400-blinkon250", -- All modes: blinking settings
 	"sm:block-blinkwait175-blinkoff150-blinkon175", -- Showmatch: block cursor with specific blinking settings
 }
+vim.api.nvim_create_autocmd("ColorScheme", {
+	pattern = "*",
+	callback = function()
+		vim.api.nvim_set_hl(0, "SnacksPickerTree", { fg = "#3d3d52" })
+		vim.api.nvim_set_hl(0, "SnacksPickerList", { bg = "NONE" })
+		vim.api.nvim_set_hl(0, "SnacksPickerListCursorLine", { bg = "NONE" })
+		vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
+	end,
+})
+vim.api.nvim_set_hl(0, "SnacksPickerTree", { fg = "#3d3d52" })
+vim.api.nvim_set_hl(0, "SnacksPickerList", { bg = "NONE" })
+vim.api.nvim_set_hl(0, "SnacksPickerListCursorLine", { bg = "NONE" })
+vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
 vim.api.nvim_set_hl(0, "DiagnosticErrorLine", { bg = "#3c1f1e" })
 vim.api.nvim_set_hl(0, "DiagnosticWarnLine",  { bg = "#3c2e1e" })
 vim.api.nvim_set_hl(0, "DiagnosticInfoLine",  { bg = "#1e2e3c" })

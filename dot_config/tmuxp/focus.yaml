@@ -1,3 +1,13 @@
+# Layout:
+#
+#  [Focus]
+#  +---------------------------------+
+#  |                                 |
+#  |             nvim                |
+#  |                                 |
+#  +---------------------------------+
+#  |             shell               |
+#  +---------------------------------+
 display_name: focus (nvim + shell)
 session_name: focus
 windows:

@@ -85,9 +85,10 @@ _t_gen_lines() {
     local tpls=("$HOME/.config/tmuxp/"*.yaml(N))
     if (( ${#tpls} )); then
       printf '%s\n' "${dim}── templates ──${reset}"
+      local fname dname
       for f in $tpls; do
-        local fname; fname="$(basename "${f%.yaml}")"
-        local dname; dname=$(awk '/^display_name:/ {gsub(/"/,""); sub(/^display_name:[[:space:]]*/,""); print; exit}' "$f" 2>/dev/null)
+        fname="$(basename "${f%.yaml}")"
+        dname="$(awk '/^display_name:/ {gsub(/"/,""); sub(/^display_name: */,""); print; exit}' "$f" 2>/dev/null)"
         printf '🧩 %s|%s\n' "${dname:-$fname}" "$fname"
       done
       printf '\n'
@@ -112,7 +113,7 @@ t() {
     --header='enter=pick · x=kill · esc=cancel' \
     --bind "x:execute-silent(
       sel={}
-      [[ \"\$sel\" != '🟢 '* ]] && exit 0
+      [[ \"\$sel\" != \"🟢 \"* ]] && exit 0
       name=\"\${sel#🟢 }\"; name=\"\${name%% *}\"
       tmux kill-session -t \"=\$name\" 2>/dev/null
     )+reload($reload_cmd)" \
@@ -121,13 +122,16 @@ t() {
       case "$sel" in
         "🟢 "*)
           name="${sel#🟢 }"; name="${name%% *}"
-          tmux list-windows -t "=$name" 2>/dev/null ;;
+          printf "\033[1m  %s\033[0m\n\n" "$name"
+          tmux list-panes -t "=$name" -F "#{window_index}|#{window_name}|#{?window_active,●,·}|#{pane_current_path}" 2>/dev/null \
+            | awk -F"|" "!seen[\$1]++ {path=\$4; sub(ENVIRON[\"HOME\"],\"~\",path); printf \"  %s  %-20s  %s\n\", \$3, \$2, path}"
+          ;;
         "🧩 "*)
           tpl="${sel#*|}"; tpl="${tpl%% *}"
           f="$HOME/.config/tmuxp/${tpl}.yaml"
           if command -v bat &>/dev/null; then bat --color=always --style=plain "$f"
           else cat "$f"; fi ;;
-        "➕ "*) printf "New empty session in %s\n" "$PWD" ;;
+        "➕ "*) printf "\n  New empty session\n  in %s\n" "$PWD" ;;
         *) ;;
       esac' \
     --preview-window=right:60%) || return
@@ -176,3 +180,11 @@ work() {
 
 # Powerlevel10k config
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	command yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
+export EDITOR ="nvim"

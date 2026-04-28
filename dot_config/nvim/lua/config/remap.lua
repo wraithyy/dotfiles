@@ -1,7 +1,4 @@
 vim.g.mapleader = " "
--- vim.keymap.set("n", "<leader>pv", function()
--- 	vim.cmd("Neotree position=current reveal=true source=filesystem")
--- end, { desc = "Open Explorer" })
 vim.keymap.set(
 	"n",
 	"<leader>.",
@@ -19,16 +16,17 @@ vim.o.langmap = table.concat({
 	"2@,3#,4$,5~,6^,7&,=%,8*,9{,0}",
 }, ",")
 
--- Zavře všechny buffery kromě aktuálního a neo-tree
+-- Zavře všechny buffery kromě aktuálního a snacks explorer/picker
 vim.keymap.set("n", "<Leader>q", function()
 	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-		local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
-		if filetype ~= "neo-tree" and buf ~= vim.api.nvim_get_current_buf() then
+		local filetype = vim.api.nvim_get_option_value("filetype", { buf = buf })
+		if filetype ~= "snacks_picker_list" and filetype ~= "snacks_picker_input" and buf ~= vim.api.nvim_get_current_buf() then
 			vim.api.nvim_buf_delete(buf, { force = true })
 		end
 	end
 end, { noremap = true, silent = true, desc = "Close all other buffers" })
 vim.keymap.set("n", "<space>", "<nop>")
+vim.keymap.set("n", "ZZ", "<cmd>wqa<CR>", { desc = "Save all and quit" })
 
 -- Drag line --
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -65,6 +63,11 @@ vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]])
 vim.keymap.set("n", "§", "`", { noremap = true, silent = true })
 
 require("which-key").add({
+	{ "<leader>e", desc = "Explorer", icon = "" },
+	{ "<leader>ee", desc = "Open Explorer", icon = "" },
+	{ "<leader>et", desc = "Toggle Explorer", icon = "" },
+	{ "<leader>eb", desc = "Buffers", icon = "" },
+	{ "<leader>eg", desc = "Git Status", icon = "" },
 	{ "<leader>p", desc = "Explorer/paste" },
 	{ "<leader>pv", desc = "Explorer", icon = "" },
 	-- { "<leader>pp", desc = "Paste without yank", icon = "" },

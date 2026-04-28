@@ -19,13 +19,53 @@ return {
 			notifier = { enabled = true },
 			scope = { enabled = true },
 			quickfile = { enabled = true },
-			-- explorer = { auto_close = true, replace_netrw = true },
+			explorer = {
+				enabled = true,
+				replace_netrw = true,
+				auto_close = true,
+				follow_file = true,
+				layout = {
+					layout = {
+						position = "left",
+						width = 70,
+					},
+				},
+				win = {
+					list = {
+						wo = {
+							signcolumn = "yes:2",
+						},
+						keys = {
+							["<leader>r"] = "spectre_search",
+						},
+					},
+				},
+			},
 			picker = {
 				layout = { preset = "telescope" },
+				icons = {
+					tree = {
+						vertical = "│    ",
+						middle   = "├──  ",
+						last     = "└──  ",
+					},
+				},
 				formatters = {
 					file = {
-						filename_first = true, -- display filename before the file path
+						filename_first = true,
 					},
+				},
+				actions = {
+					spectre_search = function(picker)
+						local item = picker:current()
+						if not item or not item.file then return end
+						local path = vim.fn.isdirectory(item.file) == 1
+							and item.file
+							or vim.fn.fnamemodify(item.file, ":h")
+						vim.cmd("lcd " .. vim.fn.fnameescape(path))
+						picker:close()
+						require("spectre").open()
+					end,
 				},
 			},
 			dashboard = {
@@ -333,13 +373,35 @@ return {
 				end,
 				desc = "File History",
 			},
-			-- {
-			-- 	"<leader>ee",
-			-- 	function()
-			-- 		Snacks.explorer()
-			-- 	end,
-			-- 	desc = "Explorer",
-			-- },
+			{
+				"<leader>ee",
+				function()
+					for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+						local buf = vim.api.nvim_win_get_buf(win)
+						if vim.bo[buf].filetype == "snacks_picker_list" then
+							vim.api.nvim_set_current_win(win)
+							return
+						end
+					end
+					Snacks.explorer()
+				end,
+				desc = "Explorer",
+			},
+			{
+				"<leader>et",
+				function() Snacks.explorer() end,
+				desc = "Toggle Explorer",
+			},
+			{
+				"<leader>eb",
+				function() Snacks.picker.buffers() end,
+				desc = "Buffers",
+			},
+			{
+				"<leader>eg",
+				function() Snacks.picker.git_status() end,
+				desc = "Git Status",
+			},
 		},
 	},
 	{
