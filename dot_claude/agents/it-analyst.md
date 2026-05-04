@@ -1,7 +1,7 @@
 ---
 name: it-analyst
 description: IT business analyst for requirements analysis, structured documentation, and Jira-ready task breakdown. Use when analyzing business requirements, specifications, or project materials to create developer-facing source-of-truth documents.
-tools: ["Read", "Grep", "Glob", "Write"]
+tools: ["Read", "Grep", "Glob", "Write", "mcp__context-mode__ctx_batch_execute", "mcp__context-mode__ctx_search", "mcp__context-mode__ctx_execute", "mcp__context-mode__ctx_execute_file", "mcp__context-mode__ctx_fetch_and_index", "mcp__context-mode__ctx_index", "mcp__plugin_context-mode_context-mode__ctx_batch_execute", "mcp__plugin_context-mode_context-mode__ctx_search", "mcp__plugin_context-mode_context-mode__ctx_execute", "mcp__plugin_context-mode_context-mode__ctx_execute_file", "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index", "mcp__plugin_context-mode_context-mode__ctx_index"]
 model: sonnet
 ---
 

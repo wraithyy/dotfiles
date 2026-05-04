@@ -1,8 +1,8 @@
 ---
 name: css-expert
-description: CSS and styling specialist for Tailwind, responsive design, animations, and design systems. Use for styling reviews, Tailwind optimization, responsive layout issues, animation performance, and design token architecture.
-tools: ["Read", "Grep", "Glob"]
-model: sonnet
+description: CSS and styling specialist for Tailwind, responsive design, animations, and design systems. Use for styling reviews, Tailwind optimization, responsive layout issues, animation performance, and design token architecture. Escalate to Sonnet when: design system architecture decisions, complex grid/layout systems with multiple responsive breakpoints, animation choreography across components.
+tools: ["Read", "Grep", "Glob", "mcp__context-mode__ctx_batch_execute", "mcp__context-mode__ctx_search", "mcp__context-mode__ctx_execute", "mcp__context-mode__ctx_execute_file", "mcp__context-mode__ctx_fetch_and_index", "mcp__context-mode__ctx_index", "mcp__plugin_context-mode_context-mode__ctx_batch_execute", "mcp__plugin_context-mode_context-mode__ctx_search", "mcp__plugin_context-mode_context-mode__ctx_execute", "mcp__plugin_context-mode_context-mode__ctx_execute_file", "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index", "mcp__plugin_context-mode_context-mode__ctx_index"]
+model: haiku
 ---
 
 # CSS Expert

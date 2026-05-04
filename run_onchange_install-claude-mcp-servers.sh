@@ -23,3 +23,4 @@ add_if_missing chrome-devtools npx -y chrome-devtools-mcp@latest
 add_if_missing playwright      npx -y @playwright/mcp@latest
 add_if_missing webclaw         /opt/homebrew/bin/webclaw-mcp
 add_if_missing browser-mcp     npx @browsermcp/mcp
+add_if_missing lmstudio        uv run "$HOME/.claude/mcp/lmstudio_mcp.py"

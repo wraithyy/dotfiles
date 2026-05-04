@@ -54,6 +54,11 @@ Located in `~/.claude/agents/`:
 | ai-tooling-expert | Claude Code, OpenClaw, ACP, MCP config and workflow automation | Setting up, configuring, or troubleshooting AI tools |
 | ai-context-optimizer | Context window optimization, memory management, token efficiency | Optimizing prompts, reducing token waste, memory hygiene |
 
+### Exploration
+| Agent | Purpose | When to Use |
+|-------|---------|-------------|
+| explorer | Fast read-only codebase digest, file structure overview | Reading >3 files for context, onboarding to unfamiliar code |
+
 ## Immediate Agent Usage
 
 No user prompt needed:
@@ -85,3 +90,40 @@ For complex problems, use split role sub-agents:
 - Security expert
 - Consistency reviewer
 - Redundancy checker
+
+## Delegation Triggers
+
+### Always delegate (never do in main session)
+
+| Situation | Agent | Why |
+|---|---|---|
+| Need to understand unfamiliar code area | `explorer` | Haiku digest cheaper than main session reads |
+| Reading >3 files for context | `explorer` | Same |
+| Build error appears | `build-error-resolver` | Haiku specialist |
+| Type error appears | `build-error-resolver` | Same |
+| Dead code suspected | `refactor-cleaner` | Haiku, deterministic via knip/ts-prune |
+| Test missing for new code | `tdd-guide` | Sonnet, write-tests-first |
+| Code just written | `code-reviewer` | Sonnet, immediate post-edit |
+| About to commit | `security-reviewer` | Sonnet, OWASP gate |
+
+### Parallel delegation (run in single message)
+
+For complex tasks, dispatch 2-3 agents in parallel:
+
+- After major code change: `code-reviewer` + `security-reviewer` + `accessibility-specialist`
+- New API: `api-designer` + `nodejs-expert` + `tdd-guide`
+- New form: `forms-expert` + `accessibility-specialist`
+
+### Explore agent vs explorer agent
+
+- `Explore` (built-in) — quick code lookups, single grep
+- `explorer` (custom) — multi-file digest, codebase onboarding, structured summary
+
+For file digestion: prefer `explorer` (cheaper Haiku, structured output).
+
+### Cost budget hints
+
+When delegating, include in prompt:
+- "Cap response at 500 words" — forces digest
+- "Reference file paths only, no code blocks" — saves output tokens
+- "Skip files <50 LOC" — focus on substance

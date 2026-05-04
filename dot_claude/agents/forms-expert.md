@@ -1,8 +1,8 @@
 ---
 name: forms-expert
-description: Forms specialist for React Hook Form, TanStack Form, Zod validation, multi-step forms, field arrays, and type-safe form patterns. Use when implementing complex forms, validation schemas, dynamic fields, wizard flows, or debugging RHF + Zod / TanStack Form integration issues.
-tools: ["Read", "Grep", "Glob"]
-model: sonnet
+description: Forms specialist for React Hook Form, TanStack Form, Zod validation, multi-step forms, field arrays, and type-safe form patterns. Use when implementing complex forms, validation schemas, dynamic fields, wizard flows, or debugging RHF + Zod / TanStack Form integration issues. Escalate to Sonnet when: multi-step wizard flows with shared state, dynamic field arrays with cross-field validation, complex async validation chains, integration with multi-step backend transactions.
+tools: ["Read", "Grep", "Glob", "mcp__context-mode__ctx_batch_execute", "mcp__context-mode__ctx_search", "mcp__context-mode__ctx_execute", "mcp__context-mode__ctx_execute_file", "mcp__context-mode__ctx_fetch_and_index", "mcp__context-mode__ctx_index", "mcp__plugin_context-mode_context-mode__ctx_batch_execute", "mcp__plugin_context-mode_context-mode__ctx_search", "mcp__plugin_context-mode_context-mode__ctx_execute", "mcp__plugin_context-mode_context-mode__ctx_execute_file", "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index", "mcp__plugin_context-mode_context-mode__ctx_index"]
+model: haiku
 ---
 
 # Forms Expert

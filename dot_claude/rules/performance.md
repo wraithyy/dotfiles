@@ -6,9 +6,9 @@ Target distribution: **70% Haiku / 20% Sonnet / 10% Opus**.
 
 | Agent tier | Model | Examples |
 |-----------|-------|---------|
-| Mechanical — narrow, rule-check | `haiku` | build-error-resolver, doc-updater, refactor-cleaner, e2e-runner, accessibility-specialist |
-| Implementation — code write, review | `sonnet` | react-expert, fe-specialist, code-reviewer, security-reviewer, tdd-guide, all other workers |
-| Architecture — deep reasoning | `opus` | architect, planner, ai-context-optimizer, ai-tooling-expert, tech-writer |
+| Mechanical — narrow, rule-check | `haiku` | build-error-resolver, doc-updater, refactor-cleaner, e2e-runner, accessibility-specialist, api-designer, cicd-expert, css-expert, docker-expert, forms-expert, seo-specialist, explorer |
+| Implementation — code write, review | `sonnet` | react-expert, fe-specialist, code-reviewer, security-reviewer, tdd-guide, tech-writer, ai-context-optimizer, fe-estimator, all other workers |
+| Architecture — deep reasoning | `opus` | architect, planner, ai-tooling-expert |
 
 | Task type | Model |
 |-----------|-------|

@@ -47,6 +47,16 @@ vim.api.nvim_create_autocmd("LspProgress", {
 		})
 	end,
 })
+vim.api.nvim_create_user_command("CopyAbsolutePath", function()
+    local path = vim.fn.expand("%:p")
+    vim.fn.setreg("+", path)
+    vim.notify('Copied "' .. path .. '" to the clipboard!')
+end, {})
+vim.api.nvim_create_user_command("CopyRelativePath", function()
+  local path = vim.fn.expand("%")
+  vim.fn.setreg("+", path)
+  print("Copied: " .. path)
+end, {})
 vim.opt.guicursor = {
 	"n-v-c:block", -- Normal, visual, command-line: block cursor
 	"i-ci-ve:ver25", -- Insert, command-line insert, visual-exclude: vertical bar cursor with 25% width

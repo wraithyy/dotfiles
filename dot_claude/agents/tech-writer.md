@@ -1,8 +1,8 @@
 ---
 name: tech-writer
-description: Technical documentation specialist for Architecture Decision Records (ADR), RFCs, technical specifications, and stakeholder documentation. Use when writing ADRs, design documents, technical proposals, API documentation for teams, or onboarding guides.
-tools: ["Read", "Grep", "Glob"]
-model: opus
+description: Technical documentation specialist for Architecture Decision Records (ADR), RFCs, technical specifications, and stakeholder documentation. Use when writing ADRs, design documents, technical proposals, API documentation for teams, or onboarding guides. Escalate to Opus when: cross-system architecture decision documentation, complex ADR with multiple stakeholder concerns, technical RFC requiring trade-off analysis.
+tools: ["Read", "Grep", "Glob", "mcp__context-mode__ctx_batch_execute", "mcp__context-mode__ctx_search", "mcp__context-mode__ctx_execute", "mcp__context-mode__ctx_execute_file", "mcp__context-mode__ctx_fetch_and_index", "mcp__context-mode__ctx_index", "mcp__plugin_context-mode_context-mode__ctx_batch_execute", "mcp__plugin_context-mode_context-mode__ctx_search", "mcp__plugin_context-mode_context-mode__ctx_execute", "mcp__plugin_context-mode_context-mode__ctx_execute_file", "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index", "mcp__plugin_context-mode_context-mode__ctx_index"]
+model: sonnet
 ---
 
 # Technical Writer

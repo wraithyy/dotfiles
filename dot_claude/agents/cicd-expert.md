@@ -1,8 +1,8 @@
 ---
 name: cicd-expert
-description: CI/CD pipeline specialist for GitHub Actions, GitLab CI, and Jenkins. Use for writing, reviewing, and optimizing pipelines, caching strategies, secrets management, parallelization, and deployment workflows.
-tools: ["Read", "Grep", "Glob", "Bash"]
-model: sonnet
+description: CI/CD pipeline specialist for GitHub Actions, GitLab CI, and Jenkins. Use for writing, reviewing, and optimizing pipelines, caching strategies, secrets management, parallelization, and deployment workflows. Escalate to Sonnet when: complex multi-environment deployment, security hardening review, cross-platform matrix optimization, secrets architecture.
+tools: ["Read", "Grep", "Glob", "Bash", "mcp__context-mode__ctx_batch_execute", "mcp__context-mode__ctx_search", "mcp__context-mode__ctx_execute", "mcp__context-mode__ctx_execute_file", "mcp__context-mode__ctx_fetch_and_index", "mcp__context-mode__ctx_index", "mcp__plugin_context-mode_context-mode__ctx_batch_execute", "mcp__plugin_context-mode_context-mode__ctx_search", "mcp__plugin_context-mode_context-mode__ctx_execute", "mcp__plugin_context-mode_context-mode__ctx_execute_file", "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index", "mcp__plugin_context-mode_context-mode__ctx_index"]
+model: haiku
 ---
 
 # CI/CD Expert

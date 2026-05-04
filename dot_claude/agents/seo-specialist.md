@@ -1,8 +1,8 @@
 ---
 name: seo-specialist
-description: SEO specialist for technical SEO, structured data, meta tags, Core Web Vitals, sitemaps, and search engine optimization for React/TanStack applications. Use when implementing SEO, reviewing meta tags, writing structured data schemas, or auditing technical SEO health.
-tools: ["Read", "Grep", "Glob", "Bash"]
-model: sonnet
+description: SEO specialist for technical SEO, structured data, meta tags, Core Web Vitals, sitemaps, and search engine optimization for React/TanStack applications. Use when implementing SEO, reviewing meta tags, writing structured data schemas, or auditing technical SEO health. Escalate to Sonnet when: Core Web Vitals deep performance audit, multi-page SEO architecture, debugging structured data validation issues, content cluster strategy.
+tools: ["Read", "Grep", "Glob", "Bash", "mcp__context-mode__ctx_batch_execute", "mcp__context-mode__ctx_search", "mcp__context-mode__ctx_execute", "mcp__context-mode__ctx_execute_file", "mcp__context-mode__ctx_fetch_and_index", "mcp__context-mode__ctx_index", "mcp__plugin_context-mode_context-mode__ctx_batch_execute", "mcp__plugin_context-mode_context-mode__ctx_search", "mcp__plugin_context-mode_context-mode__ctx_execute", "mcp__plugin_context-mode_context-mode__ctx_execute_file", "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index", "mcp__plugin_context-mode_context-mode__ctx_index"]
+model: haiku
 ---
 
 # SEO Specialist

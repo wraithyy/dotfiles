@@ -61,6 +61,8 @@ vim.keymap.set("t", "<C-j>", [[<Cmd>wincmd j<CR>]])
 vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]])
 vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]])
 vim.keymap.set("n", "§", "`", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>cpr", "<cmd>CopyRelativePath<cr>", { desc = "Copy relative path" })
+vim.keymap.set("n", "<leader>cpa", "<cmd>CopyAbsolutePath<cr>", { desc = "Copy absolute path" })
 
 require("which-key").add({
 	{ "<leader>e", desc = "Explorer", icon = "" },
