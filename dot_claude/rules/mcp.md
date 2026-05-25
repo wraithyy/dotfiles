@@ -22,18 +22,6 @@ claude mcp add <name> --scope user -- <command>
 
 Permissions already allowed in `settings.json` (via `mcp__*` patterns or explicit entries).
 
-## Local / Optional
-
-| Server | Purpose | Usage |
-|--------|---------|-------|
-| `lmstudio` | Local Qwen2.5-Coder-7B via LM Studio (port 1234) | Free inference for exploration pipeline. Tools: `digest_path`, `batch_digest`, `explore_dir`, `find_symbol`, `summarize_diff`, `ask`. Requires LM Studio running. |
-
-**When to use lmstudio vs Haiku:**
-- lmstudio = free but requires LM Studio open; good for exploration/summarization
-- Haiku = reliable, fast, always available; use when LM Studio not running or for critical tasks
-
-**Script:** `~/.claude/mcp/lmstudio_mcp.py` (managed by chezmoi)
-
 ## Optional / Future
 
 - **shadcn-mcp** — consistent shadcn/ui component scaffolding

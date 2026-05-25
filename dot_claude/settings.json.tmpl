@@ -19,7 +19,6 @@
       "mcp__playwright__*",
       "mcp__webclaw__*",
       "mcp__browser-mcp__*",
-      "mcp__lmstudio__*",
       "Bash(find:*)",
       "Bash(grep:*)",
       "Bash(ls:*)",
@@ -62,6 +61,26 @@
       }
     ],
     "PreToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/block-sensitive-files.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/block-sensitive-files.sh",
+            "timeout": 5
+          }
+        ]
+      },
       {
         "matcher": "AskUserQuestion",
         "hooks": [
@@ -129,7 +148,8 @@
     "frontend-design@claude-plugins-official": true,
     "context-mode@scottconverse-context-mode": true,
     "andrej-karpathy-skills@karpathy-skills": true,
-    "understand-anything@understand-anything": true
+    "understand-anything@understand-anything": true,
+    "figma@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "caveman": {
@@ -157,9 +177,7 @@
       }
     }
   },
-    "skipAutoPermissionPrompt": true,
   "effortLevel": "medium",
-    "tui": "fullscreen"
-
-
+  "skipAutoPermissionPrompt": true,
+  "tui": "fullscreen"
 }

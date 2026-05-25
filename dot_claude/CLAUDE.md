@@ -35,12 +35,7 @@ See `rules/agents.md` for agent selection guide and parallel execution rules.
 
 **Decision tree:**
 - Search/grep codebase → `mcp__plugin_context-mode_context-mode__ctx_batch_execute` OR spawn `Explore` agent
-- Digest one file → `mcp__lmstudio__digest_path(path)` (free, local) OR `explorer` agent (if LM Studio not running)
-- Digest multiple files → `mcp__lmstudio__batch_digest(paths)` — one call, N files
-- Explore directory structure → `mcp__lmstudio__explore_dir(path)` — entry points, stack, read order
-- Find symbol/function across codebase → `mcp__lmstudio__find_symbol(symbol, path)`
-- Pre-screen git diff before code-reviewer → `mcp__lmstudio__summarize_diff(diff)` — get risk level first
-- Simple text analysis/summarization → `mcp__lmstudio__ask(prompt)` (free, local) OR `haiku` subagent
+- Digest one file → `explorer` agent
 - Read/analyze multiple files → spawn `Explore` or `general-purpose` agent
 - Write/edit code → spawn implementation agent (`react-expert`, `nodejs-expert`, etc.)
 - Run tests/build → spawn `build-error-resolver` or `tdd-guide` agent
@@ -75,15 +70,6 @@ Before code review → `code-reviewer` (mandatory after edits).
 Before commit → `security-reviewer` (mandatory).
 
 Default: prefer Haiku-tier agents. Escalate to Sonnet only when Haiku quality insufficient.
-
-**Free local inference (LM Studio):** When LM Studio is running, prefer `mcp__lmstudio__*` over Haiku for:
-- `digest_path(path)` — single file digest, content stays local
-- `batch_digest(paths)` — N files in one call, more efficient than N×digest_path
-- `explore_dir(path)` — directory overview with suggested read order
-- `find_symbol(symbol, path)` — locate + explain symbol usage
-- `summarize_diff(diff)` — pre-screen before spawning code-reviewer; skip review if risk=LOW
-- `ask(prompt)` — general local inference
-- Do NOT use for security review, architecture, or anything requiring high reliability.
 
 ## When to use plan mode
 
