@@ -84,3 +84,5 @@ Skip plan mode for:
 - Bug fixes
 - Documentation updates
 - Single component additions
+
+See `rules/plan-mode.md` for plan mode augmentation (grill-first interview, atomic task schema, subagent dispatch).
