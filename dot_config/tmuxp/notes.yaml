@@ -1,0 +1,20 @@
+# Layout:
+#
+#  [Notes]
+#  +-------------------+----------+
+#  |                   |          |
+#  |       nvim        |  claude  |
+#  |                   |          |
+#  +-------------------+----------+
+#
+display_name: notes (nvim + claude)
+session_name: notes
+windows:
+  - window_name: Notes
+    layout: main-vertical
+    focus: true
+    start_directory: ~/Development/Notes
+    panes:
+      - shell_command: nvim
+        focus: true
+      - claude

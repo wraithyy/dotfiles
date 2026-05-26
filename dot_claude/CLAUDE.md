@@ -86,3 +86,7 @@ Skip plan mode for:
 - Single component additions
 
 See `rules/plan-mode.md` for plan mode augmentation (grill-first interview, atomic task schema, subagent dispatch).
+
+## Notes Vault
+
+Personal knowledge base at `~/Development/Notes` — read its `CLAUDE.md` for structure.
