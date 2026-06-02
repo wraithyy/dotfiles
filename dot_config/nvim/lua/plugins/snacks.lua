@@ -24,6 +24,9 @@ return {
 				replace_netrw = true,
 				auto_close = true,
 				follow_file = true,
+				git_status = true,
+
+				
 				layout = {
 					layout = {
 						position = "left",
@@ -43,6 +46,16 @@ return {
 			},
 			picker = {
 				layout = { preset = "telescope" },
+				    sources = {
+                    explorer = {
+                        hidden = true,
+                        ignored = true,
+                    },
+                    files = {
+                        hidden = true, -- show dotfiles in fuzzy finder
+                        ignored = true, -- optional: show gitignored files
+                    },
+                },
 				icons = {
 					tree = {
 						vertical = "│    ",
