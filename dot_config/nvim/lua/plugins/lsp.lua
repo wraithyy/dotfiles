@@ -18,13 +18,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
 		end
 
-		if client.name == "typescript-tools" then
-			local ok, twoslash = pcall(require, "twoslash-queries")
-			if ok then
-				twoslash.attach(client, bufnr)
-			end
-		end
-
 		if client.server_capabilities.documentHighlightProvider then
 			local grp = vim.api.nvim_create_augroup("lsp_doc_hl_" .. bufnr, { clear = true })
 			vim.api.nvim_create_autocmd("CursorHold", {
@@ -44,6 +37,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		map("n", "<F2>", vim.lsp.buf.rename, "Rename Symbol")
 		map("n", "<F4>", vim.lsp.buf.code_action, "Code Actions")
 		map("n", "<leader>k", vim.lsp.buf.signature_help, "Signature Help")
+		if client:supports_method("textDocument/inlayHint") then
+			map("n", "<leader>ih", function()
+				vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
+			end, "Toggle Inlay Hints")
+		end
 		map({ "n", "x" }, "<F3>", function()
 			vim.lsp.buf.format({ async = true })
 		end, "Format Document")
@@ -67,9 +65,40 @@ vim.lsp.config("eslint", {
 	},
 })
 
-vim.lsp.enable({ "rust_analyzer", "biome", "marksman", "astro", "eslint" })
+-- vtsls (nahrazuje typescript-tools.nvim) — TS/JS LSP přes native config
+vim.lsp.config("vtsls", {
+	settings = {
+		typescript = {
+			inlayHints = {
+				parameterNames = { enabled = "all", suppressWhenArgumentMatchesName = true },
+				variableTypes = { enabled = true },
+				propertyDeclarationTypes = { enabled = true },
+				functionLikeReturnTypes = { enabled = true },
+				parameterTypes = { enabled = true },
+				enumMemberValues = { enabled = true },
+			},
+		},
+		javascript = {
+			inlayHints = {
+				parameterNames = { enabled = "all", suppressWhenArgumentMatchesName = true },
+				variableTypes = { enabled = true },
+				propertyDeclarationTypes = { enabled = true },
+				functionLikeReturnTypes = { enabled = true },
+				parameterTypes = { enabled = true },
+				enumMemberValues = { enabled = true },
+			},
+		},
+	},
+})
+
+vim.lsp.enable({ "rust_analyzer", "biome", "marksman", "astro", "eslint", "vtsls" })
 
 return {
+	{
+		-- Dodává definice serverů (lsp/<name>.lua) pro native vim.lsp.enable, vč. vtsls
+		"neovim/nvim-lspconfig",
+		event = { "BufReadPre", "BufNewFile" },
+	},
 	{
 		"mason-org/mason.nvim",
 		build = ":MasonUpdate",
@@ -81,24 +110,8 @@ return {
 		event = { "BufReadPre", "BufNewFile" },
 		dependencies = { "williamboman/mason.nvim" },
 		opts = {
-			ensure_installed = { "eslint", "rust_analyzer", "biome", "marksman" },
+			ensure_installed = { "eslint", "rust_analyzer", "biome", "marksman", "vtsls" },
 			automatic_enable = false,
-		},
-	},
-	{
-		"pmizio/typescript-tools.nvim",
-		event = { "BufReadPre", "BufNewFile" },
-		dependencies = { "nvim-lua/plenary.nvim" },
-		opts = {
-			capabilities = capabilities,
-			settings = {
-				separate_diagnostic_server = false,
-				publish_diagnostic_on = "insert_leave",
-				tsserver_file_preferences = {
-					includeInlayParameterNameHints = "all",
-					includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-				},
-			},
 		},
 	},
 }
