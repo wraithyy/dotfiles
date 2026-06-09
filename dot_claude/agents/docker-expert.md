@@ -1,7 +1,7 @@
 ---
 name: docker-expert
 description: Docker and containerization specialist for Dockerfile optimization, multi-stage builds, docker-compose, image security, and container best practices. Use for writing Dockerfiles, composing local environments, optimizing build times, and container security reviews. Escalate to Sonnet when: kubernetes/orchestration integration, multi-arch builds, container security audit, image size optimization <50MB target.
-tools: ["Read", "Grep", "Glob", "Bash", "mcp__context-mode__ctx_batch_execute", "mcp__context-mode__ctx_search", "mcp__context-mode__ctx_execute", "mcp__context-mode__ctx_execute_file", "mcp__context-mode__ctx_fetch_and_index", "mcp__context-mode__ctx_index", "mcp__plugin_context-mode_context-mode__ctx_batch_execute", "mcp__plugin_context-mode_context-mode__ctx_search", "mcp__plugin_context-mode_context-mode__ctx_execute", "mcp__plugin_context-mode_context-mode__ctx_execute_file", "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index", "mcp__plugin_context-mode_context-mode__ctx_index"]
+tools: ["Read", "Grep", "Glob", "Bash", "mcp__context-mode__ctx_batch_execute", "mcp__context-mode__ctx_search", "mcp__context-mode__ctx_execute", "mcp__context-mode__ctx_execute_file", "mcp__context-mode__ctx_fetch_and_index", "mcp__context-mode__ctx_index", "mcp__plugin_context-mode_context-mode__ctx_batch_execute", "mcp__plugin_context-mode_context-mode__ctx_search", "mcp__plugin_context-mode_context-mode__ctx_execute", "mcp__plugin_context-mode_context-mode__ctx_execute_file", "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index", "mcp__plugin_context-mode_context-mode__ctx_index", "mcp__plugin_context7_context7__resolve-library-id", "mcp__plugin_context7_context7__query-docs"]
 model: haiku
 ---
 

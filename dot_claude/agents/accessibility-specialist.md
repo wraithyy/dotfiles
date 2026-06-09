@@ -1,7 +1,7 @@
 ---
 name: accessibility-specialist
 description: Accessibility (a11y) specialist for WCAG 2.1/2.2 AA compliance, ARIA patterns, keyboard navigation, screen reader testing, and inclusive design. Use for comprehensive accessibility audits, ARIA implementation, focus management, color contrast analysis, and accessible component patterns.
-tools: ["Read", "Grep", "Glob", "Bash", "mcp__context-mode__ctx_batch_execute", "mcp__context-mode__ctx_search", "mcp__context-mode__ctx_execute", "mcp__context-mode__ctx_execute_file", "mcp__context-mode__ctx_fetch_and_index", "mcp__context-mode__ctx_index", "mcp__plugin_context-mode_context-mode__ctx_batch_execute", "mcp__plugin_context-mode_context-mode__ctx_search", "mcp__plugin_context-mode_context-mode__ctx_execute", "mcp__plugin_context-mode_context-mode__ctx_execute_file", "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index", "mcp__plugin_context-mode_context-mode__ctx_index"]
+tools: ["Read", "Grep", "Glob", "Bash", "mcp__context-mode__ctx_batch_execute", "mcp__context-mode__ctx_search", "mcp__context-mode__ctx_execute", "mcp__context-mode__ctx_execute_file", "mcp__context-mode__ctx_fetch_and_index", "mcp__context-mode__ctx_index", "mcp__plugin_context-mode_context-mode__ctx_batch_execute", "mcp__plugin_context-mode_context-mode__ctx_search", "mcp__plugin_context-mode_context-mode__ctx_execute", "mcp__plugin_context-mode_context-mode__ctx_execute_file", "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index", "mcp__plugin_context-mode_context-mode__ctx_index", "mcp__plugin_context7_context7__resolve-library-id", "mcp__plugin_context7_context7__query-docs"]
 model: haiku
 ---
 

@@ -63,6 +63,10 @@ For subagents:
 
 Raw Bash/Read/Grep is acceptable only for small, targeted files or commands.
 
+## Context7 (library docs)
+
+Library code → Context7 docs first (`resolve-library-id` → `query-docs`). Beats stale knowledge. Tell delegated agents same. See `rules/mcp.md`.
+
 ## Subagent delegation defaults
 
 Before reading >3 files in main session for exploration → spawn `explorer` agent.
