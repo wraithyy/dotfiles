@@ -39,7 +39,7 @@ See `rules/agents.md` for agent selection and parallel execution.
 - Read/analyze multiple files → spawn `Explore` or `general-purpose` agent
 - Write/edit code → spawn implementation agent (`react-expert`, `nodejs-expert`, etc.)
 - Run tests/build → spawn `build-error-resolver` or `tdd-guide` agent
-- Git operations → `Bash(git ...)` directly
+- Git operations (commit/diff/log/PR) → `Bash(git ...)` directly
 - Quick web lookup → `WebFetch`/`WebSearch` directly
 
 **Why context-mode MCP preferred for research:**
@@ -64,7 +64,7 @@ Library code → Context7 docs first (`resolve-library-id` → `query-docs`). Be
 
 ## Subagent delegation defaults
 
-Before reading >3 files for exploration → spawn `explorer` agent.
+Before reading >3 files in main session for exploration → spawn `explorer` agent.
 Before code review → `code-reviewer` (mandatory after edits).
 Before commit → `security-reviewer` (mandatory).
 
