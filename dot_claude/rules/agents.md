@@ -119,7 +119,7 @@ For complex tasks, dispatch 2-3 agents in parallel:
 - `Explore` (built-in) — quick code lookups, single grep
 - `explorer` (custom) — multi-file digest, codebase onboarding, structured summary
 
-For file digestion: prefer `explorer` (cheaper Haiku, structured output).
+Prefer `explorer` for file digestion (cheaper Haiku, structured output).
 
 ### Cost budget hints
 

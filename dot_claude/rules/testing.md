@@ -18,7 +18,7 @@ Coverage mandate applies to **feature and business logic only**:
 
 ## Test-Driven Development
 
-Recommended workflow for features and bug fixes:
+Workflow for features and bug fixes:
 1. Write test first (RED)
 2. Run test — should FAIL
 3. Write minimal implementation (GREEN)

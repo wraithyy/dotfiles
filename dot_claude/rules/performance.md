@@ -17,7 +17,7 @@ Target distribution: **70% Haiku / 20% Sonnet / 10% Opus**.
 | Architecture decisions, cross-system analysis | `opus` (main session) |
 | Deep reasoning where sonnet failed | `opus` (last resort for subagent) |
 
-When `opusplan` is active, the main session already routes planning→Opus and implementation→Sonnet via the model alias. Do not pass `model: opus` to worker agents unless Sonnet reasoning failed on this specific task.
+When `opusplan` is active, main session already routes planning→Opus and implementation→Sonnet via model alias. Don't pass `model: opus` to worker agents unless Sonnet reasoning failed on this specific task.
 
 ## Context Window Management
 

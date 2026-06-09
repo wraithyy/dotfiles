@@ -32,7 +32,7 @@ Use with caution:
 
 ## TodoWrite Best Practices
 
-Use TodoWrite tool to:
+Use TodoWrite to:
 - Track progress on multi-step tasks
 - Verify understanding of instructions
 - Enable real-time steering
