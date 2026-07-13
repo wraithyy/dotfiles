@@ -1,11 +1,11 @@
-require("which-key").add({
-	{ "<leader>co", ":ColorizerToggle<CR>", desc = "Colorizer toggle", icon = { icon = "", color = "purple" } },
-})
 return {
 	"norcalli/nvim-colorizer.lua",
 	lazy = true,
 	cmd = {
 		"ColorizerToggle",
+	},
+	keys = {
+		{ "<leader>co", ":ColorizerToggle<CR>", desc = "Colorizer toggle" },
 	},
 	config = function()
 		require("colorizer").setup({

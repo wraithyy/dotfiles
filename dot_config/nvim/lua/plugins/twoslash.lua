@@ -1,6 +1,3 @@
-require("which-key").add({
-	{ "<leader>ts", desc = "Two Slash Query", icon = "󱜹" },
-})
 return {
 	"marilari88/twoslash-queries.nvim",
 	opts = {

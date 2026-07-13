@@ -1,4 +1,3 @@
-require("which-key").add({ { "<leader>d", desc = "Diffview", icon = "" } })
 return {
 	"sindrets/diffview.nvim",
 	cmd = "DiffviewOpen",

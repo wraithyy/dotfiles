@@ -81,21 +81,3 @@ local function copy_for_claude()
 	vim.notify("Copied: " .. ref)
 end
 vim.keymap.set({ "n", "v" }, "<leader>cpc", copy_for_claude, { desc = "Copy @path[:lines] (Claude Code)", noremap = true, silent = true })
-
-require("which-key").add({
-	{ "<leader>e", desc = "Explorer", icon = "" },
-	{ "<leader>ee", desc = "Open Explorer", icon = "" },
-	{ "<leader>et", desc = "Toggle Explorer", icon = "" },
-	{ "<leader>eb", desc = "Buffers", icon = "" },
-	{ "<leader>eg", desc = "Git Status", icon = "" },
-	{ "<leader>p", desc = "Explorer/paste" },
-	{ "<leader>pv", desc = "Explorer", icon = "" },
-	-- { "<leader>pp", desc = "Paste without yank", icon = "" },
-	-- { "<leader>d", desc = "Delete without yank", icon = "" },
-	-- { "<leader>dd", desc = "Delete without yank", icon = "" },
-	{ "<leader>b", desc = "Buffer select", icon = "" },
-	{ "<leader>bp", desc = "Previous buffer", icon = "" },
-	{ "<leader>bn", desc = "Next buffer", icon = "" },
-	{ "<leader>cp", desc = "Copy path" },
-	{ "<leader>cpc", desc = "Copy @path[:lines] (Claude Code)" },
-})

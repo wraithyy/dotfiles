@@ -1,6 +1,3 @@
-require("which-key").add({
-	{ "<leader>r", desc = "Replace", icon = { icon = "󰛔" } },
-})
 return {
 	"nvim-pack/nvim-spectre",
 	lazy = true,

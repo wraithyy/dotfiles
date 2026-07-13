@@ -1,9 +1,3 @@
-require("which-key").add({
-	{ "<leader>bb", desc = "Pick buffers", cmd = "<cmd>BufferPick<CR>", icon = "﬘" }, -- "" icon = "﬘" },
-	{ "<leader>bd", desc = "Delete buffer", cmd = "<cmd>BufferClose<CR>", icon = "" },
-	{ "<leader>bD", desc = "Delete all buffers", cmd = "<cmd>BufferCloseAllButCurrentOrPinned<CR>", icon = "" },
-	{ "<leader>bp", desc = "Pin buffer", cmd = "<cmd>BufferPin<CR>", icon = "﬘" },
-})
 return {
 	"romgrk/barbar.nvim",
 	dependencies = {

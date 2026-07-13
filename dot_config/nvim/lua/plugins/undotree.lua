@@ -1,6 +1,3 @@
-require("which-key").add({
-	{ "<leader>u", desc = "Toggle undotree", icon = "" },
-})
 return {
 	"mbbill/undotree",
 	cmd = "UndotreeToggle",
