@@ -42,7 +42,8 @@ vim.keymap.set("n", "<C-h>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
 vim.keymap.set("n", "<leader>bn", "<cmd>bnext<CR>", { desc = "Next buffer" })
 vim.keymap.set("n", "<C-l>", "<cmd>bnext<CR>", { desc = "Next buffer" })
 
-vim.keymap.set("n", "<leader>bd", "<cmd>bd!<CR>", { desc = "Delete buffer" })
+vim.keymap.set("n", "<leader>bd", "<Cmd>BufferClose<CR>", { desc = "Close buffer (keep order)" })
+vim.keymap.set("n", "<leader>bP", "<Cmd>BufferPin<CR>", { desc = "Pin buffer" })
 -- delete without yank --
 -- vim.keymap.set("n", "<leader>dd", '"_d', { desc = "Delete without yank" })
 -- vim.keymap.set("n", "<leader>pp", '"_dP', { desc = "Paste without yank" })

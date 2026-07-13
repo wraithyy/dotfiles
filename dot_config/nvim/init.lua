@@ -5,16 +5,6 @@ _G.bt = function()
 	Snacks.debug.backtrace()
 end
 vim.print = _G.dd
-print("Ahoj Wraithy")
-
--- Workaround: prevent E216 when vim.lsp.enable runs concurrently
--- Some plugin load orders can trigger a race where `doautoall nvim.lsp.enable FileType`
--- fires before the augroup exists. Pre-create a no-op group/autocmd so the call is safe.
-pcall(function()
-  local grp = vim.api.nvim_create_augroup("nvim.lsp.enable", { clear = false })
-  -- Use a no-op callback; it will be replaced when vim.lsp.enable() sets real ones.
-  vim.api.nvim_create_autocmd("FileType", { group = grp, callback = function() end })
-end)
 
 require("config.lazy")
 require("config.highlight_on_yank")
@@ -23,7 +13,9 @@ require("config.remap")
 require("config.diagnostics-design")
 require("config.title")
 require("config.auto-save")
+require("config.autoread")
 vim.opt.relativenumber = true
+vim.o.winborder = "rounded"
 
 vim.opt.termguicolors = true
 vim.opt.number = true
@@ -32,21 +24,6 @@ vim.opt.clipboard = "unnamedplus,unnamed"
 vim.opt.wrap = false
 vim.o.mousescroll = "ver:3,hor:0"
 vim.opt.ignorecase = true
---- lsp do notifier
-vim.api.nvim_create_autocmd("LspProgress", {
-	---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
-	callback = function(ev)
-		local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
-		vim.notify(vim.lsp.status(), "info", {
-			id = "lsp_progress",
-			title = "LSP Progress",
-			opts = function(notif)
-				notif.icon = ev.data.params.value.kind == "end" and " "
-					or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
-			end,
-		})
-	end,
-})
 vim.api.nvim_create_user_command("CopyAbsolutePath", function()
     local path = vim.fn.expand("%:p")
     vim.fn.setreg("+", path)
@@ -65,20 +42,3 @@ vim.opt.guicursor = {
 	"a:blinkwait700-blinkoff400-blinkon250", -- All modes: blinking settings
 	"sm:block-blinkwait175-blinkoff150-blinkon175", -- Showmatch: block cursor with specific blinking settings
 }
-vim.api.nvim_create_autocmd("ColorScheme", {
-	pattern = "*",
-	callback = function()
-		vim.api.nvim_set_hl(0, "SnacksPickerTree", { fg = "#3d3d52" })
-		vim.api.nvim_set_hl(0, "SnacksPickerList", { bg = "NONE" })
-		vim.api.nvim_set_hl(0, "SnacksPickerListCursorLine", { bg = "NONE" })
-		vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
-	end,
-})
-vim.api.nvim_set_hl(0, "SnacksPickerTree", { fg = "#3d3d52" })
-vim.api.nvim_set_hl(0, "SnacksPickerList", { bg = "NONE" })
-vim.api.nvim_set_hl(0, "SnacksPickerListCursorLine", { bg = "NONE" })
-vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
-vim.api.nvim_set_hl(0, "DiagnosticErrorLine", { bg = "#3c1f1e" })
-vim.api.nvim_set_hl(0, "DiagnosticWarnLine",  { bg = "#3c2e1e" })
-vim.api.nvim_set_hl(0, "DiagnosticInfoLine",  { bg = "#1e2e3c" })
-vim.api.nvim_set_hl(0, "DiagnosticHintLine",  { bg = "#1e3c2e" })
