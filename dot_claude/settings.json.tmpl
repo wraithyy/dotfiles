@@ -205,6 +205,11 @@
             "type": "command",
             "command": "hour=$(date +%H); if [ $hour -ge 7 ] && [ $hour -lt 23 ]; then osascript -e 'display notification \"Odpověď dokončena\" with title \"Claude Code\" sound name \"Glass\"'; fi",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/stop-verify.sh",
+            "timeout": 90
           }
         ]
       }

@@ -34,17 +34,7 @@ elif [[ -f "$project_root/.prettierrc" ]] || [[ -f "$project_root/.prettierrc.js
   (cd "$project_root" && npx prettier --write "$file_path" 2>/dev/null) || true
 fi
 
-# Type check: non-blocking, surface errors to Claude as informational output
-tsconfig=""
-if [[ -f "$project_root/tsconfig.json" ]]; then
-  tsconfig="$project_root/tsconfig.json"
-fi
-
-if [[ -n "$tsconfig" ]] && [[ "$file_path" =~ \.(ts|tsx)$ ]]; then
-  tsc_output=$(cd "$project_root" && timeout 30 npx tsc --noEmit -p "$tsconfig" 2>&1) || {
-    echo "TypeScript errors detected:"
-    echo "$tsc_output"
-  }
-fi
+# Type check moved to Stop hook (stop-verify.sh) — per-edit tsc was too slow;
+# vtsls surfaces errors live in the editor anyway.
 
 exit 0
