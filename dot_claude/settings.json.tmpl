@@ -109,7 +109,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/permission-notify.sh",
+            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/smart-notify.sh",
             "timeout": 5
           }
         ]
@@ -141,7 +141,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/question-notify.sh",
+            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/smart-notify.sh",
             "timeout": 5
           }
         ]
@@ -203,7 +203,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hour=$(date +%H); if [ $hour -ge 7 ] && [ $hour -lt 23 ]; then osascript -e 'display notification \"Odpověď dokončena\" with title \"Claude Code\" sound name \"Glass\"'; fi",
+            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/smart-notify.sh",
             "timeout": 5
           },
           {
