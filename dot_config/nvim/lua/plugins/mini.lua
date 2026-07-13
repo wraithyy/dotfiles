@@ -2,10 +2,11 @@ return {
 
 	{
 		"echasnovski/mini.jump2d",
+		enabled = false, -- nahrazeno flash.nvim (s = jump); jinak koliduje na `s`
 		event = "VeryLazy",
 		opts = {
 			mappings = {
-				start_jumping = "s",
+				start_jumping = "",
 			},
 		},
 	},
