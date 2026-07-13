@@ -63,6 +63,24 @@ vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]])
 vim.keymap.set("n", "§", "`", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>cpr", "<cmd>CopyRelativePath<cr>", { desc = "Copy relative path" })
 vim.keymap.set("n", "<leader>cpa", "<cmd>CopyAbsolutePath<cr>", { desc = "Copy absolute path" })
+local function copy_for_claude()
+	local path = vim.fn.expand("%:.")
+	local mode = vim.fn.mode()
+	local ref
+	if mode == "v" or mode == "V" or mode == "\22" then
+		local start_line = vim.fn.line("v")
+		local end_line = vim.fn.line(".")
+		if start_line > end_line then
+			start_line, end_line = end_line, start_line
+		end
+		ref = "@" .. path .. ":" .. start_line .. "-" .. end_line
+	else
+		ref = "@" .. path
+	end
+	vim.fn.setreg("+", ref)
+	vim.notify("Copied: " .. ref)
+end
+vim.keymap.set({ "n", "v" }, "<leader>cpc", copy_for_claude, { desc = "Copy @path[:lines] (Claude Code)", noremap = true, silent = true })
 
 require("which-key").add({
 	{ "<leader>e", desc = "Explorer", icon = "" },
@@ -71,11 +89,13 @@ require("which-key").add({
 	{ "<leader>eb", desc = "Buffers", icon = "" },
 	{ "<leader>eg", desc = "Git Status", icon = "" },
 	{ "<leader>p", desc = "Explorer/paste" },
-	{ "<leader>pv", desc = "Explorer", icon = "" },
-	-- { "<leader>pp", desc = "Paste without yank", icon = "" },
-	-- { "<leader>d", desc = "Delete without yank", icon = "" },
-	-- { "<leader>dd", desc = "Delete without yank", icon = "" },
-	{ "<leader>b", desc = "Buffer select", icon = "" },
-	{ "<leader>bp", desc = "Previous buffer", icon = "" },
-	{ "<leader>bn", desc = "Next buffer", icon = "" },
+	{ "<leader>pv", desc = "Explorer", icon = "" },
+	-- { "<leader>pp", desc = "Paste without yank", icon = "" },
+	-- { "<leader>d", desc = "Delete without yank", icon = "" },
+	-- { "<leader>dd", desc = "Delete without yank", icon = "" },
+	{ "<leader>b", desc = "Buffer select", icon = "" },
+	{ "<leader>bp", desc = "Previous buffer", icon = "" },
+	{ "<leader>bn", desc = "Next buffer", icon = "" },
+	{ "<leader>cp", desc = "Copy path" },
+	{ "<leader>cpc", desc = "Copy @path[:lines] (Claude Code)" },
 })
