@@ -1,0 +1,43 @@
+#!/bin/bash
+# Install Claude Code MCP servers at user scope.
+# chezmoi re-runs this whenever its content changes.
+#
+# Secrets are NOT embedded in source/state: the GitLab token is fetched at
+# runtime via `op read`, so this rendered script never contains the credential.
+
+set -euo pipefail
+
+command -v claude >/dev/null 2>&1 || { echo "claude CLI not found, skipping MCP install"; exit 0; }
+
+existing=$(claude mcp list 2>/dev/null || true)
+
+add_if_missing() {
+  local name="$1"
+  shift
+  if echo "$existing" | grep -q "^${name}:"; then
+    echo "mcp '${name}' already present"
+  else
+    echo "installing mcp '${name}'"
+    claude mcp add "$name" --scope user -- "$@"
+  fi
+}
+
+add_if_missing chrome-devtools npx -y chrome-devtools-mcp@latest
+add_if_missing playwright      npx -y @playwright/mcp@latest
+add_if_missing webclaw         /opt/homebrew/bin/webclaw-mcp
+add_if_missing browser-mcp     npx @browsermcp/mcp
+
+# GitLab MCP — token pulled from 1Password at runtime (not stored in repo/state).
+gitlab_token_ref="op://47q7ov7jcalclpmkqfopl6m3n4/Gitlab-trask/credential"
+if command -v op >/dev/null 2>&1; then
+  gitlab_token=$(op read "$gitlab_token_ref" 2>/dev/null || true)
+  if [ -n "$gitlab_token" ]; then
+    add_if_missing gitlab npx -y @zereight/mcp-gitlab \
+      --token="$gitlab_token" \
+      --api-url=https://gitlab.trask.cz/api/v4
+  else
+    echo "could not read GitLab token from 1Password ($gitlab_token_ref), skipping gitlab mcp"
+  fi
+else
+  echo "op (1Password CLI) not found, skipping gitlab mcp"
+fi
