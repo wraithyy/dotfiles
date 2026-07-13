@@ -66,29 +66,30 @@ return {
 						{ "fancy_filetype", ts_icon = "" },
 						{ "fancy_cwd", substitute_home = true },
 						{
+							-- Copilot status as a single icon; colour = state
 							function()
-								-- Copilot status (neocodeium/codeium removed)
-								local ok, api = pcall(require, "copilot.api")
-								if not ok then
-									return ""
-								end
-								local status = api.status.data.status
-								if status == "Normal" or status == "InProgress" then
-									return "  Copilot"
-								end
-								return ""
+								return pcall(require, "copilot.api") and vim.fn.nr2char(0xec1e) or ""
+							end,
+							cond = function()
+								return (pcall(require, "copilot.api"))
 							end,
 							color = function()
-								local copilot_ok, copilot_api = pcall(require, "copilot.api")
-								if copilot_ok then
-									local status = copilot_api.status.data.status
-									if status == "Normal" then
-										return { fg = "#00FF00", gui = "bold" }
-									elseif status == "InProgress" then
-										return { fg = "#FFD700", gui = "bold" }
-									end
+								local ok, api = pcall(require, "copilot.api")
+								if not ok then
+									return { fg = "#6c7086" }
 								end
-								return { fg = "#00CED1", gui = "bold" }
+								-- disabled (globally or for this buffer) -> red
+								local cok, client = pcall(require, "copilot.client")
+								if cok and client.is_disabled and client.is_disabled() then
+									return { fg = "#f38ba8", gui = "bold" }
+								end
+								local status = api.status.data.status
+								if status == "InProgress" or status == "Warning" then
+									-- working / warning / error -> orange
+									return { fg = "#f39c12", gui = "bold" }
+								end
+								-- Normal / ready -> green
+								return { fg = "#a6e3a1", gui = "bold" }
 							end,
 						},
 					},
