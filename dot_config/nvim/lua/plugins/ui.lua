@@ -28,11 +28,6 @@ return {
 					},
 					lualine_b = {
 						{ "fancy_branch" },
-						-- {
-						-- 	-- "harpoon2",
-						-- 	active_indicators = { "󰬏", "󰬑", "󰬒", "󰬓" },
-						-- 	indicators = { "󰰀", "󰰆", "󰰉", "󰰌" },
-						-- },
 					},
 					lualine_c = {
 						{ "fancy_diff" },
@@ -42,6 +37,29 @@ return {
 
 						{ "fancy_macro" },
 						{ "fancy_searchcount" },
+						{
+							-- quickfix item counter (config/quickfix.lua M.counter)
+							function()
+								local ok, qf = pcall(require, "config.quickfix")
+								return ok and qf.counter() or ""
+							end,
+							cond = function()
+								return #vim.fn.getqflist() > 0
+							end,
+							icon = "",
+						},
+						{
+							-- Claude Code websocket connection status
+							function()
+								local ok, cc = pcall(require, "claudecode")
+								if not ok then
+									return ""
+								end
+								local server = cc.state and cc.state.server
+								return server and "󱚝 Claude" or ""
+							end,
+							color = { fg = "#00e8c6", gui = "bold" },
+						},
 					},
 					lualine_y = {
 
@@ -49,19 +67,15 @@ return {
 						{ "fancy_cwd", substitute_home = true },
 						{
 							function()
-								-- Simplified AI provider status
-								local copilot_ok, copilot_api = pcall(require, "copilot.api")
-								if copilot_ok and copilot_api.status.data.status == "Normal" then
-									return "  Copilot"
-								elseif copilot_ok and copilot_api.status.data.status == "InProgress" then
+								-- Copilot status (neocodeium/codeium removed)
+								local ok, api = pcall(require, "copilot.api")
+								if not ok then
+									return ""
+								end
+								local status = api.status.data.status
+								if status == "Normal" or status == "InProgress" then
 									return "  Copilot"
 								end
-
-								local codeium_ok, codeium = pcall(require, "codeium.virtual_text")
-								if codeium_ok and codeium.enabled() then
-									return "󰘦 Codeium"
-								end
-
 								return ""
 							end,
 							color = function()
@@ -77,38 +91,6 @@ return {
 								return { fg = "#00CED1", gui = "bold" }
 							end,
 						},
-						-- {
-						-- 	function()
-						-- 		local status = require("neocodeium").get_status()
-						-- 		if status == 0 then
-						-- 			return "󰘦" -- Ikona pro Enabled (zapnuto)
-						-- 		elseif status == 1 then
-						-- 			return "" -- Ikona pro Globally Disabled
-						-- 		elseif status == 2 then
-						-- 			return "󰓛" -- Ikona pro Buffer Disabled
-						-- 		elseif status == 3 or status == 4 then
-						-- 			return "" -- Ikona pro Filetype Disabled nebo options.enabled = false
-						-- 		elseif status == 5 then
-						-- 			return "⚠️" -- Ikona pro Wrong Encoding
-						-- 		else
-						-- 			return "" -- Prázdné, pokud není k dispozici status
-						-- 		end
-						-- 	end,
-						-- 	color = function()
-						-- 		local status = require("neocodeium").get_status()
-						-- 		if status == 0 then
-						-- 			return { fg = "#00FF00", gui = "bold" } -- Zelená pro Enabled
-						-- 		elseif status == 1 then
-						-- 			return { fg = "#FF0000", gui = "bold" } -- Červená pro Globally Disabled
-						-- 		elseif status == 2 then
-						-- 			return { fg = "#FF4500", gui = "bold" } -- Oranžová pro Buffer Disabled
-						-- 		elseif status == 5 then
-						-- 			return { fg = "#FFD700", gui = "bold" } -- Žlutá pro Wrong Encoding
-						-- 		else
-						-- 			return { fg = "#FFFFFF", gui = "bold" } -- Defaultní barva pro ostatní stavy
-						-- 		end
-						-- 	end,
-						-- },
 					},
 					lualine_z = {
 						{ "fancy_lsp_servers" },
@@ -234,6 +216,19 @@ return {
 					TelescopeNormal = { bg = "none" },
 					ZenBg = { bg = "none" },
 					NeominimapBorder = { fg = colors.overlay0, bg = "none" },
+
+					-- UI overrides moved out of init.lua ColorScheme autocmd.
+					-- custom_highlights persists across :colorscheme reapplies.
+					SnacksPickerTree = { fg = "#3d3d52" },
+					SnacksPickerList = { bg = "NONE" },
+					SnacksPickerListCursorLine = { bg = "NONE" },
+					NormalFloat = { bg = "NONE" },
+
+					-- Diagnostic line highlights (wired via diagnostic signs.linehl).
+					DiagnosticErrorLine = { bg = "#3c1f1e" },
+					DiagnosticWarnLine = { bg = "#3c2e1e" },
+					DiagnosticInfoLine = { bg = "#1e2e3c" },
+					DiagnosticHintLine = { bg = "#1e3c2e" },
 				}
 			end,
 			integrations = {
@@ -248,14 +243,14 @@ return {
 				window_picker = true,
 				which_key = true,
 				neotree = true,
-				leap = true,
+				flash = true,
 				harpoon = true,
 				mason = true,
 				noice = true,
 				blink_cmp = true,
 				markview = true,
 				snacks = {
-					enabled = false,
+					enabled = true,
 					indent_scope_color = "", -- catppuccin color (eg. `lavender`) Default: text
 				},
 				mini = {
@@ -284,14 +279,11 @@ return {
 				},
 				notify = true,
 				neogit = true,
-
-				snacks = true,
 			},
-			config = function()
-				vim.defer_fn(function()
-					vim.cmd.colorscheme("catppuccin") -- Set Catppuccin as the colorscheme after configuration
-				end, 0)
-			end,
 		},
+		config = function(_, opts)
+			require("catppuccin").setup(opts)
+			vim.cmd.colorscheme("catppuccin")
+		end,
 	},
 }
