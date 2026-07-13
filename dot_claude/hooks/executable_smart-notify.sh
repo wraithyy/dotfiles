@@ -56,7 +56,16 @@ esac
 esc() { echo "$1" | sed 's/"/\\"/g'; }
 
 send_notification() {
-  if command -v osascript >/dev/null 2>&1; then # macOS
+  if command -v terminal-notifier >/dev/null 2>&1; then # macOS, preferred:
+    # osascript notifications route through the Script Editor bundle, which
+    # macOS silently drops unless manually allowed; terminal-notifier has its
+    # own app bundle and prompts for permission on first run
+    if [ -n "$sound" ]; then
+      terminal-notifier -title "$title" -message "$message" -sound "$sound" 2>/dev/null
+    else
+      terminal-notifier -title "$title" -message "$message" 2>/dev/null
+    fi
+  elif command -v osascript >/dev/null 2>&1; then # macOS fallback
     if [ -n "$sound" ]; then
       osascript -e "display notification \"$(esc "$message")\" with title \"$(esc "$title")\" sound name \"$sound\"" 2>/dev/null
     else
