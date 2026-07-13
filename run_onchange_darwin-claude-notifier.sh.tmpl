@@ -30,6 +30,10 @@ cp "$ICON" "$DEST/Contents/Resources/Terminal.icns"
 /usr/libexec/PlistBuddy -c "Set :CFBundleName Claude Code" "$DEST/Contents/Info.plist"
 codesign --force --deep --sign - "$DEST"
 
+# NotificationCenter caches the icon per bundle id; restart to pick up changes
+killall NotificationCenter 2>/dev/null || true
+sleep 2
+
 # first notification triggers the macOS permission prompt
 "$DEST/Contents/MacOS/terminal-notifier" \
   -title "Claude Code" -message "Notifikace nastaveny." -sound Glass || true
