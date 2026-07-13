@@ -1,2 +1,6 @@
 .DS_Store
 **/.DS_Store
+
+# real lazy-lock.json lives at source root (nvim writes through a symlink);
+# without this entry chezmoi would deploy it as ~/lazy-lock.json
+lazy-lock.json
