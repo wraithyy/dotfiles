@@ -48,6 +48,61 @@
   "model": "opusplan",
 {{- if eq .chezmoi.os "darwin" }}
   "hooks": {
+    "Notification": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixtuoid-hook"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixtuoid-hook"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixtuoid-hook"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixtuoid-hook"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixtuoid-hook"
+          }
+        ]
+      }
+    ],
     "PermissionRequest": [
       {
         "matcher": "*",
@@ -90,6 +145,15 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixtuoid-hook"
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -122,6 +186,15 @@
             "timeout": 60
           }
         ]
+      },
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixtuoid-hook"
+          }
+        ]
       }
     ],
     "Stop": [
@@ -140,16 +213,20 @@
 {{- end }}
   "statusLine": {
     "type": "command",
-    "command": "npx ccstatusline@1",
-    "padding": 0
+    "command": "npx -y ccstatusline@latest",
+    "padding": 0,
+    "refreshInterval": 10
   },
   "enabledPlugins": {
-    "caveman@caveman": true,
-    "frontend-design@claude-plugins-official": true,
-    "context-mode@scottconverse-context-mode": true,
     "andrej-karpathy-skills@karpathy-skills": true,
-    "understand-anything@understand-anything": true,
-    "figma@claude-plugins-official": true
+    "caveman@caveman": true,
+    "companion@companion": true,
+    "context-mode@scottconverse-context-mode": true,
+    "context7@claude-plugins-official": true,
+    "figma@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "gitlab@claude-plugins-official": false,
+    "understand-anything@understand-anything": true
   },
   "extraKnownMarketplaces": {
     "caveman": {
@@ -158,16 +235,28 @@
         "repo": "JuliusBrussee/caveman"
       }
     },
-    "scottconverse-context-mode": {
+    "companion": {
       "source": {
-        "source": "github",
-        "repo": "scottconverse/context-mode"
+        "source": "directory",
+        "path": "{{ .chezmoi.homeDir }}/Development/companion"
       }
     },
     "karpathy-skills": {
       "source": {
         "source": "github",
         "repo": "forrestchang/andrej-karpathy-skills"
+      }
+    },
+    "scottconverse-context-mode": {
+      "source": {
+        "source": "github",
+        "repo": "scottconverse/context-mode"
+      }
+    },
+    "trask-skynet": {
+      "source": {
+        "source": "git",
+        "url": "https://gitlab.trask.cz/PO/skynet.git"
       }
     },
     "understand-anything": {
@@ -179,6 +268,7 @@
   },
   "effortLevel": "medium",
   "skipAutoPermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
   "tui": "fullscreen",
   "theme": "custom:wraithy-mocha"
 }

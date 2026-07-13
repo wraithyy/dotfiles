@@ -10,7 +10,6 @@
 
 ### PreToolUse
 - **tmux reminder**: Suggests tmux for long-running commands (npm, pnpm, yarn, cargo, etc.)
-- **git push review**: Opens Zed for review before push
 - **doc blocker**: Blocks creation of unnecessary .md/.txt files
 
 ### PostToolUse
