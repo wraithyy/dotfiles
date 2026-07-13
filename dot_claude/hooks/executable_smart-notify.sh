@@ -3,8 +3,8 @@
 # Registered on: PermissionRequest, PreToolUse (AskUserQuestion), Stop.
 # Platform dispatch: macOS (osascript, honors Focus/DND natively),
 # WSL2 (wsl-notify-send.exe / BurntToast), Linux desktop (notify-send).
-# Inside tmux, also paints a colored status-line message (visible fullscreen
-# and the only visible channel on headless SSH sessions).
+# Inside tmux, paints a colored status-line message only as a fallback when
+# no desktop notification channel exists (headless SSH sessions).
 
 input=$(cat)
 
@@ -55,6 +55,7 @@ esac
 # escape double quotes for osascript/powershell string literals
 esc() { echo "$1" | sed 's/"/\\"/g'; }
 
+# returns 0 when a desktop notification was dispatched
 send_notification() {
   if command -v terminal-notifier >/dev/null 2>&1; then # macOS, preferred:
     # osascript notifications route through the Script Editor bundle, which
@@ -80,13 +81,14 @@ send_notification() {
     fi
   elif command -v notify-send >/dev/null 2>&1; then # Linux desktop (RPi)
     notify-send "$title" "$message" 2>/dev/null
+  else
+    return 1 # headless/unknown platform: tmux fallback below
   fi
-  # unknown platform: silently skip; tmux branch below still fires
 }
 
-send_notification
-
-if [ -n "$TMUX" ]; then
+# tmux status-line message only when no desktop channel exists (headless SSH);
+# otherwise it just duplicates the banner and repaints the status line
+if ! send_notification && [ -n "$TMUX" ]; then
   tmux display-message -d 3000 "#[bg=$tmux_color,fg=black] CC #[default] $message" 2>/dev/null
 fi
 
