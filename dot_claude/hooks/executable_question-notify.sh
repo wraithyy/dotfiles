@@ -4,7 +4,7 @@
 input=$(cat)
 
 # Získej první otázku pokud existuje
-question=$(echo "$input" | jq -r '.args.questions[0].question // "Claude se na něco ptá"' | head -c 100)
+question=$(echo "$input" | jq -r '.tool_input.questions[0].question // "Claude se na něco ptá"' | head -c 100)
 
 # Notifikace s textem otázky
 osascript -e "display notification \"$question\" with title \"❓ Claude Code - Otázka\" sound name \"Glass\""
