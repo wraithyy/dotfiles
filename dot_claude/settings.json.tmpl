@@ -46,7 +46,6 @@
     "defaultMode": "auto"
   },
   "model": "opusplan",
-{{- if eq .chezmoi.os "darwin" }}
   "hooks": {
     "Notification": [
       {
@@ -54,7 +53,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "pixtuoid-hook"
+            "command": "command -v pixtuoid-hook >/dev/null 2>&1 && pixtuoid-hook || true"
           }
         ]
       }
@@ -65,7 +64,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "pixtuoid-hook"
+            "command": "command -v pixtuoid-hook >/dev/null 2>&1 && pixtuoid-hook || true"
           }
         ]
       }
@@ -76,7 +75,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "pixtuoid-hook"
+            "command": "command -v pixtuoid-hook >/dev/null 2>&1 && pixtuoid-hook || true"
           }
         ]
       }
@@ -87,7 +86,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "pixtuoid-hook"
+            "command": "command -v pixtuoid-hook >/dev/null 2>&1 && pixtuoid-hook || true"
           }
         ]
       }
@@ -98,7 +97,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "pixtuoid-hook"
+            "command": "command -v pixtuoid-hook >/dev/null 2>&1 && pixtuoid-hook || true"
           }
         ]
       }
@@ -151,7 +150,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "pixtuoid-hook"
+            "command": "command -v pixtuoid-hook >/dev/null 2>&1 && pixtuoid-hook || true"
           }
         ]
       }
@@ -192,7 +191,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "pixtuoid-hook"
+            "command": "command -v pixtuoid-hook >/dev/null 2>&1 && pixtuoid-hook || true"
           }
         ]
       }
@@ -215,7 +214,6 @@
       }
     ]
   },
-{{- end }}
   "statusLine": {
     "type": "command",
     "command": "npx -y ccstatusline@latest",

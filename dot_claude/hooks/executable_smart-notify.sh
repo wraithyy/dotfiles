@@ -1,8 +1,10 @@
 #!/bin/bash
 # Unified Claude Code notification hook.
 # Registered on: PermissionRequest, PreToolUse (AskUserQuestion), Stop.
-# macOS notification center honors Focus/DND natively — no custom detection.
-# Inside tmux, also paints a colored status-line message (visible fullscreen).
+# Platform dispatch: macOS (osascript, honors Focus/DND natively),
+# WSL2 (wsl-notify-send.exe / BurntToast), Linux desktop (notify-send).
+# Inside tmux, also paints a colored status-line message (visible fullscreen
+# and the only visible channel on headless SSH sessions).
 
 input=$(cat)
 
@@ -50,14 +52,30 @@ case "$event" in
     ;;
 esac
 
-# escape double quotes for osascript string literal
+# escape double quotes for osascript/powershell string literals
 esc() { echo "$1" | sed 's/"/\\"/g'; }
 
-if [ -n "$sound" ]; then
-  osascript -e "display notification \"$(esc "$message")\" with title \"$(esc "$title")\" sound name \"$sound\"" 2>/dev/null
-else
-  osascript -e "display notification \"$(esc "$message")\" with title \"$(esc "$title")\"" 2>/dev/null
-fi
+send_notification() {
+  if command -v osascript >/dev/null 2>&1; then # macOS
+    if [ -n "$sound" ]; then
+      osascript -e "display notification \"$(esc "$message")\" with title \"$(esc "$title")\" sound name \"$sound\"" 2>/dev/null
+    else
+      osascript -e "display notification \"$(esc "$message")\" with title \"$(esc "$title")\"" 2>/dev/null
+    fi
+  elif grep -qi microsoft /proc/version 2>/dev/null; then # WSL2 -> Windows toast
+    if command -v wsl-notify-send.exe >/dev/null 2>&1; then
+      wsl-notify-send.exe --category "$title" "$message" 2>/dev/null
+    else
+      powershell.exe -NoProfile -Command \
+        "New-BurntToastNotification -Text '$(esc "$title")','$(esc "$message")'" 2>/dev/null
+    fi
+  elif command -v notify-send >/dev/null 2>&1; then # Linux desktop (RPi)
+    notify-send "$title" "$message" 2>/dev/null
+  fi
+  # unknown platform: silently skip; tmux branch below still fires
+}
+
+send_notification
 
 if [ -n "$TMUX" ]; then
   tmux display-message -d 3000 "#[bg=$tmux_color,fg=black] CC #[default] $message" 2>/dev/null
