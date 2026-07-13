@@ -1,0 +1,36 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Rebundle terminal-notifier as ClaudeNotifier.app: Claude icon + "Claude Code"
+# bundle name, own identity in System Settings > Notifications.
+# Used by dot_claude/hooks/smart-notify.sh. Reruns when icon or script change.
+# icon hash: {{ include "dot_claude/assets/claude-code.icns" | sha256sum }}
+
+set -e
+
+if ! command -v terminal-notifier &>/dev/null; then
+  echo "terminal-notifier missing, skipping ClaudeNotifier build"
+  exit 0
+fi
+
+SRC="$(brew --prefix)/opt/terminal-notifier/terminal-notifier.app"
+ICON="$HOME/.claude/assets/claude-code.icns"
+DEST="$HOME/.claude/notifier/ClaudeNotifier.app"
+
+if [ ! -d "$SRC" ] || [ ! -f "$ICON" ]; then
+  echo "source bundle or icon missing, skipping ClaudeNotifier build"
+  exit 0
+fi
+
+echo "Building ClaudeNotifier.app..."
+rm -rf "$DEST"
+mkdir -p "$(dirname "$DEST")"
+cp -R "$SRC" "$DEST"
+cp "$ICON" "$DEST/Contents/Resources/Terminal.icns"
+/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier com.wraithy.claude-code-notifier" "$DEST/Contents/Info.plist"
+/usr/libexec/PlistBuddy -c "Set :CFBundleName Claude Code" "$DEST/Contents/Info.plist"
+codesign --force --deep --sign - "$DEST"
+
+# first notification triggers the macOS permission prompt
+"$DEST/Contents/MacOS/terminal-notifier" \
+  -title "Claude Code" -message "Notifikace nastaveny." -sound Glass || true
+{{ end -}}

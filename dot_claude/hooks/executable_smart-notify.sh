@@ -59,15 +59,24 @@ esc() { echo "$1" | sed 's/"/\\"/g'; }
 
 # returns 0 when a desktop notification was dispatched
 send_notification() {
-  if command -v terminal-notifier >/dev/null 2>&1; then # macOS, preferred:
+  # ClaudeNotifier.app: terminal-notifier rebundled with the Claude icon and
+  # "Claude Code" bundle name (built by run_onchange_darwin-claude-notifier);
+  # gets its own entry in System Settings > Notifications
+  wrapper="$HOME/.claude/notifier/ClaudeNotifier.app/Contents/MacOS/terminal-notifier"
+  notifier=""
+  if [ -x "$wrapper" ]; then
+    notifier="$wrapper"
+  elif command -v terminal-notifier >/dev/null 2>&1; then
+    notifier="terminal-notifier"
+  fi
+  if [ -n "$notifier" ]; then # macOS, preferred over osascript:
     # osascript notifications route through the Script Editor bundle, which
     # macOS silently drops unless manually allowed; terminal-notifier has its
-    # own app bundle and prompts for permission on first run
-    if [ -n "$sound" ]; then
-      terminal-notifier -title "$title" -message "$message" -sound "$sound" 2>/dev/null
-    else
-      terminal-notifier -title "$title" -message "$message" 2>/dev/null
-    fi
+    # own app bundle and prompts for permission on first run.
+    # -group: one live notification per project+event, replaces older ones.
+    args=(-title "$title" -subtitle "$project" -message "$message" -group "cc-$project-$event")
+    [ -n "$sound" ] && args+=(-sound "$sound")
+    "$notifier" "${args[@]}" 2>/dev/null
   elif command -v osascript >/dev/null 2>&1; then # macOS fallback
     if [ -n "$sound" ]; then
       osascript -e "display notification \"$(esc "$message")\" with title \"$(esc "$title")\" sound name \"$sound\"" 2>/dev/null
