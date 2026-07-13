@@ -57,6 +57,24 @@ const schema = z.object({
 const validated = schema.parse(input)
 ```
 
+## TypeScript Type Casts
+
+AVOID type casts (`as`, `!`, `<Type>`) when possible. Prefer type-safe alternatives:
+
+```typescript
+// WRONG: Type cast
+const el = document.getElementById('app') as HTMLDivElement
+const val = maybeNull!.value
+
+// CORRECT: Type guard / narrowing
+const el = document.getElementById('app')
+if (!(el instanceof HTMLDivElement)) throw new Error('Missing #app')
+
+const val = maybeNull?.value
+```
+
+When a cast is truly unavoidable, add a comment explaining why.
+
 ## Code Quality Checklist
 
 Before marking work complete:
@@ -68,3 +86,4 @@ Before marking work complete:
 - [ ] No console.log statements
 - [ ] No hardcoded values
 - [ ] No mutation (immutable patterns used)
+- [ ] No unnecessary type casts
