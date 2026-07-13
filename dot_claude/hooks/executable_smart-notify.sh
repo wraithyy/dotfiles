@@ -21,6 +21,8 @@ tmux_color="green"
 
 case "$event" in
   PermissionRequest)
+    # AskUserQuestion already notifies via PreToolUse with the question text
+    [ "$tool_name" = "AskUserQuestion" ] && exit 0
     detail=$(echo "$input" | jq -r '.tool_input.description // .tool_input.command // .tool_input.file_path // ""' | head -c 80)
     title="Claude Code – povolení"
     message="$tool_name: ${detail:-$project}"
