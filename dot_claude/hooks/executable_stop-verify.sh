@@ -32,6 +32,19 @@ $(echo "$tsc_output" | head -20)
   fi
 fi
 
+# lint modified files with whatever the project uses
+if [[ -f "$cwd/biome.json" || -f "$cwd/biome.jsonc" ]]; then
+  lint_output=$(cd "$cwd" && timeout 60 npx biome check $modified 2>&1)
+  [[ $? -ne 0 && -n "$lint_output" ]] && findings+="Biome findings:
+$(echo "$lint_output" | head -15)
+"
+elif ls "$cwd"/eslint.config.* "$cwd"/.eslintrc* >/dev/null 2>&1; then
+  lint_output=$(cd "$cwd" && timeout 60 npx eslint $modified 2>&1)
+  [[ $? -ne 0 && -n "$lint_output" ]] && findings+="ESLint findings:
+$(echo "$lint_output" | head -15)
+"
+fi
+
 [[ -z "$findings" ]] && exit 0
 
 marker="/tmp/claude-stop-verify-$session_id"
