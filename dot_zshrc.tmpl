@@ -46,6 +46,8 @@ export PATH="$HOME/.rd/bin:$PATH"
 # Aliasy
 alias v="nvim"
 alias clauded="claude --dangerously-skip-permissions"
+# shadows /usr/bin/cc (C compiler) in interactive shells only; make/scripts use $CC
+alias cc="claude"
 export DISABLE_AUTO_TITLE='true'
 {{- if eq .chezmoi.os "darwin" }}
 alias dev="cd ~/Development/Trask"

@@ -41,6 +41,8 @@ window-height = 60
 # Keybindings
 keybind = ctrl+shift+space=unbind
 keybind = cmd+w=close_surface
+# global dropdown terminal for one-off Claude queries outside a tmux session
+keybind = global:cmd+grave_accent=toggle_quick_terminal
 
 # Close confirmation
 confirm-close-surface = false
