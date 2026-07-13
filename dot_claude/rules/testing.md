@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/*.{ts,tsx,js,jsx}"
+---
+
 # Testing Requirements
 
 ## Test Coverage: 80% for business logic

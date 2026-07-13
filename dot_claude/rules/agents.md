@@ -1,129 +1,72 @@
 # Agent Orchestration
 
+Agents live in `~/.claude/agents/`. Disabled sets (Java, .NET, Python, Go,
+Terraform, DB) restore from `~/.claude/agents-disabled/`.
+
 ## Available Agents
 
-Located in `~/.claude/agents/`:
-
 ### Quality & Process
-| Agent | Purpose | When to Use |
-|-------|---------|-------------|
-| planner | Implementation planning | Complex features, refactoring |
-| architect | System design | Architectural decisions |
-| tdd-guide | Test-driven development | New features, bug fixes |
-| code-reviewer | Code review | After writing code |
-| security-reviewer | Security analysis | Before commits |
-| build-error-resolver | Fix build errors | When build fails |
-| e2e-runner | E2E testing | Critical user flows |
-| refactor-cleaner | Dead code cleanup | Code maintenance |
-| doc-updater | Documentation | Updating docs |
+| Agent | Use for |
+|---|---|
+| planner | implementation plans for complex features/refactors |
+| architect | system design, architectural decisions |
+| tdd-guide | write-tests-first for features and bug fixes |
+| code-reviewer | review after writing code |
+| security-reviewer | OWASP gate before commits |
+| build-error-resolver | build/type errors, minimal diffs |
+| e2e-runner | Playwright E2E flows |
+| refactor-cleaner | dead code removal (knip/ts-prune) |
+| doc-updater | codemaps and docs |
 
 ### Frontend
-| Agent | Purpose | When to Use |
-|-------|---------|-------------|
-| fe-specialist | FE performance, Core Web Vitals, TanStack | FE optimization, perf audits |
-| react-expert | React patterns, hooks, TanStack Router/Query, shadcn, MUI, type-safety | React architecture, component design |
-| css-expert | Tailwind, cva, responsive design, animations | Styling, design systems |
-| forms-expert | React Hook Form, TanStack Form, Zod validation | Form implementation |
-| accessibility-specialist | WCAG 2.1 AA, ARIA, keyboard nav, screen readers | A11y audits, accessible components |
-| seo-specialist | Meta tags, structured data, sitemaps, Core Web Vitals | SEO implementation, audits |
+| Agent | Use for |
+|---|---|
+| fe-specialist | Core Web Vitals, bundle, rendering perf |
+| react-expert | hooks, state mgmt, TanStack Router/Query, component design |
+| css-expert | Tailwind, cva, responsive, animations |
+| forms-expert | RHF/TanStack Form + Zod |
+| accessibility-specialist | WCAG 2.1 AA, ARIA, keyboard nav |
+| seo-specialist | meta, structured data, sitemaps |
 
-### Backend
-| Agent | Purpose | When to Use |
-|-------|---------|-------------|
-| nodejs-expert | TanStack Start, Hono, Express/Fastify, server functions | Node.js/JS backend, API routes |
+### Backend / Infra
+| Agent | Use for |
+|---|---|
+| nodejs-expert | TanStack Start, Hono, Express/Fastify, API routes |
+| cicd-expert | GitHub Actions, GitLab CI |
+| docker-expert | Dockerfiles, Compose, image security |
+| observability-expert | OTel, Prometheus, Grafana, logging |
 
-> Java, .NET, Python, Go, Terraform, database agents disabled. Restore from `~/.claude/agents-disabled/` when needed.
+### Analysis & Docs
+| Agent | Use for |
+|---|---|
+| it-analyst | requirements analysis, Jira breakdown |
+| api-designer | OpenAPI 3.1, contract-first |
+| tech-writer | ADRs, RFCs, specs, runbooks |
+| fe-estimator | FE estimates in man-days |
 
-### Infrastructure & DevOps
-| Agent | Purpose | When to Use |
-|-------|---------|-------------|
-| cicd-expert | GitHub Actions, GitLab CI, Jenkins pipelines | CI/CD setup and optimization |
-| docker-expert | Multi-stage builds, Compose, security | Containerization |
-| observability-expert | OpenTelemetry, Prometheus, Grafana, structured logging | Monitoring, alerting |
+### AI Tooling & Exploration
+| Agent | Use for |
+|---|---|
+| ai-tooling-expert | Claude Code / OpenClaw / MCP config |
+| ai-context-optimizer | token efficiency, memory hygiene |
+| explorer | Haiku read-only codebase digest (>3 files to read) |
 
-### Analysis & Documentation
-| Agent | Purpose | When to Use |
-|-------|---------|-------------|
-| it-analyst | Requirements analysis, structured docs, Jira task breakdown | Business/IT analysis, requirements gathering |
-| api-designer | OpenAPI 3.1, REST conventions, contract-first | API design, documentation |
-| tech-writer | ADRs, RFCs, technical specs, runbooks | Technical documentation |
+`Explore` (built-in) = quick lookups, single grep. `explorer` (custom, Haiku) =
+multi-file digest, structured summary — prefer for file digestion.
 
-### AI Tooling & Automation
-| Agent | Purpose | When to Use |
-|-------|---------|-------------|
-| ai-tooling-expert | Claude Code, OpenClaw, ACP, MCP config and workflow automation | Setting up, configuring, or troubleshooting AI tools |
-| ai-context-optimizer | Context window optimization, memory management, token efficiency | Optimizing prompts, reducing token waste, memory hygiene |
+## Delegation triggers
 
-### Exploration
-| Agent | Purpose | When to Use |
-|-------|---------|-------------|
-| explorer | Fast read-only codebase digest, file structure overview | Reading >3 files for context, onboarding to unfamiliar code |
+Follow CLAUDE.md thresholds: <=3 files direct, >5 delegate, context >60% always
+delegate. Additionally always delegate: build/type errors (build-error-resolver),
+dead code sweeps (refactor-cleaner), post-edit review (code-reviewer),
+pre-commit security (security-reviewer).
 
-## Immediate Agent Usage
+## Parallel delegation (single message, multiple Agent calls)
 
-No user prompt needed:
-1. Complex feature requests - Use **planner** agent
-2. Code just written/modified - Use **code-reviewer** agent
-3. Bug fix or new feature - Use **tdd-guide** agent
-4. Architectural decision - Use **architect** agent
+- major change: code-reviewer + security-reviewer (+ accessibility-specialist for UI)
+- new API: api-designer + nodejs-expert + tdd-guide
+- new form: forms-expert + accessibility-specialist
 
-## Parallel Task Execution
+## Cost hints for delegated prompts
 
-ALWAYS use parallel Task execution for independent operations:
-
-```markdown
-# GOOD: Parallel execution
-Launch 3 agents in parallel:
-1. Agent 1: Security analysis of auth.ts
-2. Agent 2: Performance review of cache system
-3. Agent 3: Type checking of utils.ts
-
-# BAD: Sequential when unnecessary
-First agent 1, then agent 2, then agent 3
-```
-
-## Multi-Perspective Analysis
-
-For complex problems, use split role sub-agents:
-- Factual reviewer
-- Senior engineer
-- Security expert
-- Consistency reviewer
-- Redundancy checker
-
-## Delegation Triggers
-
-### Always delegate (never do in main session)
-
-| Situation | Agent | Why |
-|---|---|---|
-| Need to understand unfamiliar code area | `explorer` | Haiku digest cheaper than main session reads |
-| Reading >3 files for context | `explorer` | Same |
-| Build error appears | `build-error-resolver` | Haiku specialist |
-| Type error appears | `build-error-resolver` | Same |
-| Dead code suspected | `refactor-cleaner` | Haiku, deterministic via knip/ts-prune |
-| Test missing for new code | `tdd-guide` | Sonnet, write-tests-first |
-| Code just written | `code-reviewer` | Sonnet, immediate post-edit |
-| About to commit | `security-reviewer` | Sonnet, OWASP gate |
-
-### Parallel delegation (run in single message)
-
-For complex tasks, dispatch 2-3 agents in parallel:
-
-- After major code change: `code-reviewer` + `security-reviewer` + `accessibility-specialist`
-- New API: `api-designer` + `nodejs-expert` + `tdd-guide`
-- New form: `forms-expert` + `accessibility-specialist`
-
-### Explore agent vs explorer agent
-
-- `Explore` (built-in) — quick code lookups, single grep
-- `explorer` (custom) — multi-file digest, codebase onboarding, structured summary
-
-Prefer `explorer` for file digestion (cheaper Haiku, structured output).
-
-### Cost budget hints
-
-When delegating, include in prompt:
-- "Cap response at 500 words" — forces digest
-- "Reference file paths only, no code blocks" — saves output tokens
-- "Skip files <50 LOC" — focus on substance
+"Cap response at 500 words" / "file paths only, no code blocks" / "skip files <50 LOC".

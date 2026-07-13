@@ -1,45 +1,13 @@
-# Hooks System
+# Hooks (source of truth: settings.json.tmpl)
 
-## Hook Types
+| Event | Hook | Does |
+|---|---|---|
+| PermissionRequest * | smart-notify.sh | notify "needs permission" (Sosumi / yellow tmux) |
+| PreToolUse Read+Bash | block-sensitive-files.sh | deny secrets: .env*, keys, .pem, .aws/ .ssh/ ... exit 2 |
+| PreToolUse AskUserQuestion | smart-notify.sh | notify question text (Glass / blue tmux) |
+| PostToolUse Edit/Write/MultiEdit | fe-post-edit.sh | biome/prettier format edited file |
+| Stop * | smart-notify.sh; stop-verify.sh | done notify (quiet 23-07); tsc + console.log audit, one nudge per session |
+| all events | pixtuoid-hook (command -v guarded) | pixel-art session visualizer |
 
-- **PreToolUse**: Before tool execution (validation, parameter modification)
-- **PostToolUse**: After tool execution (auto-format, checks)
-- **Stop**: When session ends (final verification)
-
-## Current Hooks (in ~/.claude/settings.json)
-
-### PreToolUse
-- **tmux reminder**: Suggests tmux for long-running commands (npm, pnpm, yarn, cargo, etc.)
-- **doc blocker**: Blocks creation of unnecessary .md/.txt files
-
-### PostToolUse
-- **PR creation**: Logs PR URL and GitHub Actions status
-- **Prettier**: Auto-formats JS/TS files after edit
-- **TypeScript check**: Runs tsc after editing .ts/.tsx files
-- **console.log warning**: Warns about console.log in edited files
-
-### Stop
-- **console.log audit**: Checks all modified files for console.log before session ends
-
-## Auto-Accept Permissions
-
-Use with caution:
-- Enable for trusted, well-defined plans
-- Disable for exploratory work
-- Never use dangerously-skip-permissions flag
-- Configure `allowedTools` in `~/.claude.json` instead
-
-## TodoWrite Best Practices
-
-Use TodoWrite to:
-- Track progress on multi-step tasks
-- Verify understanding of instructions
-- Enable real-time steering
-- Show granular implementation steps
-
-Todo list reveals:
-- Out of order steps
-- Missing items
-- Extra unnecessary items
-- Wrong granularity
-- Misinterpreted requirements
+smart-notify dispatches per platform: osascript / wsl-notify-send / notify-send.
+Edit hooks only in chezmoi source (settings.json.tmpl + hooks/), never live files.
