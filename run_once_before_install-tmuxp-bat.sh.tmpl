@@ -1,25 +1,8 @@
 #!/bin/bash
-# Install tmuxp + bat
+# Install tmuxp + bat on Linux.
+# macOS installs the full toolchain via Brewfile (run_onchange_after_install-brew-bundle).
 
-{{ if eq .chezmoi.os "darwin" -}}
-if ! command -v tmuxp &>/dev/null; then
-  echo "Installing tmuxp..."
-  brew install tmuxp
-fi
-
-if ! command -v bat &>/dev/null; then
-  echo "Installing bat..."
-  brew install bat
-fi
-
-# smart-notify.sh prefers this over osascript (Script Editor bundle gets
-# silently muted by macOS); first run prompts for notification permission
-if ! command -v terminal-notifier &>/dev/null; then
-  echo "Installing terminal-notifier..."
-  brew install terminal-notifier
-fi
-
-{{ else if eq .chezmoi.os "linux" -}}
+{{ if eq .chezmoi.os "linux" -}}
 # Ensure pipx
 if ! command -v pipx &>/dev/null; then
   echo "Installing pipx..."

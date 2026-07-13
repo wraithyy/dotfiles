@@ -1,0 +1,15 @@
+#!/bin/bash
+# Install the reproducible CLI toolchain from the repo Brewfile (macOS only).
+# chezmoi re-runs this whenever the Brewfile hash below changes.
+#
+# Brewfile hash: {{ include "Brewfile" | sha256sum }}
+
+{{ if eq .chezmoi.os "darwin" -}}
+if ! command -v brew >/dev/null 2>&1; then
+  echo "Homebrew not found, skipping brew bundle"
+  exit 0
+fi
+brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile" --no-upgrade
+{{ else -}}
+echo "Not macOS, brew bundle skipped (see run_once_before_install for Linux)"
+{{ end -}}
