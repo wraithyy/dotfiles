@@ -103,4 +103,14 @@ if ! send_notification && [ -n "$TMUX" ]; then
   tmux display-message -d 3000 "#[bg=$tmux_color,fg=black] CC #[default] $message" 2>/dev/null
 fi
 
+# Peripheral status: colour this pane's border. Yellow = waiting on the user,
+# default = working/idle. Runs regardless of the desktop notification.
+if [ -n "$TMUX_PANE" ]; then
+  case "$event" in
+    PermissionRequest | PreToolUse) border="fg=yellow" ;;
+    *) border="default" ;; # Stop / Notification -> back to idle
+  esac
+  tmux select-pane -t "$TMUX_PANE" -P "$border" 2>/dev/null
+fi
+
 exit 0

@@ -3,6 +3,10 @@ return {
 		"folke/which-key.nvim",
 		opts = {
 			spec = {
+				{ "<leader>a", desc = "Claude (send to tmux pane)" },
+				{ "<leader>ae", desc = "Send diagnostic" },
+				{ "<leader>ap", desc = "Prompt + file ref" },
+				{ "<leader>ar", desc = "Send file/selection ref" },
 				{ "<leader>b", desc = "Buffer select", icon = "" },
 				{ "<leader>bb", desc = "Pick buffers", icon = "﬘" },
 				{ "<leader>bd", desc = "Close buffer", icon = "" },

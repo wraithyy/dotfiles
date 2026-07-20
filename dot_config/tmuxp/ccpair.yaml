@@ -1,0 +1,25 @@
+# Parallel-agent layout: nvim + two Claude Code panes, each meant for an
+# independent worktree (pair with the /worktree command).
+#
+#  +-------------------+----------+
+#  |                   | claude A |
+#  |       nvim        +----------+
+#  |                   | claude B |
+#  +-------------------+----------+
+#
+# Start each CC pane in its own worktree, e.g.:
+#   cd ../<repo>.worktrees/<task-a> && claude
+# so the two agents never touch the same files.
+display_name: parallel agents (nvim + 2x claude)
+session_name: ccpair
+windows:
+  - window_name: "agents"
+    layout: main-vertical
+    focus: true
+    options:
+      main-pane-width: 60%
+    panes:
+      - shell_command: nvim
+        focus: true
+      - claude
+      - claude

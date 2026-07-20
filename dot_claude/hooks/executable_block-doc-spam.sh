@@ -16,10 +16,11 @@ esac
 # editing an existing file is always allowed
 [ -e "$file_path" ] && exit 0
 
-# whitelist: canonical docs, doc dirs, claude config, temp/scratch areas
+# whitelist: canonical docs, doc dirs, claude config (incl. chezmoi source
+# dot_claude/), rules/, temp/scratch areas
 case "$file_path" in
   */README*|*/CLAUDE*|*/AGENTS.md|*/CHANGELOG*|*/LICENSE*) exit 0 ;;
-  */docs/*|*/plans/*|*/.claude/*|*/memory/*) exit 0 ;;
+  */docs/*|*/plans/*|*/.claude/*|*/dot_claude/*|*/rules/*|*/memory/*) exit 0 ;;
   /tmp/*|/private/tmp/*|*/scratchpad/*) exit 0 ;;
 esac
 

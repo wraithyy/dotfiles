@@ -14,6 +14,7 @@ require("config.diagnostics-design")
 require("config.title")
 require("config.auto-save")
 require("config.autoread")
+require("config.claude")
 vim.opt.relativenumber = true
 vim.o.winborder = "rounded"
 
