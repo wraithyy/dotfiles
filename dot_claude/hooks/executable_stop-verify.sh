@@ -22,9 +22,18 @@ logs=$(cd "$cwd" && grep -n 'console\.log' $modified 2>/dev/null | head -10)
 $logs
 "
 
+# GNU timeout is absent on stock macOS; fall back to gtimeout (coreutils) or no limit
+if command -v timeout >/dev/null 2>&1; then
+  TIMEOUT="timeout 60"
+elif command -v gtimeout >/dev/null 2>&1; then
+  TIMEOUT="gtimeout 60"
+else
+  TIMEOUT=""
+fi
+
 # typecheck once per session end (not per edit)
 if [[ -f "$cwd/tsconfig.json" ]]; then
-  tsc_output=$(cd "$cwd" && timeout 60 npx tsc --noEmit 2>&1)
+  tsc_output=$(cd "$cwd" && $TIMEOUT npx tsc --noEmit 2>&1)
   if [[ $? -ne 0 && -n "$tsc_output" ]]; then
     findings+="TypeScript errors:
 $(echo "$tsc_output" | head -20)
@@ -34,12 +43,12 @@ fi
 
 # lint modified files with whatever the project uses
 if [[ -f "$cwd/biome.json" || -f "$cwd/biome.jsonc" ]]; then
-  lint_output=$(cd "$cwd" && timeout 60 npx biome check $modified 2>&1)
+  lint_output=$(cd "$cwd" && $TIMEOUT npx biome check $modified 2>&1)
   [[ $? -ne 0 && -n "$lint_output" ]] && findings+="Biome findings:
 $(echo "$lint_output" | head -15)
 "
 elif ls "$cwd"/eslint.config.* "$cwd"/.eslintrc* >/dev/null 2>&1; then
-  lint_output=$(cd "$cwd" && timeout 60 npx eslint $modified 2>&1)
+  lint_output=$(cd "$cwd" && $TIMEOUT npx eslint $modified 2>&1)
   [[ $? -ne 0 && -n "$lint_output" ]] && findings+="ESLint findings:
 $(echo "$lint_output" | head -15)
 "
