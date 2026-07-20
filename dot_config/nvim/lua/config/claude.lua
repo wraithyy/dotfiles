@@ -4,18 +4,18 @@
 local M = {}
 
 -- Find the tmux pane running Claude Code in the current session.
--- ponytail: matches pane_current_command against claude/node and skips our own
--- pane. If CC shows up under a different comm, widen this match.
+-- CC sets pane_title to "✳ Claude Code"; pane_current_command is unreliable
+-- (reports the version string, e.g. "2.1.215"), so match on the title.
 local function claude_pane()
 	if vim.env.TMUX == nil then
 		return nil
 	end
 	local self_pane = vim.env.TMUX_PANE
-	local fmt = "#{pane_id} #{pane_current_command}"
-	local out = vim.fn.systemlist("tmux list-panes -s -F '" .. fmt .. "'")
+	-- tab-separated so titles with spaces stay intact
+	local out = vim.fn.systemlist("tmux list-panes -s -F '#{pane_id}\t#{pane_title}'")
 	for _, line in ipairs(out) do
-		local id, cmd = line:match("(%%%d+)%s+(%S+)")
-		if id and id ~= self_pane and (cmd == "claude" or cmd == "node") then
+		local id, title = line:match("^(%%%d+)\t(.*)$")
+		if id and id ~= self_pane and title:lower():find("claude") then
 			return id
 		end
 	end
