@@ -15,6 +15,6 @@ windows:
     focus: true
     start_directory: ~/Development/Notes
     panes:
-      - shell_command: nvim
+      - shell_command: NVIM_APPNAME=nvim-notes nvim
         focus: true
-      - claude
+      - claude --model sonnet

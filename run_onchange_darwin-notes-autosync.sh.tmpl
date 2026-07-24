@@ -1,0 +1,30 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Install + (re)load launchd agent syncing ~/Development/Notes every 30 min.
+# Reruns when the sync script changes.
+# script hash: {{ include "dot_local/bin/executable_notes-autosync.sh" | sha256sum }}
+
+set -e
+PLIST="$HOME/Library/LaunchAgents/com.wraithy.notes-autosync.plist"
+mkdir -p "$HOME/Library/LaunchAgents"
+
+cat > "$PLIST" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.wraithy.notes-autosync</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$HOME/.local/bin/notes-autosync.sh</string>
+  </array>
+  <key>StartInterval</key><integer>1800</integer>
+  <key>StandardErrorPath</key><string>/tmp/notes-autosync.err</string>
+</dict>
+</plist>
+EOF
+
+launchctl unload "$PLIST" 2>/dev/null || true
+launchctl load "$PLIST"
+echo "notes-autosync loaded"
+{{ end -}}

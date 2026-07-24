@@ -19,4 +19,4 @@ brew "gh"              # GitHub CLI
 brew "glab"            # GitLab CLI (Trask MR workflow)
 brew "terminal-notifier"  # smart-notify.sh preferred backend
 brew "yazi"           # y() file manager in zshrc
-brew "1password-cli"  # op read for gitlab MCP token
+cask "1password-cli"  # op read for gitlab MCP token

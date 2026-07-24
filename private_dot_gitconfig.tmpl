@@ -1,0 +1,26 @@
+[core]
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+[merge]
+	conflictStyle = zdiff3
+[user]
+	name = Josef
+	email = {{ .email }}
+	signingkey = ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCvtFbP2vb12zO8c2DadEJneolm1zbh362Sdgai1VUMGfFvnuysvBlvaBLYzHoZukGraE3U/IogyfSsce7foWaAldr83q6GdgKMkluH4kStOREIwNXqlwoclHAwp1Iys/58ImGJMLtmPucWkY39Ha0EalD6FxD6gGRnA294WGXDFUVbc1Z3A5DrO4/TXABffOqbrgAWuYFA0QNGY+5e9FVsllzL4hDxLULd5frZNM2Ok6Y1XiPDXYFv68bnaO/nnpXtf6yvHZX1ER1VY1xHH6pFP8CUJF2OLPYVTPXOadB4BH4HTCqwBPb+QCls1wGg8koRTQTo9+2EJ3wA7nS2KvtDm+B76QusvdCfY5LIhG3ieVeYRdrKbuXk7UUYKaO1vsnQz4ow84bRKRV1M4rc9PZlQuFvLfg4D6tdbOljwMrTX0/RGHfuYErsWV5SshhqTpIcMssFf9YXj21zSQ/PEV4xMDim6B7a4J+1nMoJXooMUux4JT+0dw6gx8WXlxH3MNlThwHauCds2kggwArRH25/6fSdV1QteVfufT+AdmrEN/D8YQihFfKjXua+HVEHe++TEOt4+IHz23PIsZiahet0/0eV2rcpzpug7bDs/teFDFAVP2grAllyQY6C5vv7Sga1FR5Qx9jYoTPVivJHx2oaFgLMSPADEQYJCrpWwqtusQ==
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[commit]
+	gpgsign = true
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+# self-signed cert on internal GitLab; scoped to that host only, not global
+[http "https://gitlab.trask.cz"]
+	sslVerify = false

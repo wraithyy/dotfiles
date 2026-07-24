@@ -46,8 +46,7 @@ export PATH="$HOME/.rd/bin:$PATH"
 # Aliasy
 alias v="nvim"
 alias clauded="claude --dangerously-skip-permissions"
-# shadows /usr/bin/cc (C compiler) in interactive shells only; make/scripts use $CC
-alias cc="claude"
+# cc() below shadows /usr/bin/cc (C compiler) in interactive shells only; make/scripts use $CC
 export DISABLE_AUTO_TITLE='true'
 {{- if eq .chezmoi.os "darwin" }}
 alias dev="cd ~/Development/Trask"
@@ -175,6 +174,159 @@ work() {
     tmuxp load dev -s "$name" -d || return 1
   fi
   _tmux_goto "$name"
+}
+
+# cc: Claude Code, always in tmux. Reuses a session already running in this
+# cwd (new window); starts a fresh session otherwise. No tmux -> plain claude.
+cc() {
+  command -v tmux >/dev/null || { claude "$@"; return; }
+
+  if [[ -n "$TMUX" ]]; then
+    tmux new-window -c "$PWD" claude
+    return
+  fi
+
+  local sess
+  sess=$(tmux list-panes -a -F '#{session_name}|#{pane_current_path}' 2>/dev/null \
+         | awk -F'|' -v d="$PWD" '$2==d {print $1; exit}')
+
+  if [[ -n "$sess" ]]; then
+    tmux new-window -t "$sess" -c "$PWD" claude
+    _tmux_goto "$sess"
+    return
+  fi
+
+  local name; name="$(basename "$PWD")"
+  # ponytail: basename collisions get a numeric suffix; upgrade to a
+  # path-hash name if that ever actually collides in practice.
+  local n="$name" i=2
+  while tmux has-session -t "=$n" 2>/dev/null; do n="$name-$((i++))"; done
+  tmux new-session -d -s "$n" -c "$PWD" claude
+  _tmux_goto "$n"
+}
+
+# Spinner with rotating status words while a background pid runs (claude -p
+# is silent until done). Writes to stderr, clears its line when finished.
+_note_spin() {
+  local pid=$1
+  # reseed: subshells inherit parent's RANDOM state, so without this every
+  # invocation replays the same word sequence
+  RANDOM=$(( $(date +%s) ^ $$ ))
+  local words=(
+    "Přemýšlím" "Hrabu se ve vaultu" "Combobulating" "Listuji poznámkami"
+    "Louskám markdown" "Dolaďuji odpověď" "Přehrabuji schůzky" "Grepuju"
+    "Discombobulating" "Reticulating splines" "Konzultuji s Yodou"
+    "Ptám se Gandalfa (Fly, you fools)" "One does not simply grep Mordor"
+    "Hrabu se v archivech Minas Tirith" "Luštím elfí runy"
+    "Otvírám bránu do Morie (mellon)" "Ent-moot v plném proudu"
+    "You shall not pass… ještě moment" "Ptám se Prstenu"
+    "These aren't the notes you're looking for" "Skenuji midichloriany"
+    "Execute Order 66 na duplicity" "Používám Sílu. A grep. Hlavně grep."
+    "Hledám v Alexandrijské knihovně" "Počítám do 42" "Don't panic, ručník mám"
+    "Kouzlím s regexy" "Honím bílého králíka" "I know kung fu. A teď i tvůj vault"
+    "Vstupuji do paláce mysli" "Elementary, můj milý Watsone"
+    "Tetuju si to jak Leonard v Mementu" "Píšu do Death Note (klid, jen poznámky)"
+    "Accio poznámko!" "Lovím vzpomínky z Myslánky"
+    "Slavnostně přísahám, že hledám poznámku" "Listuju deníkem Henryho Jonese"
+    "Patří to do muzea! (archivuju)" "Enhance. Enhance. ENHANCE."
+    "Prohlížím 14 000 605 variant odpovědi" "Lusknu prstem a duplicity zmizí"
+    "Lenochod Blesk zpracovává váš dotaz" "Třídím poznámky jak WALL-E"
+    "Jdu o inbox hlouběji (BWAAAM)" "Poznámky musí proudit (spice must flow)"
+    "I'll be back… s odpovědí" "Good news, everyone!"
+    "Kalibruji průtokový kondenzátor" "Utahuji šroubky warp jádra"
+    "Make it so" "Live long and grep" "Shall we play a game?"
+    "Farmím poznámky jak XP v Azerothu" "More work? (peon souhlasí)" "Zug zug"
+    "Vbíhám do vaultu — Leeroooy Jenkinsss" "Need or greed na nalezenou poznámku?"
+    "Not enough minerals… grepuju dál" "Stay awhile and listen — identifikuji poznámku"
+    "FUS RO DAH na ty poznámky" "Šíp do kolena, chvilku to zdrží"
+    "Toss a coin to your grepper" "Čichám ke stopám jak Geralt"
+    "Otvírám Vault 101" "Pip-Boy načítá záznamy"
+    "Otvírám truhlu — tananananáá" "It's dangerous to go alone, grepuju s tebou"
+    "Kopu hlouběji — diamanty… teda poznámky" "Optimalizuji dopravníky poznámek"
+    "Roll for initiative (d20)" "Insert coin to continue"
+    "Up up down down left right left right B A" "Blowing on the cartridge"
+    "Achievement unlocked: Trpělivost" "Loading… (vine boom)"
+    "Nikdo: … Já: grepuju vault" "This is fine (vault hoří)"
+    "Stěhuju poznámky — Pivot! PIVOT!" "I am the one who knocks (na vault)"
+    "Winter is coming, poznámky taky" "Ptám se Jedenáctky (nekrvácí, dobrý)"
+    "Hledám to v Upside Down"
+  )
+  local frames='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+  local i=0 w=${words[$((RANDOM % ${#words[@]} + 1))]}
+  while kill -0 "$pid" 2>/dev/null; do
+    # \e[K erases the rest of the line so a longer previous word leaves no tail
+    printf '\r\e[2m%s %s…\e[0m\e[K' "${frames:$((i % 10)):1}" "$w" >&2
+    (( ++i % 30 == 0 )) && w=${words[$((RANDOM % ${#words[@]} + 1))]}
+    sleep 0.1
+  done
+  printf '\r\e[2K' >&2
+}
+
+# Run claude -p with a spinner when interactive; plain passthrough otherwise.
+_note_claude() {
+  setopt localoptions no_notify no_monitor  # no [1] 12345 / done job noise
+  if [[ ! -t 1 ]]; then
+    claude "$@"
+    return
+  fi
+  local out; out=$(mktemp)
+  claude "$@" > "$out" 2>&1 &
+  local pid=$!
+  _note_spin "$pid"
+  wait "$pid"
+  local rc=$?
+  cat "$out"; rm -f "$out"
+  return $rc
+}
+
+# note: Notes vault workflow.
+#   note                open/attach notes tmux session (nvim-notes + claude)
+#   note -w             the same, in a new Ghostty window
+#   note <text>         instant capture to inbox/ (pure shell, no Claude)
+#   note ai <text>      Claude (sonnet) files the note where it belongs
+#   note ask <question> one-off Q&A over the vault (sonnet, read-only)
+#   note ask -c <q>     follow-up on the previous ask conversation
+note() {
+  local vault=~/Development/Notes
+
+  case "$1" in
+    -w)
+      open -na Ghostty --args -e zsh -ic note
+      return ;;
+    ask)
+      shift
+      local cont=()
+      [[ "$1" == "-c" ]] && { cont=(--continue); shift; }
+      # skip MCP servers, skills and user-level settings: ~35% faster -p start
+      (cd "$vault" && _note_claude -p --model sonnet --strict-mcp-config \
+        --disable-slash-commands --setting-sources project "${cont[@]}" "$*")
+      return ;;
+    ai)
+      shift
+      (cd "$vault" && _note_claude -p --model sonnet --strict-mcp-config \
+        --disable-slash-commands --setting-sources project \
+        --permission-mode acceptEdits --allowedTools "Bash(git:*),Bash(date:*)" \
+        "Ulož tuto poznámku do vaultu na správné místo podle konvencí (projekty/lidi/poznamky; když si nejsi jistý, inbox/). Commitni a pushni. Odpověz jen cestou k souboru. Poznámka: $*")
+      return ;;
+    ?*)
+      # instant capture, mirrors the /note skill: verbatim text, no frontmatter
+      local slug
+      slug=$(print -r -- "$*" | iconv -f utf-8 -t ascii//TRANSLIT 2>/dev/null \
+             | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' \
+             | sed 's/^-*//;s/-*$//' | cut -d- -f1-5)
+      local file="inbox/$(date +%Y-%m-%d-%H%M)-${slug:-note}.md"
+      print -r -- "$*" > "$vault/$file" || return 1
+      (cd "$vault" && git add "$file" && git commit -q -m "note: ${slug:-note}" && git push -q) \
+        || print -u2 "[note] saved but commit/push failed: $file"
+      print "$file"
+      return ;;
+  esac
+
+  command -v tmuxp >/dev/null || { echo "tmuxp missing"; return 1; }
+  if ! tmux has-session -t "=notes" 2>/dev/null; then
+    tmuxp load notes -d || return 1
+  fi
+  _tmux_goto notes
 }
 
 # Lokální config (mimo chezmoi - např. OpenClaw, secrets, machine-specific)

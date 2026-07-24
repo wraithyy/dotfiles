@@ -21,6 +21,7 @@ esac
 case "$file_path" in
   */README*|*/CLAUDE*|*/AGENTS.md|*/CHANGELOG*|*/LICENSE*) exit 0 ;;
   */docs/*|*/plans/*|*/.claude/*|*/dot_claude/*|*/rules/*|*/memory/*) exit 0 ;;
+  */[Nn]otes/*) exit 0 ;;
   /tmp/*|/private/tmp/*|*/scratchpad/*) exit 0 ;;
 esac
 

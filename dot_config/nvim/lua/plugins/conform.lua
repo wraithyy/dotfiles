@@ -89,7 +89,7 @@ return {
 			},
 			prettierd = {}, -- fallback bez podmínky
 		},
-	},
+	}, 
 	keys = {
 		{
 			"<leader>j",
