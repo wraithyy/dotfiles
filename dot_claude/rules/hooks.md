@@ -2,6 +2,7 @@
 
 | Event | Hook | Does |
 |---|---|---|
+| SessionStart startup | op-preflight.sh | throwaway op-ssh-sign signature; warns into context when 1P signing broken |
 | PermissionRequest * | smart-notify.sh | notify "needs permission" (Sosumi / yellow tmux) |
 | PreToolUse Read+Bash | block-sensitive-files.sh | deny secrets: .env*, keys, .pem, .aws/ .ssh/ ... exit 2 |
 | PreToolUse AskUserQuestion | smart-notify.sh | notify question text (Glass / blue tmux) |

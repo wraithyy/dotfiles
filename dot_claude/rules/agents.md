@@ -67,6 +67,20 @@ pre-commit security (security-reviewer).
 - new API: api-designer + nodejs-expert + tdd-guide
 - new form: forms-expert + accessibility-specialist
 
+## Evidence contract (mandatory in every delegated prompt)
+
+Subagents have falsely claimed passing checks (e2e hit an unrelated app on
+port 3000; GitLab lint never ran). Every prompt that asks an agent to verify
+anything MUST include:
+
+> End your report with a VERIFICATION block: exact commands run, exit codes,
+> last 10 lines of raw output. Any claim without pasted output = report it as
+> UNVERIFIED. For dev-server/e2e checks, prove the port belongs to this
+> project (fetch a known route) before trusting results.
+
+Orchestrator side: never relay an agent's "passed" to the user without an
+evidence block; re-run the critical check in the main session if it's missing.
+
 ## Cost hints for delegated prompts
 
 "Cap response at 500 words" / "file paths only, no code blocks" / "skip files <50 LOC".

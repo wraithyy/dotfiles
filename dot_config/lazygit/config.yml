@@ -27,6 +27,15 @@ git:
   paging:
     colorArg: always
     pager: delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+customCommands:
+  - key: "C"
+    context: "files"
+    description: "AI commit message (caveman)"
+    command: |
+      msg=$(git diff --cached | claude -p --model haiku 'Write commit message, Conventional Commits format. Subject: <=50 chars hard limit, imperative, type from feat/fix/refactor/docs/test/chore/perf/ci; covers dominant concern. Body: bullet list, one "- " line per distinct change, telegraphic style, no articles, no filler, <=60 chars per line. Single trivial change = subject only, no body. Output only the message, no quotes, no markdown.')
+      git commit -e -m "$msg"
+    output: terminal
+
 keybinding:
  universal:
     quit: "q"

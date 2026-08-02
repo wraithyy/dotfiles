@@ -27,7 +27,6 @@ Plan, delegate, synthesize, decide architecture. Subagents execute heavy work.
 
 ## Conventions
 
-- Session init: time MCP for current date
 - No emoji in code/commits/comments (unless asked)
 - Comments explain why, not what; only necessary ones
 - TypeScript: never `any` without justifying comment

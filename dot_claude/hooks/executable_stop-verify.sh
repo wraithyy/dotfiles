@@ -10,17 +10,15 @@ cwd=$(echo "$input" | jq -r '.cwd // ""')
 [[ -z "$cwd" || ! -d "$cwd" ]] && exit 0
 [[ -f "$cwd/package.json" ]] || exit 0
 
-# Modified TS/JS files in the working tree (skip if not a git repo / no changes)
-modified=$(cd "$cwd" && git diff --name-only HEAD 2>/dev/null | grep -E '\.(ts|tsx|js|jsx)$')
+# Modified TS/JS files in the working tree (skip if not a git repo / no changes).
+# git prints paths relative to repo toplevel, not cwd — make them absolute so
+# grep/biome/eslint work when cwd is a subdir (monorepo package).
+top=$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null)
+[[ -z "$top" ]] && exit 0
+modified=$(git -C "$cwd" diff --name-only --diff-filter=d HEAD 2>/dev/null | grep -E '\.(ts|tsx|js|jsx)$' | sed "s|^|$top/|")
 [[ -z "$modified" ]] && exit 0
 
 findings=""
-
-# console.log audit on modified files only
-logs=$(cd "$cwd" && grep -n 'console\.log' $modified 2>/dev/null | head -10)
-[[ -n "$logs" ]] && findings+="console.log left in modified files:
-$logs
-"
 
 # GNU timeout is absent on stock macOS; fall back to gtimeout (coreutils) or no limit
 if command -v timeout >/dev/null 2>&1; then
@@ -51,6 +49,13 @@ elif ls "$cwd"/eslint.config.* "$cwd"/.eslintrc* >/dev/null 2>&1; then
   lint_output=$(cd "$cwd" && $TIMEOUT npx eslint $modified 2>&1)
   [[ $? -ne 0 && -n "$lint_output" ]] && findings+="ESLint findings:
 $(echo "$lint_output" | head -15)
+"
+else
+  # no linter here — dumb grep is the only console guard left. with a linter it
+  # only produces false positives: it cannot see biome-ignore / eslint-disable.
+  logs=$(cd "$cwd" && grep -n 'console\.log' $modified 2>/dev/null | head -10)
+  [[ -n "$logs" ]] && findings+="console.log left in modified files:
+$logs
 "
 fi
 

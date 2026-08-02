@@ -32,23 +32,19 @@ remove_if_present() {
 
 add_if_missing chrome-devtools npx -y chrome-devtools-mcp@latest
 add_if_missing playwright      npx -y @playwright/mcp@latest
+add_if_missing browsermcp      npx @browsermcp/mcp@latest
 
-# webclaw is a homebrew binary — absent on RPi/WSL, guard instead of hardcoding
-if command -v webclaw-mcp >/dev/null 2>&1; then
-  add_if_missing webclaw "$(command -v webclaw-mcp)"
-else
-  echo "webclaw-mcp not found, skipping webclaw mcp"
+# web-fetch (fetcher-mcp) — Playwright-backed page fetch, needs chromium once
+if [ ! -d "$HOME/Library/Caches/ms-playwright" ] && [ ! -d "$HOME/.cache/ms-playwright" ]; then
+  npx -y playwright install chromium || echo "playwright chromium install failed, web-fetch may not work"
 fi
-
-# time server (rules/common.md session init) — Python-based, needs uvx
-if command -v uvx >/dev/null 2>&1; then
-  add_if_missing time uvx mcp-server-time
-else
-  echo "uvx not found, skipping time mcp"
-fi
+add_if_missing web-fetch npx -y fetcher-mcp
 
 # context7 is provided by the context7@claude-plugins-official plugin, not an MCP server
 remove_if_present browser-mcp  # redundant with playwright + chrome-devtools
+remove_if_present webclaw      # replaced by web-fetch (fetcher-mcp), no brew dep
+remove_if_present time         # mcp-server-time broken vs current mcp SDK; Claude Code injects currentDate natively
+remove_if_present context7     # duplicate of the context7 plugin
 
 # GitLab MCP — token pulled from 1Password at runtime (not stored in repo/state).
 gitlab_token_ref="op://47q7ov7jcalclpmkqfopl6m3n4/Gitlab-trask/credential"
