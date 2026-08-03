@@ -1,23 +1,35 @@
-# Performance: Model Routing
+# Performance: Model Routing (Claude 5 era)
 
-Target distribution: 70% Haiku / 20% Sonnet / 10% Opus.
+Session default is `opusplan` (settings.json): Opus 5 in plan mode, Sonnet 5
+for execution. Cost order per MTok:
+Fable $10/$50 > Opus 5 $5/$25 > Sonnet 5 $3/$15 > Haiku 4.5 $1/$5.
+Sonnet 5 is near-Opus on coding/agentic work — subagent default, not a
+compromise.
 
-| Agent tier | Model | Examples |
+| Tier | Model | Use |
 |---|---|---|
-| Mechanical — narrow, rule-check | haiku | build-error-resolver, doc-updater, refactor-cleaner, e2e-runner, accessibility-specialist, api-designer, cicd-expert, css-expert, docker-expert, forms-expert, seo-specialist, explorer |
-| Implementation — code write, review | sonnet | react-expert, fe-specialist, code-reviewer, security-reviewer, tdd-guide, tech-writer, ai-context-optimizer, fe-estimator, other workers |
-| Architecture — deep reasoning | opus | architect, planner, ai-tooling-expert |
+| Main session | opusplan (or opus) | daily work: planning on Opus, execution on Sonnet |
+| Exceptional | fable (`/model fable`) | only hardest long-horizon/complex tasks; switch back after |
+| Subagent default | sonnet | implementation, review, tests, research digests — most workers |
+| Subagent escalation | opus | only after sonnet failed that specific task, or architecture-grade reasoning |
+| Trivial mechanical | haiku | formatting, single-file greps, doc lookups, checklist runs |
 
-| Task type | Model |
-|---|---|
-| grep, file reads, docs lookup, formatting | haiku |
-| code writing, reviews, tests, refactoring | sonnet |
-| architecture, cross-system analysis | opus (main session) |
-| deep reasoning where sonnet failed | opus (subagent last resort) |
+Rules of thumb:
 
-With `opusplan` active, main session already routes planning->Opus,
-implementation->Sonnet. Don't pass `model: opus` to workers unless Sonnet
-failed on that specific task.
+- Don't pass `model:` overrides per task; agent frontmatter already pins tiers.
+- Prefer lowering `effort` over downgrading model for cheap mechanical work
+  (agent frontmatter supports `effort: low|medium|high|xhigh`; session default
+  is xhigh).
+- Fable: exceptional use only — weekly usage caps (50% of plan limits), 2x
+  Opus price; never as subagent model.
+
+Gotchas:
+
+- Fable sessions can silently fall back to Opus via safety classifier and STAY
+  there — after `/model fable`, verify the active model mid-session.
+- Mid-session model switches re-read full history uncached (one-time token
+  cost) — switch at plan boundaries, not mid-task.
+- `CLAUDE_CODE_SUBAGENT_MODEL` env var outranks agent frontmatter `model:`.
 
 ## Context window
 

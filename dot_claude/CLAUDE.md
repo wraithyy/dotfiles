@@ -22,8 +22,8 @@ Plan, delegate, synthesize, decide architecture. Subagents execute heavy work.
   `ctx_search`) — raw output stays sandboxed, only summary enters context
 - Library code -> Context7 plugin docs first (beats stale knowledge);
   tell delegated agents same
-- Model tiers: Haiku mechanical, Sonnet implementation, Opus architecture
-  — see rules/performance.md
+- Model tiers: opusplan session default, Sonnet subagents (Opus escalation),
+  Haiku trivial only, Fable exceptional — see rules/performance.md
 
 ## Conventions
 
