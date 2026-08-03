@@ -46,17 +46,12 @@ remove_if_present webclaw      # replaced by web-fetch (fetcher-mcp), no brew de
 remove_if_present time         # mcp-server-time broken vs current mcp SDK; Claude Code injects currentDate natively
 remove_if_present context7     # duplicate of the context7 plugin
 
-# GitLab MCP — token pulled from 1Password at runtime (not stored in repo/state).
+# GitLab MCP — token fetched from 1Password at SERVER START via wrapper, never
+# persisted in ~/.claude.json args (a baked --token leaks via `claude mcp list`
+# into transcripts/backups).
 gitlab_token_ref="op://47q7ov7jcalclpmkqfopl6m3n4/Gitlab-trask/credential"
 if command -v op >/dev/null 2>&1; then
-  gitlab_token=$(op read "$gitlab_token_ref" 2>/dev/null || true)
-  if [ -n "$gitlab_token" ]; then
-    add_if_missing gitlab npx -y @zereight/mcp-gitlab \
-      --token="$gitlab_token" \
-      --api-url=https://gitlab.trask.cz/api/v4
-  else
-    echo "could not read GitLab token from 1Password ($gitlab_token_ref), skipping gitlab mcp"
-  fi
+  add_if_missing gitlab sh -c "GITLAB_PERSONAL_ACCESS_TOKEN=\"\$(op read '$gitlab_token_ref')\" GITLAB_API_URL=https://gitlab.trask.cz/api/v4 exec npx -y @zereight/mcp-gitlab"
 else
   echo "op (1Password CLI) not found, skipping gitlab mcp"
 fi
