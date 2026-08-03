@@ -29,7 +29,12 @@ Gotchas:
   there — after `/model fable`, verify the active model mid-session.
 - Mid-session model switches re-read full history uncached (one-time token
   cost) — switch at plan boundaries, not mid-task.
-- `CLAUDE_CODE_SUBAGENT_MODEL` env var outranks agent frontmatter `model:`.
+- `CLAUDE_CODE_SUBAGENT_MODEL=sonnet` is SET in settings env (2026-08-03):
+  built-in agents (general-purpose, Explore, Plan) otherwise inherit the
+  session model — 1,530 Fable subagent msgs leaked that way in 30d. It
+  outranks frontmatter pins too (explorer's haiku, deliberate opus
+  escalations); for an intentional opus/haiku subagent, unset it for that
+  session or pass model in the Agent call.
 
 ## Context window
 

@@ -1,7 +1,10 @@
 # Agent Orchestration
 
-Agents live in `~/.claude/agents/`. Disabled sets (Java, .NET, Python, Go,
-Terraform, DB) restore from `~/.claude/agents-disabled/`.
+Agents live in `~/.claude/agents/`. Unused/disabled agents restore from
+`~/.claude/agents-disabled/` (language sets: Java, .NET, Python, Go,
+Terraform, DB; plus 2026-08 usage-trim: ai-context-optimizer,
+ai-tooling-expert, api-designer, build-error-resolver, css-expert,
+docker-expert, forms-expert, observability-expert).
 
 ## Available Agents
 
@@ -13,7 +16,6 @@ Terraform, DB) restore from `~/.claude/agents-disabled/`.
 | tdd-guide | write-tests-first for features and bug fixes |
 | code-reviewer | review after writing code |
 | security-reviewer | OWASP gate before commits |
-| build-error-resolver | build/type errors, minimal diffs |
 | e2e-runner | Playwright E2E flows |
 | refactor-cleaner | dead code removal (knip/ts-prune) |
 | doc-updater | codemaps and docs |
@@ -23,50 +25,39 @@ Terraform, DB) restore from `~/.claude/agents-disabled/`.
 |---|---|
 | fe-specialist | Core Web Vitals, bundle, rendering perf |
 | react-expert | hooks, state mgmt, TanStack Router/Query, component design |
-| css-expert | Tailwind, cva, responsive, animations |
-| forms-expert | RHF/TanStack Form + Zod |
 | accessibility-specialist | WCAG 2.1 AA, ARIA, keyboard nav |
 | seo-specialist | meta, structured data, sitemaps |
 
-### Backend / Infra
+### Backend / Infra / Docs
 | Agent | Use for |
 |---|---|
 | nodejs-expert | TanStack Start, Hono, Express/Fastify, API routes |
 | cicd-expert | GitHub Actions, GitLab CI |
-| docker-expert | Dockerfiles, Compose, image security |
-| observability-expert | OTel, Prometheus, Grafana, logging |
-
-### Analysis & Docs
-| Agent | Use for |
-|---|---|
 | it-analyst | requirements analysis, Jira breakdown |
-| api-designer | OpenAPI 3.1, contract-first |
 | tech-writer | ADRs, RFCs, specs, runbooks |
 | fe-estimator | FE estimates in man-days |
 
-### AI Tooling & Exploration
+### Exploration
 | Agent | Use for |
 |---|---|
-| ai-tooling-expert | Claude Code / OpenClaw / MCP config |
-| ai-context-optimizer | token efficiency, memory hygiene |
 | explorer | Haiku read-only codebase digest (>3 files to read) |
 
 `Explore` (built-in) = quick lookups, single grep. `explorer` (custom, Haiku) =
 multi-file digest, structured summary — prefer for file digestion.
 
-## Delegation triggers
+## When to delegate
 
-Follow CLAUDE.md thresholds: <=3 files direct, >5 delegate, context >60% always
-delegate. Also delegate: build/type errors (build-error-resolver), dead code
-sweeps (refactor-cleaner). Review delegation: code-reviewer for significant
-changes, security-reviewer before committing auth/security/payment code —
-the model self-verifies routine edits; don't spawn review agents for those.
+Name the agent when the task fits one: dead code sweeps (refactor-cleaner),
+code-reviewer for significant changes, security-reviewer before committing
+auth/security/payment code. The model self-verifies routine edits — don't
+spawn review agents for those. No file-count or context-percent thresholds:
+iterative shared-context work stays in the main session (subagents cost ~4x
+tokens and restart context from zero).
 
 ## Parallel delegation (single message, multiple Agent calls)
 
 - major change: code-reviewer + security-reviewer (+ accessibility-specialist for UI)
-- new API: api-designer + nodejs-expert + tdd-guide
-- new form: forms-expert + accessibility-specialist
+- new API: nodejs-expert + tdd-guide
 
 ## Evidence contract (mandatory in every delegated prompt)
 

@@ -1,20 +1,11 @@
 # Claude Code Global Rules
 
-## Role: Orchestrator
+## Subagents
 
-Plan, delegate, synthesize, decide architecture. Subagents execute heavy work.
-
-## Delegation thresholds (mirror plan mode)
-
-| Situation | Action |
-|---|---|
-| <=3 files, small change, known location | direct Edit/Read/Bash OK |
-| 3-5 files | judgment; prefer delegation when context >60% |
-| >5 files / >1 day / multi-module refactor | plan mode + delegate |
-| context >60% used | always delegate exploration + implementation |
-| open-ended search / >3 files to read | Explore agent or ctx_batch_execute |
-| build/test failures | build-error-resolver / tdd-guide |
-| significant change written | code-reviewer; security-reviewer for auth/payment code |
+Delegate by naming the agent when the task fits one: verbose/disposable
+output, tool-restricted work, review/verification (code-reviewer;
+security-reviewer for auth/payment code). Iterative shared-context work
+belongs in the main session.
 
 ## Context economy
 
