@@ -14,7 +14,7 @@ Plan, delegate, synthesize, decide architecture. Subagents execute heavy work.
 | context >60% used | always delegate exploration + implementation |
 | open-ended search / >3 files to read | Explore agent or ctx_batch_execute |
 | build/test failures | build-error-resolver / tdd-guide |
-| code just written | code-reviewer; before commit: security-reviewer |
+| significant change written | code-reviewer; security-reviewer for auth/payment code |
 
 ## Context economy
 

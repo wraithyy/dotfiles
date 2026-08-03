@@ -1,6 +1,6 @@
 ---
 name: explorer
-description: Fast read-only codebase scanner for understanding unfamiliar code, getting file structure overviews, and digesting multiple files into compact summaries. PROACTIVELY delegate exploration tasks here instead of reading files in main session.
+description: Fast read-only codebase scanner for understanding unfamiliar code, getting file structure overviews, and digesting multiple files into compact summaries. Delegate exploration tasks here instead of reading files in main session.
 tools: ["Read", "Grep", "Glob", "mcp__context-mode__ctx_batch_execute", "mcp__context-mode__ctx_search", "mcp__plugin_context-mode_context-mode__ctx_batch_execute", "mcp__plugin_context-mode_context-mode__ctx_search"]
 model: haiku
 ---

@@ -48,5 +48,5 @@ TDD is **mandatory for bug fixes** (regression test proves fix).
 
 ## Agent Support
 
-- **tdd-guide** — Use PROACTIVELY for new features, enforces write-tests-first
+- **tdd-guide** — Use for new features; enforces write-tests-first
 - **e2e-runner** — Playwright E2E testing specialist

@@ -57,9 +57,10 @@ multi-file digest, structured summary — prefer for file digestion.
 ## Delegation triggers
 
 Follow CLAUDE.md thresholds: <=3 files direct, >5 delegate, context >60% always
-delegate. Additionally always delegate: build/type errors (build-error-resolver),
-dead code sweeps (refactor-cleaner), post-edit review (code-reviewer),
-pre-commit security (security-reviewer).
+delegate. Also delegate: build/type errors (build-error-resolver), dead code
+sweeps (refactor-cleaner). Review delegation: code-reviewer for significant
+changes, security-reviewer before committing auth/security/payment code —
+the model self-verifies routine edits; don't spawn review agents for those.
 
 ## Parallel delegation (single message, multiple Agent calls)
 
