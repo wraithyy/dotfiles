@@ -1,0 +1,12 @@
+# logs + metrics side by side, shell tab
+name: ops
+tabs:
+  - label: monitor
+    panes:
+      - focus: true
+      - split: right
+        ratio: 0.5
+  - label: shell
+    panes:
+      - {}
+focus: true

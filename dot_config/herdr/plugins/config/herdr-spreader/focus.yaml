@@ -1,0 +1,10 @@
+# nvim on top, thin shell below
+name: focus
+tabs:
+  - label: focus
+    panes:
+      - command: nvim
+        focus: true
+      - split: down
+        ratio: 0.25
+focus: true

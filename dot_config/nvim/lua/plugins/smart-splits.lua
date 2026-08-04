@@ -1,5 +1,19 @@
+-- smart-splits drives tmux (and plain-terminal) navigation; herdr-splits is
+-- its port for herdr panes. cond on HERDR_ENV keeps exactly one active.
 return {
+	{
+		"lmilojevicc/herdr-splits.nvim",
+		cond = vim.env.HERDR_ENV == "1",
+		event = "VeryLazy",
+		opts = {
+			-- match the tmux-era bindings below
+			nav_keys = { left = "<A-h>", down = "<A-j>", up = "<A-k>", right = "<A-l>" },
+			resize_keys = { left = "<A-Left>", down = "<A-Down>", up = "<A-Up>", right = "<A-Right>" },
+		},
+	},
+	{
 	"mrjones2014/smart-splits.nvim",
+	cond = vim.env.HERDR_ENV ~= "1",
 	config = function()
 		require("smart-splits").setup({
 			multiplexer = "tmux",
@@ -65,4 +79,5 @@ return {
 			{ noremap = true, silent = true, desc = "Resize right" }
 		)
 	end,
+	},
 }

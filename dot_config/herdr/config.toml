@@ -1,0 +1,120 @@
+# herdr config — theme matches nvim/lazygit (catppuccin mocha); keybinds
+# mirror the tmux-era smart-splits setup: alt+hjkl navigate, alt+arrows
+# resize (herdr-splits.nvim handles the nvim side)
+
+[theme]
+name = "catppuccin"
+
+# Palette mirrors nvim catppuccin color_overrides (plugins/ui.lua):
+# teal accent (= nvim WinSeparator/FloatBorder), brighter overlays so
+# sidebar/pane borders stand out against mocha surfaces.
+[theme.custom]
+accent = "#00e8c6"
+teal = "#00e8c6"
+green = "#96E072"
+yellow = "#FFE66D"
+peach = "#ee5d43"
+mauve = "#c74ded"
+overlay0 = "#808085"
+overlay1 = "#9a9aa0"
+# surface_dim draws pane/sidebar borders AND the selected-workspace highlight,
+# so it's a muted teal: borders visible, selection background not neon
+surface_dim = "#0b4a41"
+
+[ui]
+pane_borders = true
+pane_gaps = true
+accent = "#00e8c6"
+show_agent_labels_on_pane_borders = true
+# new tabs instantly, smart-rename names them anyway
+prompt_new_tab_name = false
+
+# claude agents: second row shows the live terminal title (what it's doing)
+[ui.sidebar.agents.rows_by_agent]
+claude = [["state_icon", "workspace", "tab"], ["terminal_title_stripped"], ["agent"]]
+
+[keys]
+# tmux parity: prefix+| / prefix+- splits (focus_pane_* h/j/k/l and
+# split_horizontal = prefix+minus already match tmux defaults)
+split_vertical = "prefix+|"
+# native herdr worktrees disabled — we use the /worktree Claude command
+# (task/<name> branches in ../<repo>.worktrees/) instead
+new_worktree = ""
+
+# navigate mode, lazygit-style: j/k walk the sidebar workspace list
+# (default had arrows for workspaces, j/k for panes — swapped)
+navigate_workspace_down = "j"
+navigate_workspace_up = "k"
+navigate_pane_down = "down"
+navigate_pane_up = "up"
+
+# last workspace toggle (tmux C-\ analog); prefix+tab is taken by cycle_pane_next
+[[keys.command]]
+key = "prefix+backtick"
+type = "plugin_action"
+command = "third774.last-workspace.toggle"
+
+# fzf palette over all plugin actions
+[[keys.command]]
+key = "prefix+space"
+type = "plugin_action"
+command = "jt.command-palette.open"
+
+# termscope: pick a file/link visible on screen, open in split
+[[keys.command]]
+key = "prefix+f"
+type = "plugin_action"
+command = "termscope.picker"
+
+[[keys.command]]
+key = "prefix+u"
+type = "plugin_action"
+command = "termscope.link-picker"
+
+# lazygit popup — replaces tmux-lazygit-popup
+[[keys.command]]
+key = "prefix+alt+g"
+type = "popup"
+command = "lazygit"
+width = "80%"
+height = "80%"
+
+[[keys.command]]
+key = "alt+h"
+type = "plugin_action"
+command = "herdr-splits.nav-left"
+
+[[keys.command]]
+key = "alt+j"
+type = "plugin_action"
+command = "herdr-splits.nav-down"
+
+[[keys.command]]
+key = "alt+k"
+type = "plugin_action"
+command = "herdr-splits.nav-up"
+
+[[keys.command]]
+key = "alt+l"
+type = "plugin_action"
+command = "herdr-splits.nav-right"
+
+[[keys.command]]
+key = "alt+left"
+type = "plugin_action"
+command = "herdr-splits.resize-left"
+
+[[keys.command]]
+key = "alt+down"
+type = "plugin_action"
+command = "herdr-splits.resize-down"
+
+[[keys.command]]
+key = "alt+up"
+type = "plugin_action"
+command = "herdr-splits.resize-up"
+
+[[keys.command]]
+key = "alt+right"
+type = "plugin_action"
+command = "herdr-splits.resize-right"

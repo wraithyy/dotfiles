@@ -1,0 +1,16 @@
+# review: diff in nvim + shell, git tab, forge (gh/glab) tab
+name: review
+tabs:
+  - label: review
+    panes:
+      - command: nvim
+        focus: true
+      - split: right
+        ratio: 0.3
+  - label: git
+    panes:
+      - command: lazygit
+  - label: pr
+    panes:
+      - {}
+focus: true

@@ -176,6 +176,76 @@ work() {
   _tmux_goto "$name"
 }
 
+# h: herdr counterpart of t. Workspaces + spreader templates + new, via fzf.
+_h_gen_lines() {
+  local dim=$'\e[2m' reset=$'\e[0m'
+  local ws
+  ws=$(herdr workspace list 2>/dev/null \
+    | jq -r '.result.workspaces[]? | "🟢 \(.label) [2m[\(.agent_status)][0m|\(.workspace_id)"')
+  if [[ -n "$ws" ]]; then
+    printf '%s\n' "${dim}── workspaces ──${reset}" "$ws" ''
+  fi
+  local tpls=("$HOME/.config/herdr/plugins/config/herdr-spreader/"*.yaml(N))
+  if (( ${#tpls} )); then
+    printf '%s\n' "${dim}── templates ──${reset}"
+    local f
+    for f in $tpls; do
+      printf '🧩 %s|%s\n' "$(basename "${f%.yaml}")" "$f"
+    done
+    printf '\n'
+  fi
+  printf '%s\n' "${dim}── new ──${reset}"
+  printf '➕ new (empty workspace)\n'
+}
+
+h() {
+  command -v fzf >/dev/null || { echo "fzf missing"; return 1; }
+  command -v jq >/dev/null || { echo "jq missing"; return 1; }
+
+  local reload_cmd="zsh -c 'source $HOME/.zshrc 2>/dev/null; _h_gen_lines'"
+  local sel
+  sel=$(_h_gen_lines | fzf --ansi \
+    --delimiter '|' \
+    --with-nth 1 \
+    --layout=reverse \
+    --prompt='herdr ❯ ' \
+    --header='enter=pick · x=close · esc=cancel' \
+    --bind "x:execute-silent(
+      sel={}
+      [[ \"\$sel\" != \"🟢 \"* ]] && exit 0
+      herdr workspace close \"\${sel##*|}\" 2>/dev/null
+    )+reload($reload_cmd)" \
+    --preview '
+      sel={}
+      case "$sel" in
+        "🧩 "*)
+          f="${sel##*|}"
+          if command -v bat &>/dev/null; then bat --color=always --style=plain "$f"
+          else cat "$f"; fi ;;
+        "➕ "*) printf "\n  New empty workspace\n  in %s\n" "$PWD" ;;
+        *) ;;
+      esac' \
+    --preview-window=right:60%) || return
+
+  case "$sel" in
+    "🟢 "*)
+      herdr workspace focus "${sel##*|}" >/dev/null
+      ;;
+    "🧩 "*)
+      # spreader builds into a hashed plugin dir; resolve the binary by glob
+      local bins=("$HOME/.config/herdr/plugins/github/herdr-spreader-"*"/target/release/herdr-spreader"(N))
+      (( ${#bins} )) || { echo "herdr-spreader binary not found"; return 1; }
+      "${bins[1]}" apply --file "${sel##*|}" || return 1
+      ;;
+    "➕ "*)
+      herdr workspace create --cwd "$PWD" --label "$(basename "$PWD")" --focus >/dev/null || return 1
+      ;;
+    *) return 0 ;;
+  esac
+  # outside herdr: attach to see what we just focused/created
+  [[ -z "$HERDR_ENV" ]] && herdr
+}
+
 # cc: Claude Code, always in tmux. Reuses a session already running in this
 # cwd (new window); starts a fresh session otherwise. No tmux -> plain claude.
 cc() {

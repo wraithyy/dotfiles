@@ -47,7 +47,11 @@
       "Bash(git branch:*)",
       "Bash(git stash list)",
       "Bash(tmux capture-pane:*)",
-      "Bash(tmux list-panes:*)"
+      "Bash(tmux list-panes:*)",
+      "Bash(herdr pane list:*)",
+      "Bash(herdr pane read:*)",
+      "Bash(herdr agent list:*)",
+      "Bash(herdr workspace list:*)"
     ],
     "deny": [
       "Bash(git reset --hard:*)",
@@ -90,6 +94,14 @@
           {
             "type": "command",
             "command": "command -v pixtuoid-hook >/dev/null 2>&1 && pixtuoid-hook || true"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"{{ .chezmoi.homeDir }}/.claude/hooks/context-mode-cache-heal.mjs\""
           }
         ]
       }

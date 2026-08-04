@@ -1,0 +1,12 @@
+# Notes vault: nvim-notes profile + cheap Claude
+name: notes
+root: ~/Development/Notes
+tabs:
+  - label: notes
+    panes:
+      - command: NVIM_APPNAME=nvim-notes nvim
+        focus: true
+      - command: claude --model sonnet
+        split: right
+        ratio: 0.35
+focus: true

@@ -1,0 +1,43 @@
+# herdr-pickr — ctrl+click a GitHub PR / GitLab MR link, pick a reviewer.
+# Rows with missing binaries hide automatically.
+
+[pickr]
+auto    = false
+default = "diff"
+
+[[backend]]
+key = "j"
+id  = "jk-review"
+name = "Claude — review in my (JK) style"
+run  = "claude '/jk-review-style review this MR/PR: {url}'"
+where = "pane"
+needs = ["claude"]
+platforms = ["github", "gitlab"]
+
+[[backend]]
+key = "d"
+id  = "diff"
+name = "diff — plain read-only (bat)"
+run_github = "gh pr diff {url} | bat --paging=always -l diff"
+run_gitlab = "glab mr diff {url} | bat --paging=always -l diff"
+where = "pager"
+needs = ["gh", "bat"]
+platforms = ["github", "gitlab"]
+
+[[backend]]
+key = "t"
+id  = "tuicr"
+name = "tuicr — full review, comments to the forge"
+run  = "tuicr pr {url}"
+where = "pane"
+needs = ["tuicr"]                     # brew install agavra/tap/tuicr
+platforms = ["github", "gitlab"]
+
+[[backend]]
+key = "o"
+id  = "browser"
+name = "open in browser"
+run  = "open {url}"
+where = "detach"
+needs = []
+platforms = ["github", "gitlab"]

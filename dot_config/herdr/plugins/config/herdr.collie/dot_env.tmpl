@@ -1,0 +1,15 @@
+# Collie behind Cloudflare tunnel + Access (README "Variant B" — own proxy).
+# Access injects the authenticated user's email; collie uses it as device id.
+COLLIE_SKIP_SERVE=1
+COLLIE_SERVE_MODE=http
+COLLIE_HOST=127.0.0.1
+COLLIE_DEVICE_HEADER=Cf-Access-Authenticated-User-Email
+COLLIE_DEVICE_ALLOWLIST=josef0kvapil@gmail.com
+COLLIE_PUBLIC_HOSTS=collie.wraithy.online
+COLLIE_ALLOWED_ORIGINS=https://collie.wraithy.online
+
+# Push notifications — VAPID keys live in 1Password (Private/collie-vapid),
+# rendered at chezmoi apply time so they never sit in the repo
+COLLIE_VAPID_PUBLIC={{ onepasswordRead "op://Private/collie-vapid/public" }}
+COLLIE_VAPID_PRIVATE={{ onepasswordRead "op://Private/collie-vapid/private" }}
+COLLIE_VAPID_SUBJECT=mailto:josef0kvapil@gmail.com

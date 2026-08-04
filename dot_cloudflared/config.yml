@@ -1,0 +1,19 @@
+# Cloudflare tunnel: browser SSH terminal + collie phone UI.
+# Setup (one-time, interactive):
+#   cloudflared tunnel login
+#   cloudflared tunnel create herd        -> fill TUNNEL_ID below
+#   cloudflared tunnel route dns herd ssh.wraithy.online
+#   cloudflared tunnel route dns herd collie.wraithy.online
+# Zero Trust dashboard: Access application per hostname, policy = your email;
+# for ssh.* enable "browser rendering: SSH".
+# Run: brew services start cloudflared
+
+tunnel: 31e84d60-869f-4424-9f9f-5da0cb8c4154
+credentials-file: /Users/wraithy/.cloudflared/31e84d60-869f-4424-9f9f-5da0cb8c4154.json
+
+ingress:
+  - hostname: ssh.wraithy.online
+    service: ssh://localhost:22
+  - hostname: collie.wraithy.online
+    service: http://localhost:8787
+  - service: http_status:404

@@ -1,5 +1,5 @@
 ---
-description: Create a git worktree + tmux window with a parallel Claude session
+description: Create a git worktree + tmux/herdr window with a parallel Claude session
 argument-hint: <task-name>
 ---
 
@@ -15,8 +15,11 @@ session in it.
 3. Create: `git worktree add ../<repo>.worktrees/<task> -b task/<task>`
    (drop `-b` when the branch already exists).
 4. Open the session:
+   - inside herdr (`$HERDR_ENV` set): create a tab and launch Claude in it:
+     `herdr tab create --label <task> --cwd <worktree-dir>` then
+     `herdr pane run <root_pane_id from the JSON response> claude`
    - inside tmux: `tmux new-window -n <task> -c <worktree-dir> claude`
-   - outside tmux: print the command to run:
+   - outside both: print the command to run:
      `tmux new-session -s <task> -c <worktree-dir> claude`
 5. Print cleanup hint for later:
    `git worktree remove ../<repo>.worktrees/<task> && git branch -d task/<task>`
