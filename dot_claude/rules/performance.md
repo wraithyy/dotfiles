@@ -9,7 +9,7 @@ compromise.
 | Tier | Model | Use |
 |---|---|---|
 | Main session | opusplan (or opus) | daily work: planning on Opus, execution on Sonnet |
-| Exceptional | fable (`/model fable`) | only hardest long-horizon/complex tasks; switch back after |
+| Exceptional | fable (`/model fable`) | only hardest long-horizon/complex tasks; switch back after — see stickiness gotcha |
 | Subagent default | sonnet | implementation, review, tests, research digests — most workers |
 | Subagent escalation | opus | only after sonnet failed that specific task, or architecture-grade reasoning |
 | Trivial mechanical | haiku | formatting, single-file greps, doc lookups, checklist runs |
@@ -19,19 +19,21 @@ Rules of thumb:
 - Don't pass `model:` overrides per task; agent frontmatter already pins tiers.
 - Prefer lowering `effort` over downgrading model for cheap mechanical work
   (agent frontmatter supports `effort: low|medium|high|xhigh`; session default
-  is xhigh).
-- Fable: exceptional use only — weekly usage caps (50% of plan limits), 2x
-  Opus price; never as subagent model.
+  is `medium` via settings `effortLevel`, below Opus 5's own default of high).
+- Fable: exceptional use only — 2x Opus price ($10/$50 per MTok), never as
+  subagent model.
 
 Gotchas:
 
-- Fable sessions can silently fall back to Opus via safety classifier and STAY
-  there — after `/model fable`, verify the active model mid-session.
+- `/model X` is sticky: it writes X into user settings, so every later session
+  starts on X and live settings.json drifts from chezmoi. Switch back the same
+  day as the exceptional task.
+- Fable→Opus silent classifier fallback is possible — check the active model
+  mid-session on long Fable runs.
 - Mid-session model switches re-read full history uncached (one-time token
   cost) — switch at plan boundaries, not mid-task.
-- `CLAUDE_CODE_SUBAGENT_MODEL=sonnet` is SET in settings env (2026-08-03):
-  built-in agents (general-purpose, Explore, Plan) otherwise inherit the
-  session model — 1,530 Fable subagent msgs leaked that way in 30d. It
+- `CLAUDE_CODE_SUBAGENT_MODEL=sonnet` is SET in settings env: built-in agents
+  (general-purpose, Explore, Plan) otherwise inherit the session model. It
   outranks frontmatter pins too (explorer's haiku, deliberate opus
   escalations); for an intentional opus/haiku subagent, unset it for that
   session or pass model in the Agent call.
