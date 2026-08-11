@@ -142,6 +142,13 @@ type = "plugin_action"
 command = "ntindle.herdr-resurrect.restore"
 description = "restore session snapshot"
 
+# openr: fuzzy-open recent file paths / URLs from the current pane
+[[keys.command]]
+key = "prefix+o"
+type = "plugin_action"
+command = "openr.pick"
+description = "open file/URL from pane"
+
 # hintr: whichkey-style keybinding cheatsheet overlay
 [[keys.command]]
 key = "prefix+k"
