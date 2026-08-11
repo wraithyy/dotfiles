@@ -1,3 +1,4 @@
+onboarding = false
 # herdr config — theme matches nvim/lazygit (catppuccin mocha); keybinds
 # mirror the tmux-era smart-splits setup: alt+hjkl navigate, alt+arrows
 # resize (herdr-splits.nvim handles the nvim side)
@@ -28,6 +29,9 @@ accent = "#00e8c6"
 show_agent_labels_on_pane_borders = true
 # new tabs instantly, smart-rename names them anyway
 prompt_new_tab_name = false
+# ...ale spaces se ptát MUSÍ: new_cwd = "follow" jinak zdědí cwd zdroje a
+# vyrobí druhý space se stejným generovaným jménem
+prompt_new_workspace_name = true
 
 # in-app toasts ON (agent state, plugins); cache-ttl expiry warnings are
 # muted via a local patch in its config.sh (WARN_THRESHOLDS=()) — re-apply
@@ -39,6 +43,11 @@ delivery = "herdr"
 # brightened — default rendering is too dim to read
 [ui.sidebar.agents.rows_by_agent]
 claude = [["state_icon", "workspace", "tab"], [{ token = "terminal_title_stripped", fg = "#bac2de", dim = false }], ["agent", { token = "$cache_ok", fg = "#96E072" }, { token = "$cache_warn", fg = "#FFE66D" }, { token = "$cache_crit", fg = "#ee5d43" }]]
+
+# restore is opt-in: herdr still rebuilds layout after a server restart, but
+# agents don't auto-resume; run resurrect restore (prefix+ctrl+r) when wanted
+[session]
+resume_agents_on_restore = false
 
 [keys]
 # splits: v = vertical (herdr default, Czech Mac has no easy pipe),
@@ -56,18 +65,12 @@ navigate_workspace_up = "k"
 navigate_pane_down = "down"
 navigate_pane_up = "up"
 
-# last workspace toggle (tmux C-\ analog) — § = top-left key on Czech Mac,
-# same physical position as backtick on US layout
-[[keys.command]]
-key = "prefix+§"
-type = "plugin_action"
-command = "third774.last-workspace.toggle"
-
 # fzf palette over all plugin actions
 [[keys.command]]
 key = "prefix+space"
 type = "plugin_action"
 command = "jt.command-palette.open"
+description = "command palette (plugin actions)"
 
 # Czech keyboard tab jumps: unshifted digit row is +ěščřžýáí, so mirror the
 # built-in switch_tab = prefix+1..9 for those keys (shell type = runs detached)
@@ -75,69 +78,90 @@ command = "jt.command-palette.open"
 key = "prefix+plus"
 type = "shell"
 command = "herdr tab focus $(herdr tab list | jq -r 'first(.result.tabs[] | select(.focused).workspace_id) as $w | [.result.tabs[] | select(.workspace_id==$w)][0].tab_id')"
+description = "focus tab 1"
 
 [[keys.command]]
 key = "prefix+ě"
 type = "shell"
 command = "herdr tab focus $(herdr tab list | jq -r 'first(.result.tabs[] | select(.focused).workspace_id) as $w | [.result.tabs[] | select(.workspace_id==$w)][1].tab_id')"
+description = "focus tab 2"
 
 [[keys.command]]
 key = "prefix+š"
 type = "shell"
 command = "herdr tab focus $(herdr tab list | jq -r 'first(.result.tabs[] | select(.focused).workspace_id) as $w | [.result.tabs[] | select(.workspace_id==$w)][2].tab_id')"
+description = "focus tab 3"
 
 [[keys.command]]
 key = "prefix+č"
 type = "shell"
 command = "herdr tab focus $(herdr tab list | jq -r 'first(.result.tabs[] | select(.focused).workspace_id) as $w | [.result.tabs[] | select(.workspace_id==$w)][3].tab_id')"
+description = "focus tab 4"
 
 [[keys.command]]
 key = "prefix+ř"
 type = "shell"
 command = "herdr tab focus $(herdr tab list | jq -r 'first(.result.tabs[] | select(.focused).workspace_id) as $w | [.result.tabs[] | select(.workspace_id==$w)][4].tab_id')"
+description = "focus tab 5"
 
 [[keys.command]]
 key = "prefix+ž"
 type = "shell"
 command = "herdr tab focus $(herdr tab list | jq -r 'first(.result.tabs[] | select(.focused).workspace_id) as $w | [.result.tabs[] | select(.workspace_id==$w)][5].tab_id')"
+description = "focus tab 6"
 
 [[keys.command]]
 key = "prefix+ý"
 type = "shell"
 command = "herdr tab focus $(herdr tab list | jq -r 'first(.result.tabs[] | select(.focused).workspace_id) as $w | [.result.tabs[] | select(.workspace_id==$w)][6].tab_id')"
+description = "focus tab 7"
 
 [[keys.command]]
 key = "prefix+á"
 type = "shell"
 command = "herdr tab focus $(herdr tab list | jq -r 'first(.result.tabs[] | select(.focused).workspace_id) as $w | [.result.tabs[] | select(.workspace_id==$w)][7].tab_id')"
+description = "focus tab 8"
 
 [[keys.command]]
 key = "prefix+í"
 type = "shell"
 command = "herdr tab focus $(herdr tab list | jq -r 'first(.result.tabs[] | select(.focused).workspace_id) as $w | [.result.tabs[] | select(.workspace_id==$w)][8].tab_id')"
+description = "focus tab 9"
+
+# resurrect: manual snapshot save / opt-in restore (autoRestore is off in
+# plugin settings.json; autosave still runs on lifecycle events)
+[[keys.command]]
+key = "prefix+ctrl+s"
+type = "plugin_action"
+command = "ntindle.herdr-resurrect.save"
+description = "save session snapshot"
+
+[[keys.command]]
+key = "prefix+ctrl+r"
+type = "plugin_action"
+command = "ntindle.herdr-resurrect.restore"
+description = "restore session snapshot"
+
+# hintr: whichkey-style keybinding cheatsheet overlay
+[[keys.command]]
+key = "prefix+k"
+type = "plugin_action"
+command = "hintr.show"
+description = "keybinding cheatsheet"
 
 # ferry: popup to move panes/tabs between workspaces
 [[keys.command]]
 key = "prefix+m"
 type = "plugin_action"
 command = "shadowfax.ferry.open"
-
-# termscope: pick a file/link visible on screen, open in split
-[[keys.command]]
-key = "prefix+f"
-type = "plugin_action"
-command = "termscope.picker"
-
-[[keys.command]]
-key = "prefix+u"
-type = "plugin_action"
-command = "termscope.link-picker"
+description = "move panes/tabs between workspaces"
 
 # lazygit popup — replaces tmux-lazygit-popup
 [[keys.command]]
 key = "prefix+alt+g"
 type = "popup"
 command = "lazygit"
+description = "lazygit popup"
 width = "80%"
 height = "80%"
 
@@ -145,38 +169,58 @@ height = "80%"
 key = "alt+h"
 type = "plugin_action"
 command = "herdr-splits.nav-left"
+description = "focus pane left"
 
 [[keys.command]]
 key = "alt+j"
 type = "plugin_action"
 command = "herdr-splits.nav-down"
+description = "focus pane down"
 
 [[keys.command]]
 key = "alt+k"
 type = "plugin_action"
 command = "herdr-splits.nav-up"
+description = "focus pane up"
 
 [[keys.command]]
 key = "alt+l"
 type = "plugin_action"
 command = "herdr-splits.nav-right"
+description = "focus pane right"
 
 [[keys.command]]
 key = "alt+left"
 type = "plugin_action"
 command = "herdr-splits.resize-left"
+description = "resize pane left"
 
 [[keys.command]]
 key = "alt+down"
 type = "plugin_action"
 command = "herdr-splits.resize-down"
+description = "resize pane down"
 
 [[keys.command]]
 key = "alt+up"
 type = "plugin_action"
 command = "herdr-splits.resize-up"
+description = "resize pane up"
 
 [[keys.command]]
 key = "alt+right"
 type = "plugin_action"
 command = "herdr-splits.resize-right"
+description = "resize pane right"
+
+[[keys.command]]
+key = "prefix+y"
+type = "plugin_action"
+command = "waypoint.pick"
+description = "new workspace from waypoint"
+
+[[keys.command]]
+key = "prefix+shift+v"
+type = "plugin_action"
+command = "waypoint.add"
+description = "save folder as waypoint"
