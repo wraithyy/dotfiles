@@ -44,16 +44,19 @@ delivery = "herdr"
 [ui.sidebar.agents.rows_by_agent]
 claude = [["state_icon", "workspace", "tab"], [{ token = "terminal_title_stripped", fg = "#bac2de", dim = false }], ["agent", { token = "$cache_ok", fg = "#96E072" }, { token = "$cache_warn", fg = "#FFE66D" }, { token = "$cache_crit", fg = "#ee5d43" }]]
 
-# restore is opt-in: herdr still rebuilds layout after a server restart, but
-# agents don't auto-resume; run resurrect restore (prefix+ctrl+r) when wanted
+# no auto-resume: herdr rebuilds layout after a server restart, agents don't
+# come back (resurrect plugin disabled 2026-08-24 via `herdr plugin disable`)
 [session]
 resume_agents_on_restore = false
 
 [keys]
-# splits: v = vertical (herdr default, Czech Mac has no easy pipe),
-# prefix+minus = horizontal (default; Czech Mac minus = physical slash key).
+# splits: minus = vertical, slash = horizontal (Czech Mac: minus sits on the
+# physical slash key, actual "/" needs shift). prefix+v freed for waypoint.
 # focus_pane_* h/j/k/l match tmux defaults.
-split_vertical = "prefix+v"
+split_vertical = "prefix+minus"
+split_horizontal = "prefix+/"
+# goto default was prefix+g — swapped with lazygit popup below
+goto = "prefix+alt+g"
 # native herdr worktrees disabled — we use the /worktree Claude command
 # (task/<name> branches in ../<repo>.worktrees/) instead
 new_worktree = ""
@@ -64,6 +67,14 @@ navigate_workspace_down = "j"
 navigate_workspace_up = "k"
 navigate_pane_down = "down"
 navigate_pane_up = "up"
+
+# úklid: zavře všechny workspaces kromě aktuální (fresh start bez ztráty
+# persistence — session dál žije, jen prázdná)
+[[keys.command]]
+key = "prefix+backspace"
+type = "shell"
+command = "herdr workspace list | jq -r '.result.workspaces[] | select(.focused|not) | .workspace_id' | xargs -n1 herdr workspace close"
+description = "close all other workspaces"
 
 # fzf palette over all plugin actions
 [[keys.command]]
@@ -128,8 +139,8 @@ type = "shell"
 command = "herdr tab focus $(herdr tab list | jq -r 'first(.result.tabs[] | select(.focused).workspace_id) as $w | [.result.tabs[] | select(.workspace_id==$w)][8].tab_id')"
 description = "focus tab 9"
 
-# resurrect: manual snapshot save / opt-in restore (autoRestore is off in
-# plugin settings.json; autosave still runs on lifecycle events)
+# resurrect: plugin DISABLED (herdr plugin disable ntindle.herdr-resurrect);
+# keybinds kept for easy re-enable — dead while disabled
 [[keys.command]]
 key = "prefix+ctrl+s"
 type = "plugin_action"
@@ -146,8 +157,14 @@ description = "restore session snapshot"
 [[keys.command]]
 key = "prefix+o"
 type = "plugin_action"
-command = "openr.pick"
-description = "open file/URL from pane"
+command = "openr.pick-visible"
+description = "open file/URL from visible pane"
+
+[[keys.command]]
+key = "prefix+shift+o"
+type = "plugin_action"
+command = "openr.pick-transcript"
+description = "open file/URL from Claude transcript"
 
 # hintr: whichkey-style keybinding cheatsheet overlay
 [[keys.command]]
@@ -163,9 +180,9 @@ type = "plugin_action"
 command = "shadowfax.ferry.open"
 description = "move panes/tabs between workspaces"
 
-# lazygit popup — replaces tmux-lazygit-popup
+# lazygit popup — replaces tmux-lazygit-popup (goto moved to prefix+alt+g)
 [[keys.command]]
-key = "prefix+alt+g"
+key = "prefix+g"
 type = "popup"
 command = "lazygit"
 description = "lazygit popup"
@@ -221,7 +238,7 @@ command = "herdr-splits.resize-right"
 description = "resize pane right"
 
 [[keys.command]]
-key = "prefix+y"
+key = "prefix+v"
 type = "plugin_action"
 command = "waypoint.pick"
 description = "new workspace from waypoint"
