@@ -5,6 +5,15 @@
 # without this entry chezmoi would deploy it as ~/lazy-lock.json
 lazy-lock.json
 
+# real omniwm config dir lives at source root; ~/.config/omniwm is a DIR symlink
+# (file symlink died: OmniWM saves atomically, rename replaces a file symlink)
+omniwm
+
+# omniwm is macOS-only
+{{ if ne .chezmoi.os "darwin" }}
+.config/omniwm
+{{ end }}
+
 # Brewfile is consumed by brew bundle at source root, not a deploy target
 Brewfile
 README.md

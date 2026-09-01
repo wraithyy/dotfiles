@@ -1,0 +1,35 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Install + (re)load launchd agent: omniwmctl watch -> route new Teams windows.
+# Reruns when the router script changes.
+# script hash: {{ include "dot_local/bin/executable_omniwm-teams-router.sh" | sha256sum }}
+
+set -e
+PLIST="$HOME/Library/LaunchAgents/com.wraithy.omniwm-teams-router.plist"
+mkdir -p "$HOME/Library/LaunchAgents"
+
+cat > "$PLIST" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.wraithy.omniwm-teams-router</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Applications/OmniWM.app/Contents/MacOS/omniwmctl</string>
+    <string>watch</string>
+    <string>windows-changed</string>
+    <string>--exec</string>
+    <string>$HOME/.local/bin/omniwm-teams-router.sh</string>
+  </array>
+  <key>KeepAlive</key><true/>
+  <key>ThrottleInterval</key><integer>15</integer>
+  <key>StandardErrorPath</key><string>/tmp/omniwm-teams-router.err</string>
+</dict>
+</plist>
+EOF
+
+launchctl unload "$PLIST" 2>/dev/null || true
+launchctl load "$PLIST"
+echo "omniwm-teams-router loaded"
+{{ end -}}
