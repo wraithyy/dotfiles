@@ -18,6 +18,9 @@ belongs in the main session.
 
 ## Conventions
 
+- Language: Czech only for chat with me. Everything written to files —
+  docs, CLAUDE.md, READMEs, code comments, commits, PRs — in English
+  (overrides the `language` setting, which applies to conversation only)
 - No emoji in code/commits/comments (unless asked)
 - Comments explain why, not what; only necessary ones
 - TypeScript: never `any` without justifying comment

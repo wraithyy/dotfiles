@@ -73,6 +73,12 @@ anything MUST include:
 Orchestrator side: never relay an agent's "passed" to the user without an
 evidence block; re-run the critical check in the main session if it's missing.
 
+Red flags in agent reports (treat claim as UNVERIFIED): "should work",
+"should now pass", "vše ověřeno", green summary with no command output.
+Judge the diff, not the report. Review test-file diffs stricter than code
+diffs — weakened assertions (`toBeDefined`, `.skip`) are how fake green
+happens.
+
 ## Cost hints for delegated prompts
 
 "Cap response at 500 words" / "file paths only, no code blocks" / "skip files <50 LOC".

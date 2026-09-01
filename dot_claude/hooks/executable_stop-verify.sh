@@ -61,12 +61,19 @@ fi
 
 [[ -z "$findings" ]] && exit 0
 
+# The marker holds a hash per findings-set already reported this session, so the
+# informational path stays silent while nothing changed (it used to re-print the
+# same findings at every stop: 102 emissions / 15 sessions, 101 with no news).
 marker="/tmp/claude-stop-verify-$session_id"
+hash=$(printf '%s' "$findings" | shasum | cut -d' ' -f1)
+
 if [[ ! -f "$marker" ]]; then
-  touch "$marker"
+  printf '%s\n' "$hash" >"$marker"
   echo "$findings" >&2
   exit 2
 fi
 
+grep -qxF "$hash" "$marker" && exit 0
+printf '%s\n' "$hash" >>"$marker"
 echo "$findings"
 exit 0

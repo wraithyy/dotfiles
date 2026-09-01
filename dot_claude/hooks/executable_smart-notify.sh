@@ -76,6 +76,10 @@ send_notification() {
     # -group: one live notification per project+event, replaces older ones.
     args=(-title "$title" -subtitle "$project" -message "$message" -group "cc-$project-$event")
     [ -n "$sound" ] && args+=(-sound "$sound")
+    # click -> jump to the term workspace and raise Ghostty (Claude lives there);
+    # ws name "1" is the OmniWM raw workspace id, not the display label
+    ctl="/Applications/OmniWM.app/Contents/MacOS/omniwmctl"
+    [ -x "$ctl" ] && args+=(-execute "$ctl workspace focus-name 1 >/dev/null 2>&1; open -a Ghostty")
     "$notifier" "${args[@]}" 2>/dev/null
   elif command -v osascript >/dev/null 2>&1; then # macOS fallback
     if [ -n "$sound" ]; then
