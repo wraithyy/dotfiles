@@ -23,7 +23,7 @@ vim.opt.number = true
 vim.opt.cursorline = true
 vim.opt.clipboard = "unnamedplus,unnamed"
 vim.opt.wrap = false
-vim.o.mousescroll = "ver:3,hor:0"
+vim.o.mousescroll = "ver:3,hor:6"
 vim.opt.ignorecase = true
 vim.api.nvim_create_user_command("CopyAbsolutePath", function()
     local path = vim.fn.expand("%:p")

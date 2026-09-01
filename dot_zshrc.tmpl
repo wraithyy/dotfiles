@@ -46,6 +46,8 @@ export PATH="$HOME/.rd/bin:$PATH"
 # Aliasy
 alias v="nvim"
 alias clauded="claude --dangerously-skip-permissions"
+# git/gh/glab writes bez promptu pro tuhle session (deny pravidla platí dál)
+alias claudegit="CLAUDE_GIT_YOLO=1 claude"
 # cc() below shadows /usr/bin/cc (C compiler) in interactive shells only; make/scripts use $CC
 export DISABLE_AUTO_TITLE='true'
 {{- if eq .chezmoi.os "darwin" }}
