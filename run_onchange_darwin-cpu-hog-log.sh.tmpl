@@ -1,0 +1,37 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Install + (re)load launchd agent: sample CPU every 10s, log top consumers
+# when total usage >= threshold. Logs: ~/.local/state/cpu-hogs/YYYY-MM-DD.tsv
+# script hash: {{ include "dot_local/bin/executable_cpu-hog-log.sh" | sha256sum }}
+
+set -e
+PLIST="$HOME/Library/LaunchAgents/com.wraithy.cpu-hog-log.plist"
+mkdir -p "$HOME/Library/LaunchAgents"
+
+cat > "$PLIST" <<PLISTEOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.wraithy.cpu-hog-log</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$HOME/.local/bin/cpu-hog-log.sh</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>CPU_HOG_THRESHOLD</key><string>80</string>
+    <key>CPU_HOG_TOPN</key><string>8</string>
+  </dict>
+  <key>StartInterval</key><integer>10</integer>
+  <key>LowPriorityIO</key><true/>
+  <key>Nice</key><integer>10</integer>
+  <key>StandardErrorPath</key><string>/tmp/cpu-hog-log.err</string>
+</dict>
+</plist>
+PLISTEOF
+
+launchctl unload "$PLIST" 2>/dev/null || true
+launchctl load "$PLIST"
+echo "cpu-hog-log loaded"
+{{ end -}}
