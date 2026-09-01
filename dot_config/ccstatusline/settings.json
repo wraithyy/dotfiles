@@ -1,0 +1,281 @@
+{
+  "version": 3,
+  "lines": [
+    [
+      {
+        "id": "l1-model-icon",
+        "type": "custom-symbol",
+        "customSymbol": "󰚩",
+        "color": "hex:c74ded",
+        "merge": true
+      },
+      {
+        "id": "l1-model",
+        "type": "model",
+        "rawValue": true,
+        "color": "hex:c74ded"
+      },
+      {
+        "id": "l1-sep1",
+        "type": "separator"
+      },
+      {
+        "id": "l1-effort-icon",
+        "type": "custom-symbol",
+        "customSymbol": "󰧑",
+        "color": "hex:9a9aa0",
+        "merge": true
+      },
+      {
+        "id": "l1-effort",
+        "type": "thinking-effort",
+        "rawValue": true,
+        "color": "hex:9a9aa0"
+      },
+      {
+        "id": "l1-sep2",
+        "type": "separator"
+      },
+      {
+        "id": "l1-ctx-pacman",
+        "type": "custom-command",
+        "commandPath": "~/.config/ccstatusline/scripts/pacman.sh",
+        "preserveColors": true,
+        "merge": true
+      },
+      {
+        "id": "l1-ctx",
+        "type": "context-percentage",
+        "rawValue": true,
+        "color": "hex:00e8c6"
+      },
+      {
+        "id": "l1-compactions",
+        "type": "compaction-counter",
+        "color": "hex:808085"
+      },
+      {
+        "id": "l1-sep3",
+        "type": "separator"
+      },
+      {
+        "id": "l1-clock-icon",
+        "type": "custom-symbol",
+        "customSymbol": "󰥔",
+        "color": "hex:9a9aa0",
+        "merge": true
+      },
+      {
+        "id": "l1-clock",
+        "type": "session-clock",
+        "rawValue": true,
+        "color": "hex:9a9aa0"
+      },
+      {
+        "id": "l1-sep4",
+        "type": "separator"
+      },
+      {
+        "id": "l1-cache",
+        "type": "cache-timer",
+        "rawValue": true,
+        "color": "hex:9a9aa0",
+        "metadata": {
+          "ttlSeconds": "3600",
+          "symbolHot": "󰈸",
+          "symbolFresh": "󰄬",
+          "symbolDraining": "󰔟",
+          "symbolUrgent": "󰀦",
+          "symbolCold": "󰜗"
+        }
+      }
+    ],
+    [
+      {
+        "id": "l2-dir-icon",
+        "type": "custom-symbol",
+        "customSymbol": "󰉋",
+        "color": "hex:00e8c6",
+        "merge": true
+      },
+      {
+        "id": "l2-dir",
+        "type": "current-working-dir",
+        "rawValue": true
+      },
+      {
+        "id": "l2-sep1",
+        "type": "separator"
+      },
+      {
+        "id": "l2-branch",
+        "type": "git-branch",
+        "character": "",
+        "color": "hex:96E072"
+      },
+      {
+        "id": "l2-sep2",
+        "type": "separator"
+      },
+      {
+        "id": "l2-changes-icon",
+        "type": "custom-symbol",
+        "customSymbol": "󰏫",
+        "color": "hex:FFE66D",
+        "merge": true
+      },
+      {
+        "id": "l2-changes",
+        "type": "git-changes",
+        "color": "hex:FFE66D"
+      },
+      {
+        "id": "l2-sep3",
+        "type": "separator"
+      },
+      {
+        "id": "l2-aheadbehind",
+        "type": "git-ahead-behind",
+        "color": "hex:ee5d43",
+        "metadata": {
+          "symbolAhead": "󰜷",
+          "symbolBehind": "󰜮"
+        }
+      },
+      {
+        "id": "l2-sep5",
+        "type": "separator"
+      },
+      {
+        "id": "l2-gitlab",
+        "type": "custom-command",
+        "commandPath": "~/.config/ccstatusline/scripts/gitlab-reviews.sh",
+        "color": "hex:c74ded",
+        "timeout": 3000
+      },
+      {
+        "id": "l2-sep6",
+        "type": "separator"
+      },
+      {
+        "id": "l2-devserver",
+        "type": "custom-command",
+        "commandPath": "~/.config/ccstatusline/scripts/devserver.sh",
+        "preserveColors": true,
+        "timeout": 2000
+      }
+    ],
+    [
+      {
+        "id": "l3-usage-icon",
+        "type": "custom-symbol",
+        "customSymbol": "󰓅",
+        "color": "hex:00e8c6",
+        "merge": true
+      },
+      {
+        "id": "l3-usage",
+        "type": "session-usage",
+        "rawValue": true,
+        "color": "hex:00e8c6",
+        "metadata": {
+          "display": "slider",
+          "invert": "false",
+          "cursor": "false"
+        }
+      },
+      {
+        "id": "l3-reset-icon",
+        "type": "custom-symbol",
+        "customSymbol": "󰔛",
+        "color": "hex:9a9aa0",
+        "merge": true
+      },
+      {
+        "id": "l3-reset",
+        "type": "reset-timer",
+        "rawValue": true,
+        "color": "hex:9a9aa0",
+        "metadata": {
+          "compact": "true",
+          "absolute": "false"
+        }
+      },
+      {
+        "id": "l3-sep1",
+        "type": "separator"
+      },
+      {
+        "id": "l3-weekly-icon",
+        "type": "custom-symbol",
+        "customSymbol": "󰃭",
+        "color": "hex:96E072",
+        "merge": true
+      },
+      {
+        "id": "l3-weekly",
+        "type": "weekly-usage",
+        "rawValue": true,
+        "color": "hex:96E072",
+        "metadata": {
+          "display": "time"
+        }
+      },
+      {
+        "id": "l3-sep2",
+        "type": "separator"
+      },
+      {
+        "id": "l3-fable-icon",
+        "type": "custom-symbol",
+        "customSymbol": "󱐋",
+        "color": "hex:c74ded",
+        "merge": true
+      },
+      {
+        "id": "l3-fable",
+        "type": "fable-weekly-usage",
+        "rawValue": true,
+        "color": "hex:c74ded"
+      },
+      {
+        "id": "l3-sep3",
+        "type": "separator"
+      },
+      {
+        "id": "l3-xp",
+        "type": "custom-command",
+        "commandPath": "~/.config/ccstatusline/scripts/xp.sh",
+        "preserveColors": true,
+        "timeout": 2000
+      }
+    ]
+  ],
+  "flexMode": "full-minus-40",
+  "compactThreshold": 60,
+  "colorLevel": 3,
+  "defaultPadding": " ",
+  "defaultPaddingSide": "both",
+  "inheritSeparatorColors": true,
+  "globalBold": true,
+  "gitCacheTtlSeconds": 5,
+  "minimalistMode": false,
+  "powerline": {
+    "enabled": false,
+    "separators": [
+      ""
+    ],
+    "separatorInvertBackground": [
+      false
+    ],
+    "startCaps": [],
+    "endCaps": [],
+    "theme": "catppuccin",
+    "autoAlign": false,
+    "continueThemeAcrossLines": false
+  },
+  "installation": {
+    "method": "pinned",
+    "installedVersion": "2.2.27"
+  }
+}
