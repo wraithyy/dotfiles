@@ -35,8 +35,19 @@ for _ in $(seq 1 10); do
 done
 [[ -z "$last_msg" ]] && exit 0
 
-claim_re='(testy? (pro|prob|pass)|tests? pass|all tests|všechny testy|ověřeno|verified|✅)'
+# Narrow claims only. Dropped bare `✅` (any checkmark in a table tripped it)
+# and made `verified` word-initial so UNVERIFIED — the very word this hook
+# asks for — stops re-triggering it.
+claim_re='(testy? (pro|prob|pass)|tests? pass|all tests|všechny testy|ověřeno|(^|[^a-zA-Z])verified)'
 echo "$last_msg" | grep -qiE "$claim_re" || exit 0
+
+# Only guard sessions that actually touched code. A research/deploy/chat
+# session has no test to run, so a claim there is not a test claim.
+touched=$(jq -rs '.[-200:] | [ .[] | select(.type=="assistant")
+  | .message.content[]? | select(.type=="tool_use")
+  | select(.name=="Edit" or .name=="Write" or .name=="MultiEdit" or .name=="NotebookEdit")
+  ] | length' "$transcript" 2>/dev/null)
+[[ "${touched:-0}" -eq 0 ]] && exit 0
 
 # Evidence = a test runner actually executed via Bash tool_use in the last
 # 200 transcript entries (mentions in prose don't count).

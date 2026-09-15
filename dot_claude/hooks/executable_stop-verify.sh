@@ -18,6 +18,20 @@ top=$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null)
 modified=$(git -C "$cwd" diff --name-only --diff-filter=d HEAD 2>/dev/null | grep -E '\.(ts|tsx|js|jsx)$' | sed "s|^|$top/|")
 [[ -z "$modified" ]] && exit 0
 
+# Keep only files THIS session edited: the working tree carries uncommitted
+# edits from other sessions and the user (review-before-commit workflow), so
+# a plain HEAD diff reports findings that aren't this instance's to fix.
+# Ceiling: subagent edits live in separate transcripts and are not seen here.
+transcript=$(echo "$input" | jq -r '.transcript_path // ""')
+if [[ -n "$transcript" && -f "$transcript" ]]; then
+  session_files=$(jq -r '.message.content[]? | select(.type? == "tool_use")
+    | select(.name == "Edit" or .name == "Write" or .name == "MultiEdit" or .name == "NotebookEdit")
+    | .input.file_path // empty' "$transcript" 2>/dev/null | sort -u)
+  [[ -z "$session_files" ]] && exit 0
+  modified=$(grep -xF -f <(printf '%s\n' "$session_files") <<<"$modified")
+  [[ -z "$modified" ]] && exit 0
+fi
+
 findings=""
 
 # GNU timeout is absent on stock macOS; fall back to gtimeout (coreutils) or no limit
