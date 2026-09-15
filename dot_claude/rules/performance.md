@@ -2,7 +2,9 @@
 
 Session default is `opusplan` (settings.json): Opus 5 in plan mode, Sonnet 5
 for execution. Cost order per MTok:
-Fable $10/$50 > Opus 5 $5/$25 > Sonnet 5 $3/$15 > Haiku 4.5 $1/$5.
+Fable 5.1 $10/$50 > Opus 5 $5/$25 > Sonnet 5 $2/$10 > Haiku 4.5 $1/$5.
+Fable 5.1 cache reads are $0.25/MTok (1/4 of Fable 5) — long cached
+sessions run ~25% cheaper than on Fable 5.
 Sonnet 5 is near-Opus on coding/agentic work — subagent default, not a
 compromise.
 
@@ -20,15 +22,17 @@ Rules of thumb:
 - Prefer lowering `effort` over downgrading model for cheap mechanical work
   (agent frontmatter supports `effort: low|medium|high|xhigh`; session default
   is `medium` via settings `effortLevel`, below Opus 5's own default of high).
-- Fable: exceptional use only — 2x Opus price ($10/$50 per MTok), never as
-  subagent model.
+- Fable: exceptional use only — 2x Opus list price ($10/$50 per MTok), never
+  as subagent model. Fable 5.1 recalibrated effort levels — medium ≈ Fable 5
+  quality at lower cost; re-tune instead of carrying old levels over.
 
 Gotchas:
 
 - `/model X` is sticky: it writes X into user settings, so every later session
   starts on X and live settings.json drifts from chezmoi. Switch back the same
   day as the exceptional task.
-- Fable→Opus silent classifier fallback is possible — check the active model
+- Fable→Opus silent classifier fallback is possible (5.1: fewer classifier
+  false positives; measured 4/79 on Fable 5) — check the active model
   mid-session on long Fable runs.
 - Mid-session model switches re-read full history uncached (one-time token
   cost) — switch at plan boundaries, not mid-task.
