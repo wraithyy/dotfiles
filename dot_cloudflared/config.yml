@@ -4,6 +4,7 @@
 #   cloudflared tunnel create herd        -> fill TUNNEL_ID below
 #   cloudflared tunnel route dns herd ssh.wraithy.online
 #   cloudflared tunnel route dns herd collie.wraithy.online
+#   cloudflared tunnel route dns herd ilmari.wraithy.online
 # Zero Trust dashboard: Access application per hostname, policy = your email;
 # for ssh.* enable "browser rendering: SSH".
 # Run: brew services start cloudflared
@@ -16,4 +17,7 @@ ingress:
     service: ssh://localhost:22
   - hostname: collie.wraithy.online
     service: http://localhost:8787
+  # ilmari webhooks + monitor; no Access app — GitLab must reach it, ilmari auths itself
+  - hostname: ilmari.wraithy.online
+    service: http://localhost:7777
   - service: http_status:404
