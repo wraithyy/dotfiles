@@ -10,7 +10,9 @@
 
 Types: feat, fix, refactor, docs, test, chore, perf, ci
 
-Note: Attribution disabled globally via ~/.claude/settings.json.
+Enforced by cc-guard (Claude PreToolUse hook + global git commit-msg hook):
+conventional subject, no emoji, `Co-Authored-By: Claude*` trailers stripped.
+Work repos under ~/Development/trask/ skip the format check (gitconfig-trask).
 
 ## Pull Request Workflow
 

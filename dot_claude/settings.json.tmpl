@@ -1,8 +1,7 @@
 {
   "env": {
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet",
-    "TOO_LONG_LIMIT": "0"
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
   },
   "disabledMcpjsonServers": ["context-mode"],
   "permissions": {
@@ -216,6 +215,16 @@
         ]
       },
       {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/live-edit-guard.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
         "matcher": "Write",
         "hooks": [
           {
@@ -247,36 +256,6 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/fe-post-edit.sh",
-            "timeout": 60
-          }
-        ]
-      },
-      {
-        "matcher": "Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/fe-post-edit.sh",
-            "timeout": 60
-          }
-        ]
-      },
-      {
-        "matcher": "MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/fe-post-edit.sh",
-            "timeout": 60
-          }
-        ]
-      },
-      {
         "matcher": ".*",
         "hooks": [
           {
@@ -304,11 +283,6 @@
             "type": "command",
             "command": "{{ .chezmoi.homeDir }}/.claude/hooks/verify-claims.sh",
             "timeout": 10
-          },
-          {
-            "type": "command",
-            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/too-long.sh",
-            "timeout": 10
           }
         ]
       }
@@ -323,6 +297,8 @@
   "enabledPlugins": {
     "andrej-karpathy-skills@karpathy-skills": true,
     "caveman@caveman": true,
+    "cc-guard@cc-guard": true,
+    "cc-plugin-you-should-know@builtin": true,
     "context-mode@context-mode": true,
     "figma@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
@@ -331,6 +307,12 @@
     "understand-anything@understand-anything": true
   },
   "extraKnownMarketplaces": {
+    "cc-guard": {
+      "source": {
+        "source": "github",
+        "repo": "wraithyy/cc-guard"
+      }
+    },
     "caveman": {
       "source": {
         "source": "github",

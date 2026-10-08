@@ -1,5 +1,7 @@
 [core]
 	pager = delta
+	# cc-guard git hooks (gitleaks, commit-msg); they chain to each repo's .git/hooks
+	hooksPath = ~/.config/git/hooks
 [interactive]
 	diffFilter = delta --color-only
 [delta]

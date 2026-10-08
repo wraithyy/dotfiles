@@ -10,6 +10,9 @@ brew "herdr"            # agent-aware multiplexer, tmux migration in progress
 brew "cloudflared"      # CF tunnel: browser SSH terminal + collie remote
 brew "lazygit"
 brew "git-delta"       # lazygit pager (config.yml)
+brew "gitleaks"        # cc-guard: secret scan before commit
+brew "ast-grep"        # cc-guard: TS any / ts-ignore rules
+brew "shellcheck"      # cc-guard + claude-config-lint: hook scripts
 brew "bat"
 brew "fd"
 brew "ripgrep"

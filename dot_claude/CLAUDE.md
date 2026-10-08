@@ -22,6 +22,8 @@ belongs in the main session.
 - No emoji in code/commits/comments (unless asked)
 - Comments explain why, not what; only necessary ones
 - TypeScript: never `any` without justifying comment
+- Live `~/.claude` and other chezmoi-managed files are edit-blocked by a hook;
+  edit the chezmoi source, or start with `CLAUDE_LIVE_EDIT=1 claude`
 
 ## Notes Vault
 

@@ -47,3 +47,16 @@ clone.args = ["--quiet"]
 type = "git-repo"
 url = "https://github.com/tmux-plugins/tpm"
 refreshPeriod = "1h"
+
+# cc-guard git hooks (gitleaks pre-commit, commit-msg format); core.hooksPath in .gitconfig
+[".config/git/hooks/pre-commit"]
+type = "file"
+url = "https://raw.githubusercontent.com/wraithyy/cc-guard/bfc285ad6f348fbd858bed49101174c58ecd9ed8/plugins/cc-guard/git-hooks/pre-commit"
+executable = true
+refreshPeriod = "168h"
+
+[".config/git/hooks/commit-msg"]
+type = "file"
+url = "https://raw.githubusercontent.com/wraithyy/cc-guard/bfc285ad6f348fbd858bed49101174c58ecd9ed8/plugins/cc-guard/git-hooks/commit-msg"
+executable = true
+refreshPeriod = "168h"

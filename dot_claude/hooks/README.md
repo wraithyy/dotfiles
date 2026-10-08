@@ -1,17 +1,17 @@
-# Claude Code Hooks
+# Claude Code hooks (chezmoi-managed, personal)
 
-Registered in `dot_claude/settings.json.tmpl` (chezmoi source of truth).
-See `~/.claude/rules/hooks.md` for the event -> hook table.
+Registered in `settings.json.tmpl`. Portable guards (commit, edit, subagent evidence)
+live in the cc-guard plugin instead: https://github.com/wraithyy/cc-guard
 
 | Script | Purpose |
 |---|---|
-| smart-notify.sh | unified notifications (permission/question/done), platform dispatch: osascript / wsl-notify-send / notify-send, tmux display-message branch |
-| block-sensitive-files.sh | PreToolUse deny-list for secret files and credential dirs |
-| fe-post-edit.sh | biome/prettier format after Edit/Write |
-| stop-verify.sh | once-per-session tsc + console.log audit on Stop |
-
-Test a hook manually by piping a payload:
-
-```sh
-echo '{"hook_event_name":"Stop","cwd":"'$PWD'"}' | ~/.claude/hooks/smart-notify.sh
-```
+| op-preflight.sh | SessionStart: warn when 1Password SSH signing is broken |
+| smart-notify.sh | notifications for permission prompts, questions, stop |
+| block-sensitive-files.sh | deny Read/Bash on .env, keys, .ssh, .aws |
+| ask-git-remote.sh | git/gh/glab/gitlab write commands -> ask; CLAUDE_GIT_YOLO=1 allows |
+| block-doc-spam.sh | deny Write of unsolicited docs |
+| live-edit-guard.sh | deny Edit/Write of live chezmoi-managed files; CLAUDE_LIVE_EDIT=1 bypasses |
+| herdr-agent-state.sh | SessionStart: report agent state to herdr |
+| context-mode-cache-heal.mjs | SessionStart: repair context-mode plugin cache |
+| stop-verify.sh | Stop: tsc + console.log audit, one nudge per session |
+| verify-claims.sh | Stop: "tests passed" claim without a test run -> block once |
