@@ -55,16 +55,14 @@ tokens and restart context from zero).
 - major change: code-reviewer + security-reviewer (+ accessibility-specialist for UI)
 - new API: nodejs-expert + tdd-guide
 
-## Evidence contract (mandatory in every delegated prompt)
+## Evidence contract (enforced by cc-guard)
 
 Subagents have falsely claimed passing checks (e2e hit an unrelated app on
-port 3000; GitLab lint never ran). Every prompt that asks an agent to verify
-anything MUST include:
-
-> End your report with a VERIFICATION block: exact commands run, exit codes,
-> last 10 lines of raw output. Any claim without pasted output = report it as
-> UNVERIFIED. For dev-server/e2e checks, prove the port belongs to this
-> project (fetch a known route) before trusting results.
+port 3000; GitLab lint never ran). The cc-guard plugin appends the canonical
+VERIFICATION block (`scripts/evidence-block.txt`) to every delegated prompt
+for agents that can run Bash or edit files, and flags reports that lack it or
+claim success without an exit code. You still write the task; the contract
+text is no longer yours to paste.
 
 Orchestrator side: never relay an agent's "passed" to the user without an
 evidence block; re-run the critical check in the main session if it's missing.

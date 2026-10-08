@@ -14,13 +14,10 @@
       "WebFetch(domain:web.dev)",
       "WebFetch(domain:tailwindcss.com)",
       "WebFetch(domain:anthropic.com)",
-      "mcp__time_time_get-current-time",
       "mcp__plugin_context-mode_context-mode__*",
       "mcp__context-mode__*",
       "mcp__chrome-devtools__*",
       "mcp__playwright__*",
-      "mcp__webclaw__*",
-      "mcp__browser-mcp__*",
       "Bash(find:*)",
       "Bash(grep:*)",
       "Bash(ls:*)",
@@ -85,6 +82,16 @@
       }
     ],
     "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/session-lint.sh",
+            "timeout": 10
+          }
+        ]
+      },
       {
         "matcher": "startup",
         "hooks": [

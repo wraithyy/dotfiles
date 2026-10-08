@@ -1,3 +1,8 @@
+---
+name: verification-loop
+description: Verification loop for Claude Code sessions. Use after implementing a feature or fix to run build, tests, lint and a self-review before reporting done.
+---
+
 # Verification Loop Skill
 
 A comprehensive verification system for Claude Code sessions.

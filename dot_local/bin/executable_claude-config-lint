@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+# Consistency lint for ~/.claude config vs chezmoi source. Report only, no fixes.
+#   claude-config-lint [--quick] [--json]
+# --quick skips shellcheck and the husky scan (used by the SessionStart hook).
+# Exit 1 when any ERROR was found.
+set -uo pipefail
+C="$HOME/.claude"; SRC="$HOME/.local/share/chezmoi"
+quick=0; json=0
+for a in "$@"; do case "$a" in --quick) quick=1 ;; --json) json=1 ;; esac; done
+errors=0
+report() { # report LEVEL check message [path]
+  [ "$1" = ERROR ] && errors=$((errors+1))
+  if [ $json -eq 1 ]; then jq -cn --arg l "$1" --arg c "$2" --arg m "$3" --arg p "${4:-}" '{level:$l,check:$c,message:$m,path:$p}'
+  else printf '%-5s %-14s %s%s\n' "$1" "$2" "$3" "${4:+  ($4)}"; fi
+}
+has() { command -v "$1" >/dev/null 2>&1; }
+
+# binaries
+has gitleaks || report ERROR binaries "gitleaks missing: commits are denied until installed (brew install gitleaks)"
+for b in ast-grep shellcheck jq; do has "$b" || report WARN binaries "$b missing, related checks silently skipped"; done
+
+# hooks referenced in live settings exist & executable; hooks dir files are referenced
+if [ -f "$C/settings.json" ]; then
+  for h in $(jq -r '.. | .command? // empty' "$C/settings.json" | grep -oE '/[^ "]*\.claude/hooks/[A-Za-z0-9_.-]+' | sort -u); do
+    [ -x "$h" ] || report ERROR hooks "referenced hook missing or not executable" "$h"
+  done
+  for f in "$C"/hooks/*; do
+    case "$(basename "$f")" in README.md) continue ;; esac
+    grep -q "$(basename "$f")" "$C/settings.json" || report WARN hooks "hook file not referenced by settings.json" "$f"
+  done
+  # permissions.allow duplicates and dead mcp rules
+  jq -r '.permissions.allow[]?' "$C/settings.json" | sort | uniq -d | while read -r d; do report WARN permissions "duplicate allow rule: $d"; done
+  servers=$(jq -r '.mcpServers | keys[]' "$HOME/.claude.json" 2>/dev/null | tr '\n' '|')
+  plugins=$(jq -r '.enabledPlugins | to_entries[] | select(.value) | .key | split("@")[0]' "$C/settings.json" | tr '\n' '|')
+  jq -r '.permissions.allow[]?' "$C/settings.json" | grep -oE '^mcp__[A-Za-z0-9-]+' | sed 's/^mcp__//' | sort -u | while read -r s; do
+    case "$s" in plugin_*|context-mode|claude_ai_*|claude-in-chrome) continue ;; esac
+    printf '%s' "$servers$plugins" | grep -q "$s" || report WARN permissions "allow rule for unknown MCP server/plugin: mcp__${s}__"
+  done
+  # Fable watchdog
+  [ "$(jq -r '.model // empty' "$C/settings.json")" = fable ] && report WARN model "model: fable is sticky in live settings (performance.md: switch back with /model opusplan after the exceptional task)"
+fi
+
+# agents table in rules/agents.md vs files; duplicates with agents-disabled
+if [ -f "$C/rules/agents.md" ]; then
+  for a in $(grep -oE '^\| [a-z][a-z0-9-]+ \|' "$C/rules/agents.md" | tr -d '| ' | grep -v '^Agent$'); do
+    [ -f "$C/agents/$a.md" ] || report ERROR agents "listed in rules/agents.md but no agent file" "$C/agents/$a.md"
+  done
+  for f in "$C"/agents/*.md; do
+    n=$(basename "$f" .md)
+    grep -qE "^\| $n \|" "$C/rules/agents.md" || report WARN agents "agent file not listed in rules/agents.md" "$f"
+    [ -f "$C/agents-disabled/$n.md" ] && report WARN agents "present in both agents/ and agents-disabled/" "$n"
+  done
+fi
+
+# commands / skills referenced in rules and CLAUDE.md exist (agents hold API examples, skipped)
+# shellcheck disable=SC2013
+for c in $(grep -ohE '(^|[ (`])/[a-z][a-z0-9-]+' "$C/rules"/*.md "$C/CLAUDE.md" 2>/dev/null | grep -oE '/[a-z][a-z0-9-]+' | sort -u); do
+  n=${c#/}
+  case "$n" in model|clear|compact|hooks|mcp|plan|config|help|init|login|resume|fast|plugin|memory|agents|worktree|evolve|auto-mode-setup|dev|tmp|private|usr|bin|etc|opt|var|home|root|path|dev-|test|src|docs|api|app|n|x|y) continue ;; esac
+  [ -f "$C/commands/$n.md" ] || [ -d "$C/skills/$n" ] || ls "$C"/plugins/cache/*/*/*/commands/"$n".md "$C"/plugins/cache/*/*/*/skills/"$n" >/dev/null 2>&1 || report WARN refs "/$n referenced but no command or skill found"
+done
+
+# SKILL.md frontmatter
+for d in "$C"/skills/*/; do
+  f="${d%/}/SKILL.md"; [ -f "$f" ] || continue
+  head -1 "$f" | grep -q '^---' || { report WARN skills "no frontmatter" "$f"; continue; }
+  grep -q '^name:' "$f" || report WARN skills "frontmatter missing name" "$f"
+  dl=$(grep -m1 '^description:' "$f" | wc -c | tr -d ' ')
+  [ "$dl" -gt 1024 ] && report WARN skills "description over 1024 chars ($dl)" "$f"
+done
+
+# chezmoi: managed .claude files missing live; settings diff beyond model
+if has chezmoi && [ -d "$SRC" ]; then
+  chezmoi managed --path-style=absolute --include=files 2>/dev/null | grep "^$C/" | while read -r f; do
+    [ -e "$f" ] || report ERROR chezmoi "managed file missing live (run: chezmoi apply --force \"$f\")" "$f"
+  done
+  d=$(chezmoi diff --no-tty "$C/settings.json" 2>/dev/null | grep -E '^[-+] ' | grep -vE '"model"|^[-+] *[{}\[\],]*$' | head -5)
+  [ -n "$d" ] && report WARN chezmoi "live settings.json drifts from source (chezmoi diff ~/.claude/settings.json):
+$(printf '%s\n' "$d" | sed 's/^/        /')"
+fi
+
+if [ $quick -eq 0 ]; then
+  if has shellcheck; then
+    for f in "$C"/hooks/*.sh "$HOME"/.local/bin/*; do
+      [ -f "$f" ] || continue; head -1 "$f" | grep -qE 'bash|sh$' || continue
+      out=$(shellcheck -f gcc -S warning "$f" 2>/dev/null | head -3)
+      [ -n "$out" ] && report WARN shellcheck "$(printf '%s' "$out" | head -1 | cut -c1-120)" "$f"
+    done
+  fi
+  # repos whose local core.hooksPath overrides the global cc-guard hooks (husky etc.)
+  for g in "$HOME"/Development/*/.git/config "$HOME"/Development/*/*/.git/config; do
+    [ -f "$g" ] || continue
+    hp=$(git config -f "$g" core.hooksPath 2>/dev/null) || continue
+    report INFO git-hooks "local core.hooksPath=$hp overrides global cc-guard hooks (gitleaks still runs via Claude hook)" "$(dirname "$(dirname "$g")")"
+  done
+fi
+[ $errors -eq 0 ] || exit 1
+exit 0

@@ -5,6 +5,7 @@ live in the cc-guard plugin instead: https://github.com/wraithyy/cc-guard
 
 | Script | Purpose |
 |---|---|
+| session-lint.sh | SessionStart: daily `claude-config-lint --quick` summary into context |
 | op-preflight.sh | SessionStart: warn when 1Password SSH signing is broken |
 | smart-notify.sh | notifications for permission prompts, questions, stop |
 | block-sensitive-files.sh | deny Read/Bash on .env, keys, .ssh, .aws |

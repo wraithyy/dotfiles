@@ -2,6 +2,8 @@
 
 | Event | Hook | Does |
 |---|---|---|
+| SessionStart startup/resume | session-lint.sh | `claude-config-lint --quick` once a day, ERROR/WARN lines into context |
+| PreToolUse/PostToolUse Agent | cc-guard agent-evidence-*.sh (plugin) | append VERIFICATION contract to command-capable subagent prompts; warn on reports without it |
 | SessionStart startup | op-preflight.sh | throwaway op-ssh-sign signature; warns into context when 1P signing broken |
 | PermissionRequest * | smart-notify.sh | notify "needs permission" (Sosumi / yellow tmux) |
 | PreToolUse Edit/Write/MultiEdit | live-edit-guard.sh | deny edits to live chezmoi-managed files, points at source path; bypass `CLAUDE_LIVE_EDIT=1 claude` |
