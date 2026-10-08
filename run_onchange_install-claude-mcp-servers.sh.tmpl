@@ -32,7 +32,6 @@ remove_if_present() {
 
 add_if_missing chrome-devtools npx -y chrome-devtools-mcp@latest
 add_if_missing playwright      npx -y @playwright/mcp@latest
-add_if_missing browsermcp      npx @browsermcp/mcp@latest
 
 # web-fetch (fetcher-mcp) — Playwright-backed page fetch, needs chromium once
 if [ ! -d "$HOME/Library/Caches/ms-playwright" ] && [ ! -d "$HOME/.cache/ms-playwright" ]; then
@@ -40,11 +39,13 @@ if [ ! -d "$HOME/Library/Caches/ms-playwright" ] && [ ! -d "$HOME/.cache/ms-play
 fi
 add_if_missing web-fetch npx -y fetcher-mcp
 
-# context7 is provided by the context7@claude-plugins-official plugin, not an MCP server
+# context7 plugin dropped 2026-10 (unused); keep the legacy server out too
 remove_if_present browser-mcp  # redundant with playwright + chrome-devtools
 remove_if_present webclaw      # replaced by web-fetch (fetcher-mcp), no brew dep
 remove_if_present time         # mcp-server-time broken vs current mcp SDK; Claude Code injects currentDate natively
-remove_if_present context7     # duplicate of the context7 plugin
+remove_if_present context7
+remove_if_present browsermcp   # dropped 2026-10, unused
+remove_if_present ancre        # dropped 2026-10, pointed at a debug build
 
 # GitLab MCP — token fetched from 1Password at SERVER START via wrapper, never
 # persisted in ~/.claude.json args (a baked --token leaks via `claude mcp list`

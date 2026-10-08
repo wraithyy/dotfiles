@@ -24,7 +24,7 @@ When creating PRs:
 ## Feature Implementation Workflow
 
 1. **Plan First**
-   - Use **planner** agent to create implementation plan
+   - Use built-in `Plan` agent (or plan mode) to create implementation plan
    - Identify dependencies and risks
    - Break down into phases
 

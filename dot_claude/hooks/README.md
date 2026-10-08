@@ -9,8 +9,6 @@ See `~/.claude/rules/hooks.md` for the event -> hook table.
 | block-sensitive-files.sh | PreToolUse deny-list for secret files and credential dirs |
 | fe-post-edit.sh | biome/prettier format after Edit/Write |
 | stop-verify.sh | once-per-session tsc + console.log audit on Stop |
-| precompact-todos.sh | preserves todos across compaction |
-| companion-forward.sh | forwards events to the companion plugin |
 
 Test a hook manually by piping a payload:
 

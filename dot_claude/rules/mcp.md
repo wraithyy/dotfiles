@@ -4,11 +4,9 @@
 |---|---|
 | chrome-devtools | live DOM, console, network debugging |
 | playwright | browser automation, E2E |
-| browsermcp | drives your own logged-in Chrome via extension |
 | web-fetch | page fetch/crawl to Markdown (fetcher-mcp, Playwright) |
 | gitlab | Trask GitLab (token from 1Password at install time) |
 
-Context7 = plugin `context7@claude-plugins-official`, NOT an MCP server.
 Install/restore: `chezmoi apply` runs `run_onchange_install-claude-mcp-servers.sh.tmpl`
 (idempotent, guards missing binaries). Manual: `claude mcp add <name> --scope user -- <cmd>`.
 
@@ -27,7 +25,7 @@ Never default to: Docker-based crawlers, paid hosted crawlers (Firecrawl,
 Webcrawl), local LLM. Local model (Ollama) only if structured extraction /
 classification over many pages is actually needed.
 
-Docs research: official URLs first (or Context7 for libraries), smallest useful
+Docs research: official URLs first, smallest useful
 page set, sitemap/index before crawling links, summarize instead of dumping raw
 page text, and say when content may be incomplete (auth, anti-bot, JS render,
 truncation).

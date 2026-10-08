@@ -4,35 +4,31 @@ Agents live in `~/.claude/agents/`. Unused/disabled agents restore from
 `~/.claude/agents-disabled/` (language sets: Java, .NET, Python, Go,
 Terraform, DB; plus 2026-08 usage-trim: ai-context-optimizer,
 ai-tooling-expert, api-designer, build-error-resolver, css-expert,
-docker-expert, forms-expert, observability-expert).
+docker-expert, forms-expert, observability-expert; 2026-10 trim: cicd-expert,
+e2e-runner, fe-specialist, planner, seo-specialist).
 
 ## Available Agents
 
 ### Quality & Process
 | Agent | Use for |
 |---|---|
-| planner | implementation plans for complex features/refactors |
 | architect | system design, architectural decisions |
 | tdd-guide | write-tests-first for features and bug fixes |
 | code-reviewer | review after writing code |
 | security-reviewer | OWASP gate before commits |
-| e2e-runner | Playwright E2E flows |
 | refactor-cleaner | dead code removal (knip/ts-prune) |
 | doc-updater | codemaps and docs |
 
 ### Frontend
 | Agent | Use for |
 |---|---|
-| fe-specialist | Core Web Vitals, bundle, rendering perf |
 | react-expert | hooks, state mgmt, TanStack Router/Query, component design |
 | accessibility-specialist | WCAG 2.1 AA, ARIA, keyboard nav |
-| seo-specialist | meta, structured data, sitemaps |
 
 ### Backend / Infra / Docs
 | Agent | Use for |
 |---|---|
 | nodejs-expert | TanStack Start, Hono, Express/Fastify, API routes |
-| cicd-expert | GitHub Actions, GitLab CI |
 | it-analyst | requirements analysis, Jira breakdown |
 | tech-writer | ADRs, RFCs, specs, runbooks |
 | fe-estimator | FE estimates in man-days |

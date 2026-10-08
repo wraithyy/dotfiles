@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# wt <task-name>: isolated git worktree + parallel Claude session.
+# herdr owns the worktree when HERDR_ENV=1; tmux fallback otherwise.
+set -euo pipefail
+
+usage() { echo "usage: wt <task-name>" >&2; exit 2; }
+[ $# -ge 1 ] || usage
+
+task=$(printf '%s' "$*" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+|-+$//g')
+[ -n "$task" ] || usage
+
+root=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "wt: not inside a git repo" >&2; exit 1; }
+repo=$(basename "$root")
+branch="task/$task"
+
+if [ "${HERDR_ENV:-}" = 1 ]; then
+  out=$(herdr worktree create --cwd "$root" --branch "$branch" --no-focus)
+  pane=$(jq -r '.result.root_pane.pane_id' <<<"$out")
+  ws=$(jq -r '.result.workspace.workspace_id' <<<"$out")
+  path=$(jq -r '.result.workspace.worktree.checkout_path' <<<"$out")
+  # new pane's shell needs a moment before herdr accepts an agent launch
+  for _ in $(seq 1 20); do
+    res=$(herdr agent start "$task" --kind claude --pane "$pane" 2>&1) && break
+    grep -q agent_pane_busy <<<"$res" || { echo "$res" >&2; exit 1; }
+    sleep 0.5
+  done
+  grep -q '"error"' <<<"$res" && { echo "$res" >&2; exit 1; }
+  echo "worktree: $path"
+  echo "branch:   $branch"
+  echo "attach:   herdr workspace $ws (pane $pane)"
+  echo "cleanup:  herdr worktree remove --workspace $ws && git branch -d $branch"
+  exit 0
+fi
+
+dir="$root/../$repo.worktrees/$task"
+if git show-ref --verify --quiet "refs/heads/$branch"; then
+  git worktree add "$dir" "$branch"
+else
+  git worktree add "$dir" -b "$branch"
+fi
+dir=$(cd "$dir" && pwd)
+
+echo "worktree: $dir"
+echo "branch:   $branch"
+if [ -n "${TMUX:-}" ]; then
+  tmux new-window -n "$task" -c "$dir" claude
+  echo "attach:   tmux select-window -t $task"
+else
+  echo "run:      tmux new-session -s $task -c $dir claude"
+fi
+echo "cleanup:  git worktree remove $dir && git branch -d $branch"

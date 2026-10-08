@@ -178,6 +178,15 @@ work() {
   _tmux_goto "$name"
 }
 
+# ui-craft install/update recreates ~/.claude/commands and drops every
+# chezmoi-managed command (bit us 2026-10-02). Restore them right after.
+ui-craft() {
+  command ui-craft "$@"
+  local rc=$?
+  case "$1" in install|update) chezmoi apply --force ~/.claude/commands ;; esac
+  return $rc
+}
+
 # cc: Claude Code, always in tmux. Reuses a session already running in this
 # cwd (new window); starts a fresh session otherwise. No tmux -> plain claude.
 cc() {

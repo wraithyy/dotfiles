@@ -57,8 +57,8 @@ split_vertical = "prefix+minus"
 split_horizontal = "prefix+/"
 # goto default was prefix+g — swapped with lazygit popup below
 goto = "prefix+alt+g"
-# native herdr worktrees disabled — we use the /worktree Claude command
-# (task/<name> branches in ../<repo>.worktrees/) instead
+# native herdr worktrees disabled — we use the wt script (/worktree) instead
+# (herdr worktree create under herdr, task/<name> in ../<repo>.worktrees/ under tmux)
 new_worktree = ""
 
 # navigate mode, lazygit-style: j/k walk the sidebar workspace list
