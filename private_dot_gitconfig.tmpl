@@ -2,6 +2,9 @@
 	pager = delta
 	# cc-guard git hooks (gitleaks, commit-msg); they chain to each repo's .git/hooks
 	hooksPath = ~/.config/git/hooks
+# cc-guard post-edit may run repo-local biome/prettier (opt-in: code from node_modules)
+[cc-guard]
+	format = true
 [interactive]
 	diffFilter = delta --color-only
 [delta]

@@ -26,15 +26,15 @@ if [ -f "$C/settings.json" ]; then
   done
   for f in "$C"/hooks/*; do
     case "$(basename "$f")" in README.md) continue ;; esac
-    grep -q "$(basename "$f")" "$C/settings.json" || report WARN hooks "hook file not referenced by settings.json" "$f"
+    grep -qF "/hooks/$(basename "$f")" "$C/settings.json" || report WARN hooks "hook file not referenced by settings.json" "$f"
   done
   # permissions.allow duplicates and dead mcp rules
   jq -r '.permissions.allow[]?' "$C/settings.json" | sort | uniq -d | while read -r d; do report WARN permissions "duplicate allow rule: $d"; done
-  servers=$(jq -r '.mcpServers | keys[]' "$HOME/.claude.json" 2>/dev/null | tr '\n' '|')
-  plugins=$(jq -r '.enabledPlugins | to_entries[] | select(.value) | .key | split("@")[0]' "$C/settings.json" | tr '\n' '|')
-  jq -r '.permissions.allow[]?' "$C/settings.json" | grep -oE '^mcp__[A-Za-z0-9-]+' | sed 's/^mcp__//' | sort -u | while read -r s; do
+  # shellcheck disable=SC2046  # word splitting intended, one name per word
+  known=$(printf '|%s' $(jq -r '.mcpServers | keys[]' "$HOME/.claude.json" 2>/dev/null) $(jq -r '.enabledPlugins | to_entries[] | select(.value) | .key | split("@")[0]' "$C/settings.json"))'|' 
+  jq -r '.permissions.allow[]?' "$C/settings.json" | grep -oE '^mcp__.*__' | sed 's/^mcp__//; s/__$//' | sort -u | while read -r s; do
     case "$s" in plugin_*|context-mode|claude_ai_*|claude-in-chrome) continue ;; esac
-    printf '%s' "$servers$plugins" | grep -q "$s" || report WARN permissions "allow rule for unknown MCP server/plugin: mcp__${s}__"
+    printf '%s' "$known" | grep -qF "|$s|" || report WARN permissions "allow rule for unknown MCP server/plugin: mcp__${s}__"
   done
   # Fable watchdog
   [ "$(jq -r '.model // empty' "$C/settings.json")" = fable ] && report WARN model "model: fable is sticky in live settings (performance.md: switch back with /model opusplan after the exceptional task)"
@@ -71,9 +71,9 @@ done
 
 # chezmoi: managed .claude files missing live; settings diff beyond model
 if has chezmoi && [ -d "$SRC" ]; then
-  chezmoi managed --path-style=absolute --include=files 2>/dev/null | grep "^$C/" | while read -r f; do
+  while read -r f; do
     [ -e "$f" ] || report ERROR chezmoi "managed file missing live (run: chezmoi apply --force \"$f\")" "$f"
-  done
+  done < <(chezmoi managed --path-style=absolute --include=files 2>/dev/null | grep "^$C/")
   d=$(chezmoi diff --no-tty "$C/settings.json" 2>/dev/null | grep -E '^[-+] ' | grep -vE '"model"|^[-+] *[{}\[\],]*$' | head -5)
   [ -n "$d" ] && report WARN chezmoi "live settings.json drifts from source (chezmoi diff ~/.claude/settings.json):
 $(printf '%s\n' "$d" | sed 's/^/        /')"
@@ -90,7 +90,8 @@ if [ $quick -eq 0 ]; then
   # repos whose local core.hooksPath overrides the global cc-guard hooks (husky etc.)
   for g in "$HOME"/Development/*/.git/config "$HOME"/Development/*/*/.git/config; do
     [ -f "$g" ] || continue
-    hp=$(git config -f "$g" core.hooksPath 2>/dev/null) || continue
+    hp=$(git config -f "$g" core.hooksPath 2>/dev/null | tr -dc '[:print:]' | cut -c1-80)
+    [ -n "$hp" ] || continue
     report INFO git-hooks "local core.hooksPath=$hp overrides global cc-guard hooks (gitleaks still runs via Claude hook)" "$(dirname "$(dirname "$g")")"
   done
 fi

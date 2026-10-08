@@ -1,6 +1,6 @@
 #!/bin/bash
 # Re-run the Claude config lint whenever anything under dot_claude (except skills) changes.
-# dot_claude hash: {{ output "sh" "-c" (printf "cd %s/dot_claude && find . -type f ! -path './skills/*' | sort | xargs shasum | shasum" .chezmoi.sourceDir) }}
+# dot_claude hash: {{ output "sh" "-c" (printf "cd %s/dot_claude && find . -type f ! -path './skills/*' -print0 | sort -z | xargs -0 shasum | shasum" .chezmoi.sourceDir) }}
 set -u
 command -v claude-config-lint >/dev/null || exit 0
 claude-config-lint --quick || { echo "claude-config-lint found ERRORs (see above)"; exit 1; }
