@@ -248,3 +248,8 @@ key = "prefix+shift+v"
 type = "plugin_action"
 command = "waypoint.add"
 description = "save folder as waypoint"
+
+[experimental]
+# Draw Kitty graphics from panes (Claude Code image-view mod thumbnails);
+# Ghostty is Kitty graphics-compatible.
+kitty_graphics = true

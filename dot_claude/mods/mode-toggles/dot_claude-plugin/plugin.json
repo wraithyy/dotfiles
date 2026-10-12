@@ -1,0 +1,1 @@
+{ "name": "mode-toggles", "version": "0.1.0", "description": "Badge above the prompt to switch adhd, caveman and ponytail modes, now and as the default", "types": "./types/index.d.ts" }

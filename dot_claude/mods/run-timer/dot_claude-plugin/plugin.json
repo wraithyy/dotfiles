@@ -1,0 +1,1 @@
+{ "name": "run-timer", "version": "0.1.0", "description": "Live timer above the prompt for long Bash commands, then their exit status", "types": "./types/index.d.ts" }

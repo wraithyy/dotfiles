@@ -1,7 +1,9 @@
 {
   "env": {
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet",
+    "CLAUDE_CODE_FORCE_TERMINAL_IMAGES": "1",
+    "CLAUDE_CODE_PLUGIN_DIRS": "{{- $mods := list -}}{{- range glob (joinPath .chezmoi.sourceDir "dot_claude/mods/*") -}}{{- $mods = append $mods (printf "~/.claude/mods/%s" (base .)) -}}{{- end -}}{{ join ":" $mods }}"
   },
   "disabledMcpjsonServers": ["context-mode"],
   "permissions": {

@@ -1,0 +1,1 @@
+{ "name": "image-view", "version": "0.1.0", "description": "Half-block thumbnails of pasted images above the prompt instead of bare [Image #N] tags", "types": "./types/index.d.ts" }
