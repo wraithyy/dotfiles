@@ -11,7 +11,7 @@ belongs in the main session.
 
 - Research/grep/log processing -> context-mode MCP (`ctx_batch_execute`,
   `ctx_search`) — raw output stays sandboxed, only summary enters context
-- Model tiers: opusplan session default, Sonnet subagents (Opus escalation),
+- Model tiers: opus session default, Sonnet subagents (Opus escalation),
   Haiku trivial only, Fable exceptional — see rules/performance.md
 
 ## Conventions
