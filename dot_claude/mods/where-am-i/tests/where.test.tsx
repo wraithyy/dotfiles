@@ -2,6 +2,9 @@ import { describe, expect, test } from 'claude-code/testing'
 
 import { parseWhere, promptFor, settled } from '../hooks/register'
 
+// The test environment has the web timer; the mod's lib (es2023, no DOM) does not declare it.
+declare const setTimeout: (callback: () => void, ms: number) => unknown
+
 describe('helpers', () => {
   test('parses JSON from the reply, clips long fields', () => {
     expect(parseWhere('Sure: {"goal":"ship mods","doing":"tests","waiting":"","next":"commit"}')).toEqual({
@@ -22,16 +25,7 @@ describe('helpers', () => {
   })
 })
 
-const props = {
-  hasSurvey: false,
-  isWorking: false,
-  maxRows: 6,
-  bodyColumns: 120,
-  scroll: { offset: 0, bodyRows: 40 },
-  view: {},
-} as const
-
-test('after a main-loop turn the band shows the summary; subagent turns are ignored', async ($, on) => {
+test('after a main-loop turn the summary is stored; subagent turns are ignored', async ($, on) => {
   const asked: string[] = []
   on('model.complete', ($, e) => {
     asked.push(typeof e.prompt === 'string' ? e.prompt : '')
@@ -39,9 +33,10 @@ test('after a main-loop turn the band shows the summary; subagent turns are igno
   })
   on('prompt.submit', ($, e) => ({ text: e.text }))
   on('turn.complete', ($, e) => ({ text: e.answer }))
-  on('ui.render', { component: 'AbovePrompt' }, ($, e) => {
-    const { Box } = $.ui.resolve(e)
-    return <Box />
+  const stored: unknown[] = []
+  on('state.set', ($, e, next) => {
+    if (e.key === 'where') stored.push(e.value)
+    return next(e)
   })
 
   await $.prompt.submit({ text: 'udělej where am i', origin: { kind: 'composer' }, wait: false })
@@ -54,8 +49,8 @@ test('after a main-loop turn the band shows the summary; subagent turns are igno
   expect(asked.length).toBe(1)
   expect(asked[0]).toContain('udělej where am i')
 
-  const ui = await $.ui.mount({ plugin: 'where-am-i', surface: 'terminal', component: 'AbovePrompt', props })
-  expect(await ui.find({ type: 'Text', text: 'Build where-am-i' })).toBeDefined()
-  expect(await ui.find({ type: 'Text', text: '⏳ pick a model' })).toBeDefined()
-  await ui.unmount()
+  // The summary is written after the turn hook returns; the engine's copy of
+  // the module runs it, so wait for the write rather than this module's promise.
+  for (let i = 0; i < 100 && stored.length === 0; i++) await new Promise(resolve => setTimeout(() => resolve(undefined), 5))
+  expect(stored).toEqual([{ goal: 'Build where-am-i', doing: 'writing tests', waiting: 'pick a model', next: 'run tests' }])
 })

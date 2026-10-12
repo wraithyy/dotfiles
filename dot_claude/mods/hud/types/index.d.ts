@@ -4,6 +4,6 @@ export type PendingLevels = { caveman?: string; ponytail?: string }
 
 declare module 'claude-code' {
   interface PluginState {
-    'mode-toggles': { adhd: AdhdState; pending: PendingLevels }
+    hud: { adhd: AdhdState; pending: PendingLevels }
   }
 }

@@ -27,6 +27,7 @@ export const clockOf = (ms: number) => {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
 }
 
+// The hud mod draws `running` and `last`; this mod only keeps them current.
 export const register: Register = on => {
   on('tool.call', { tool: 'Bash' }, async ($, e, next) => {
     if (e.run_in_background) return next(e)
@@ -55,35 +56,4 @@ export const register: Register = on => {
     return next(e)
   })
 
-  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
-    const below = await next(e)
-    if (e.props.hasSurvey) return below
-
-    const now = await $.clock.now()
-    const shown = (await read($, running)).filter(one => now - one.startedAt >= SHOW_AFTER_MS)
-    const done = await read($, last)
-    if (shown.length === 0 && !done) return below
-
-    const { Box, Text } = $.ui.resolve(e)
-    return (
-      <Box flexDirection="column">
-        {below}
-        {shown.map(one => (
-          <Box key={one.id} gap={1}>
-            <Text color="warning">⏳</Text>
-            <Text>{one.label}</Text>
-            <Text dimColor>· {clockOf(now - one.startedAt)}</Text>
-          </Box>
-        ))}
-        {shown.length === 0 && done && (
-          <Box gap={1}>
-            <Text color={done.isOk ? 'success' : 'error'}>{done.isOk ? '✓' : '✗'}</Text>
-            <Text dimColor={done.isOk}>{done.label}</Text>
-            {!done.isOk && <Text color="error">exit {done.exitCode ?? '?'}</Text>}
-            <Text dimColor>· {clockOf(done.ms)}</Text>
-          </Box>
-        )}
-      </Box>
-    )
-  })
 }

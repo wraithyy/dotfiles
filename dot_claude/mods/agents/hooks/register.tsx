@@ -60,13 +60,14 @@ const settle = async ($: EngineInterface) => {
   return { live, now }
 }
 
+// The hud mod draws the live-agent row; this mod keeps `tracked` and the pane.
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
-    await $.command.register({ name: 'agents', description: 'Show subagents of this session with time, cost and stop buttons' })
+    await $.command.register({ name: 'subagents', description: 'Show subagents of this session with time, cost and stop buttons' })
     return next(e)
   })
 
-  on('command.run', { command: 'agents' }, async $ => {
+  on('command.run', { command: 'subagents' }, async $ => {
     await $.ui.open({ id: PANE, title: 'Agents', focus: true, closeOnEscape: true })
     animation ??= $.clock.every(FRAME_MS, () => $.ui.invalidate('ui.render'))
     return { text: 'Agents pane opened.' }
@@ -109,33 +110,6 @@ export const register: Register = on => {
       )
     }
     return next(e)
-  })
-
-  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
-    const below = await next(e)
-    if (e.props.hasSurvey) return below
-
-    const { live, now } = await settle($)
-    const running = (await read($, tracked)).filter(one => live.has(one.id))
-    if (running.length === 0) return below
-
-    const { Box, Text } = $.ui.resolve(e)
-    const total = running.reduce((sum, one) => sum + one.usd, 0)
-    return (
-      <Box flexDirection="column">
-        {below}
-        <Box gap={1}>
-          <Text color="claude">◆ {running.length} agent{running.length > 1 ? 's' : ''}</Text>
-          {running.slice(0, 3).map(one => (
-            <Text key={one.id} dimColor>
-              · {one.type} {shortModel(one.model)} {clockOf(now - one.startedAt)}
-            </Text>
-          ))}
-          {running.length > 3 && <Text dimColor>+{running.length - 3}</Text>}
-          <Text dimColor>· ${total.toFixed(2)} · /agents</Text>
-        </Box>
-      </Box>
-    )
   })
 
   on('ui.render', { component: 'Pane', requestId: PANE, surface: 'terminal' }, async ($, e) => {

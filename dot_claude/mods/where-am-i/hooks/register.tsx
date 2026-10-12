@@ -48,6 +48,7 @@ export const promptFor = (prompts: readonly string[], answer: string) =>
     answer.slice(-MAX_ANSWER),
   ].join('\n')
 
+// The hud mod draws `where`; this mod only keeps it current.
 // Module state: lost on reload, refilled by the next prompts.
 const recent: string[] = []
 let running: Promise<void> = Promise.resolve()
@@ -92,29 +93,4 @@ export const register: Register = on => {
     return result
   })
 
-  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
-    const below = await next(e)
-    const now = await read($, where)
-    if (e.props.hasSurvey || !now || (await read($, isHidden))) return below
-
-    const { Box, Text } = $.ui.resolve(e)
-    return (
-      <Box flexDirection="column">
-        {below}
-        <Box gap={1}>
-          <Text color="claude">◎</Text>
-          <Text bold>{now.goal}</Text>
-          {now.doing && <Text dimColor>· ▶ {now.doing}</Text>}
-        </Box>
-        <Box gap={1}>
-          {now.waiting ? (
-            <Text color="warning">⏳ {now.waiting}</Text>
-          ) : (
-            <Text dimColor>⏳ nothing waiting on you</Text>
-          )}
-          {now.next && <Text dimColor>· → {now.next}</Text>}
-        </Box>
-      </Box>
-    )
-  })
 }

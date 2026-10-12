@@ -25,24 +25,15 @@ describe('helpers', () => {
   })
 })
 
-const props = {
-  hasSurvey: false,
-  isWorking: true,
-  maxRows: 4,
-  bodyColumns: 120,
-  scroll: { offset: 0, bodyRows: 40 },
-  view: {},
-} as const
 
-test('a running subagent shows in the band with its type, model and time', async ($, on) => {
-  const clock = mock.clock(on)
-  let status: 'running' | 'completed' = 'running'
-  on('ui.render', { component: 'AbovePrompt' }, ($, e) => {
-    const { Box } = $.ui.resolve(e)
-    return <Box />
+test('a spawned subagent is tracked with its type and model', async ($, on) => {
+  mock.clock(on)
+  const tracked: unknown[] = []
+  on('state.set', ($, e, next) => {
+    if (e.key === 'tracked') tracked.push(e.value)
+    return next(e)
   })
   on('agent.spawn', () => ({ model: 'claude-sonnet-5-5', agentId: 'a1' }))
-  on('agent.list', () => ({ value: [{ id: 'a1', description: 'scan', type: 'explorer', status }] }))
 
   await $.agent.spawn({
     tool_use_id: 't1',
@@ -54,18 +45,9 @@ test('a running subagent shows in the band with its type, model and time', async
     background: false,
     fork: false,
   })
-  await clock.advance(42_000)
 
-  const band = { plugin: 'agents', surface: 'terminal', component: 'AbovePrompt', props } as const
-  const ui = await $.ui.mount(band)
-  expect(await ui.find({ type: 'Text', text: /1 agent/ })).toBeDefined()
-  expect(await ui.find({ type: 'Text', text: /explorer sonnet 0:42/ })).toBeDefined()
-  await ui.unmount()
-
-  status = 'completed'
-  const after = await $.ui.mount(band)
-  expect(await after.find({ type: 'Text', text: /agent/ })).toBeUndefined()
-  await after.unmount()
+  expect(JSON.stringify(tracked.at(-1))).toContain('"type":"explorer"')
+  expect(JSON.stringify(tracked.at(-1))).toContain('"model":"claude-sonnet-5-5"')
 })
 
 import { accessoryOf, bodyFor, pixelsOf, spriteCells } from '../hooks/sprites'

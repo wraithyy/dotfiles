@@ -16,25 +16,19 @@ describe('helpers', () => {
   })
 })
 
-const props = {
-  hasSurvey: false,
-  isWorking: true,
-  maxRows: 4,
-  bodyColumns: 120,
-  scroll: { offset: 0, bodyRows: 40 },
-  view: {},
-} as const
-const BAND = { plugin: 'run-timer', surface: 'terminal', component: 'AbovePrompt', props } as const
-
-const engineBand = (on: On) =>
-  on('ui.render', { component: 'AbovePrompt' }, ($, e) => {
-    const { Box } = $.ui.resolve(e)
-    return <Box />
+// The hud mod draws these values; here the writes themselves are checked.
+const captureWrites = (on: On) => {
+  const writes: Array<{ key: string; value: unknown }> = []
+  on('state.set', ($, e, next) => {
+    writes.push({ key: e.key, value: e.value })
+    return next(e)
   })
+  return writes
+}
 
-test('a long command shows a live row, then its failure with exit code', async ($, on) => {
+test('a long command is listed while it runs, then kept as the last failure with its exit code', async ($, on) => {
   const clock = mock.clock(on)
-  engineBand(on)
+  const writes = captureWrites(on)
   let finish: () => void = () => {}
   on('tool.call', { tool: 'Bash' }, () =>
     new Promise(resolve => {
@@ -44,26 +38,20 @@ test('a long command shows a live row, then its failure with exit code', async (
 
   const call = $.tool.call({ tool: 'Bash', command: 'pnpm test', description: 'Run tests' })
   await clock.advance(84_000)
-
-  const live = await $.ui.mount(BAND)
-  expect(await live.find({ type: 'Text', text: 'Run tests' })).toBeDefined()
-  expect(await live.find({ type: 'Text', text: /1:24/ })).toBeDefined()
-  await live.unmount()
+  const listed = writes.find(one => one.key === 'running' && JSON.stringify(one.value).includes('Run tests'))
+  expect(listed).toBeDefined()
 
   finish()
   await call
-  const done = await $.ui.mount(BAND)
-  expect(await done.find({ type: 'Text', text: '✗' })).toBeDefined()
-  expect(await done.find({ type: 'Text', text: /exit 1/ })).toBeDefined()
-  await done.unmount()
+  const last = writes.filter(one => one.key === 'last').at(-1)?.value
+  expect(last).toEqual({ label: 'Run tests', isOk: false, exitCode: 1, ms: 84_000 })
+  expect(writes.filter(one => one.key === 'running').at(-1)?.value).toEqual([])
 })
 
-test('a quick command leaves no row', async ($, on) => {
+test('a quick command leaves no last result', async ($, on) => {
   mock.clock(on)
-  engineBand(on)
+  const writes = captureWrites(on)
   on('tool.call', { tool: 'Bash' }, () => ({ result: { stdout: 'a', stderr: '', interrupted: false } }))
   await $.tool.call({ tool: 'Bash', command: 'ls' })
-  const ui = await $.ui.mount(BAND)
-  expect(await ui.find({ type: 'Text', text: /ls/ })).toBeUndefined()
-  await ui.unmount()
+  expect(writes.some(one => one.key === 'last')).toBe(false)
 })
