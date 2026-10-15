@@ -52,6 +52,20 @@ alias claudegit="CLAUDE_GIT_YOLO=1 claude"
 export DISABLE_AUTO_TITLE='true'
 {{- if eq .chezmoi.os "darwin" }}
 alias dev="cd ~/Development/Trask"
+# GlobalProtect toggle: vpn [on|off|status], no arg = flip
+vpn() {
+  local agents=(/Library/LaunchAgents/com.paloaltonetworks.gp.pangp{a,s}.plist)
+  local cmd=${1:-}
+  if [[ -z $cmd ]]; then
+    pgrep -q PanGPS && cmd=off || cmd=on
+  fi
+  case $cmd in
+    off) launchctl unload "${agents[@]}" && echo "GlobalProtect off" ;;
+    on) launchctl load "${agents[@]}" && echo "GlobalProtect on" ;;
+    status) pgrep -q PanGPS && echo "GlobalProtect running" || echo "GlobalProtect stopped" ;;
+    *) echo "usage: vpn [on|off|status]" >&2; return 1 ;;
+  esac
+}
 {{- end }}
 
 # tmux + tmuxp + fzf workflow
