@@ -48,6 +48,20 @@ type = "git-repo"
 url = "https://github.com/tmux-plugins/tpm"
 refreshPeriod = "1h"
 
+# pi: browser automation over CDP (replaces playwright/chrome-devtools MCP)
+[".pi/agent/skills/browser-tools"]
+type = "archive"
+url = "https://github.com/badlogic/pi-skills/archive/90bb51cae36515a648515b633a81c0c6efc8c74d.tar.gz"
+stripComponents = 2
+include = ["*/browser-tools/**"]
+
+# pi: selected mattpocock skills (grill-me, grilling, architecture/design)
+[".pi/agent/skills/mattpocock"]
+type = "archive"
+url = "https://github.com/mattpocock/skills/archive/c55ee46073ed923f86ce59a5eb3b6d895095d1b7.tar.gz"
+stripComponents = 1
+include = ["*/skills", "*/skills/productivity", "*/skills/engineering", "*/skills/productivity/grill-me", "*/skills/engineering/grill-with-docs", "*/skills/engineering/improve-codebase-architecture", "*/skills/engineering/codebase-design", "*/skills/engineering/domain-modeling", "*/skills/productivity/grill-me/**", "*/skills/engineering/grill-with-docs/**", "*/skills/engineering/improve-codebase-architecture/**", "*/skills/engineering/codebase-design/**", "*/skills/engineering/domain-modeling/**"]
+
 # cc-guard git hooks (gitleaks pre-commit, commit-msg format); core.hooksPath in .gitconfig
 [".config/git/hooks/pre-commit"]
 type = "file"

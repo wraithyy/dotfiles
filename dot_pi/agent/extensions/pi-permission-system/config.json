@@ -1,0 +1,51 @@
+{
+  "permission": {
+    "*": "allow",
+    "path": {
+      "*": "allow",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.env.example": "allow",
+      "*.env.template": "allow",
+      "*.env.sample": "allow",
+      "*.envrc": "deny",
+      "*.netrc": "deny",
+      "*.npmrc": "deny",
+      "*.pypirc": "deny",
+      "*.pem": "deny",
+      "*.key": "deny",
+      "*.p12": "deny",
+      "*.pfx": "deny",
+      "*.jks": "deny",
+      "*id_rsa*": "deny",
+      "*id_ed25519*": "deny",
+      "*id_ecdsa*": "deny",
+      "*credentials.json": "deny",
+      "*secrets.json": "deny",
+      "*secrets.yaml": "deny",
+      "*.htpasswd": "deny",
+      "~/.ssh/*": "deny",
+      "~/.aws/*": "deny",
+      "~/.gnupg/*": "deny",
+      "~/.kube/*": "deny",
+      "~/.pi/agent/auth.json": "deny"
+    },
+    "bash": {
+      "*": "allow",
+      "git commit*": "ask",
+      "git push*": "ask",
+      "git merge*": "ask",
+      "git rebase*": "ask",
+      "git cherry-pick*": "ask",
+      "git revert*": "ask",
+      "git tag*": "ask",
+      "git stash*": "ask",
+      "git reset --hard*": "ask",
+      "gh *": "ask",
+      "glab *": "ask",
+      "rm -rf /*": "deny",
+      "sudo *": "ask"
+    },
+    "external_directory": "allow"
+  }
+}

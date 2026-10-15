@@ -1,0 +1,8 @@
+{
+  "thinkingLevel": "high",
+  "defaultPlanTools": ["read", "bash", "grep", "find", "ls", "Agent", "get_subagent_result", "ctx_search", "ctx_batch_execute", "ctx_fetch_and_index", "ask_user_question"],
+  "implementationPlanRetention": "clear-on-start",
+  "defaultImplementationModel": { "provider": "openai-codex", "modelId": "gpt-5.5" },
+  "defaultImplementationThinkingLevel": "medium",
+  "toggleShortcut": "ctrl+alt+p"
+}

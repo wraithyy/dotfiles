@@ -18,6 +18,7 @@ install scripts (Homebrew Brewfile on macOS, apt/dnf/pacman on Linux).
 |---|---|---|
 | Neovim | `dot_config/nvim` | lazy.nvim, blink.cmp, snacks, catppuccin; `lazy-lock.json` symlinked to source root |
 | Claude Code | `dot_claude` | agents, hooks, rules, skills, MCP servers |
+| pi agent | `dot_pi/agent`, `dot_pi-lens` | standalone Codex harness: AGENTS.md, agents, skills (browser-tools via `.chezmoiexternal.toml`), community pi packages pinned in `create_settings.json.tmpl` (subagents, plan mode, ask-user, powerline + Codex usage, permissions, pi-lens, context-mode); no MCP, no custom extensions |
 | tmux | `dot_config/tmux` | TPM, catppuccin, smart-splits passthrough, focus-events for nvim autoread |
 | tmuxp | `dot_config/tmuxp` | session layouts: dev, notes, ops, focus, review |
 | Ghostty | `dot_config/ghostty` | primary terminal; catppuccin; quick-terminal on cmd+` |

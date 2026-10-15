@@ -1,0 +1,7 @@
+#!/bin/bash
+# pi-skills commit: 90bb51cae36515a648515b633a81c0c6efc8c74d (bump with .chezmoiexternal.toml)
+set -e
+dir="$HOME/.pi/agent/skills/browser-tools"
+[ -f "$dir/package-lock.json" ] || exit 0
+command -v npm >/dev/null 2>&1 || { echo "npm not found, skipping pi browser-tools deps"; exit 0; }
+cd "$dir" && npm ci --silent --no-audit --no-fund
