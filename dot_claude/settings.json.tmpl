@@ -3,6 +3,9 @@
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
     "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet",
     "CLAUDE_CODE_FORCE_TERMINAL_IMAGES": "1",
+    "CARGO_BUILD_JOBS": "6",
+    "CMAKE_BUILD_PARALLEL_LEVEL": "6",
+    "MAKEFLAGS": "-j6",
     "CLAUDE_CODE_PLUGIN_DIRS": "{{- $mods := list -}}{{- range glob (joinPath .chezmoi.sourceDir "dot_claude/mods/*") -}}{{- $mods = append $mods (printf "~/.claude/mods/%s" (base .)) -}}{{- end -}}{{ join ":" $mods }}"
   },
   "disabledMcpjsonServers": ["context-mode"],
@@ -81,6 +84,26 @@
             "command": "command -v pixtuoid-hook >/dev/null 2>&1 && pixtuoid-hook || true"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.local/bin/collie beacon emit # collie-beacon v1",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.local/bin/collie beacon emit # collie-beacon v1",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "SessionStart": [
@@ -130,6 +153,15 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.local/bin/collie beacon emit # collie-beacon v1",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "SessionEnd": [
@@ -139,6 +171,15 @@
           {
             "type": "command",
             "command": "command -v pixtuoid-hook >/dev/null 2>&1 && pixtuoid-hook || true"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.local/bin/collie beacon emit # collie-beacon v1",
+            "timeout": 10
           }
         ]
       }
@@ -294,14 +335,22 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.local/bin/collie beacon emit # collie-beacon v1",
+            "timeout": 10
+          }
+        ]
       }
     ]
   },
   "statusLine": {
     "type": "command",
-    "command": "command -v ccstatusline >/dev/null 2>&1 && ccstatusline || npx -y ccstatusline@latest",
-    "padding": 0,
-    "refreshInterval": 10
+    "command": "{{ .chezmoi.homeDir }}/.local/bin/collie beacon statusline Y29tbWFuZCAtdiBjY3N0YXR1c2xpbmUgPi9kZXYvbnVsbCAyPiYxICYmIGNjc3RhdHVzbGluZSB8IHBlcmwgLUNTIC1wZSAncy9ceHsyMDAyfS9ceHthMH0vZycgfHwgdHJ1ZQ # collie-statusline v1",
+    "padding": 0
   },
   "enabledPlugins": {
     "andrej-karpathy-skills@karpathy-skills": true,
