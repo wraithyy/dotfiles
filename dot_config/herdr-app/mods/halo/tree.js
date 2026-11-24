@@ -3,8 +3,8 @@
 
 import { div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
-import { spaces, agents, terminals, run, setAgentOrder, pickFolder } from "herdr";
-import { MONO, STATUS_LABEL, label, task, cacheTtl, latestStatus, quotaColor, dur, hud, segbar, clean } from "./lib.js";
+import { spaces, agents, terminals, run, setAgentOrder, openOverlay } from "herdr";
+import { MONO, STATUS_LABEL, label, task, cacheTtl, latestStatus, quotaColor, dur, hud, segbar, clean, folded, toggleFold } from "./lib.js";
 
 const RANK = { blocked: 4, done: 3, working: 2, idle: 1 };
 
@@ -28,6 +28,7 @@ function subagents(terminal, all) {
 
 function agentRow(t, a, terminal, all) {
   const status = label(terminal, "halo.status");
+  const where = label(terminal, "halo.where");
   const ttl = a.app === "claude-code" ? cacheTtl(status, t) : null;
   const subs = subagents(terminal, all);
   const meta = h_flex().gap(6).font_family(MONO).text_size(9.5).min_w(0)
@@ -44,7 +45,9 @@ function agentRow(t, a, terminal, all) {
       .on_click(() => run("agent.focus", { terminal: a.address }))
       .child(div().pt(4).child(dot(t, a.status, 6)))
       .child(v_flex().flex_1().min_w(0).gap(2)
-        .child(div().text_size(12).truncate().text_color(a.focused ? t.foreground : t.muted).child(task(a, terminal)))
+        .child(div().text_size(11.5).truncate().text_color(a.focused ? t.foreground : t.muted).child(where?.goal || task(a, terminal)))
+        .when(Boolean(where?.waiting || where?.doing), (el) => el.child(div().text_size(10.5).truncate()
+          .text_color(where.waiting ? t.blocked : t.dim).child(where.waiting ? `⏳ ${where.waiting}` : `▶ ${where.doing}`)))
         .child(meta)))
     .children(subs.map((s) => h_flex().ml(13).pl(26).pr(8).py(2).gap(6).items_center()
       .border_l(1).border_color(t.border)
@@ -59,16 +62,17 @@ function spaceRow(t, s, folded, count, onFold) {
   const fold = div().id(`fold-${s.id}`).size(22).flex_none().rounded(5).flex().items_center().justify_center()
     .when(count > 0, (el) => el.cursor_pointer().hover((st) => st.bg(t.hover))
       .tooltip(folded ? "Show agents" : "Hide agents")
-      .on_click((_e, cx) => { onFold(); cx.notify(); }))
+      .on_click(() => onFold()))
     .child(count > 0
       ? svg(`mods/workspace-chrome/chevron-${folded ? "right" : "down"}.svg`).size(11).text_color(t.dim)
       : div().size(3).rounded(2).bg(t.border));
-  const row = h_flex().id(`sp-${s.id}`).flex_1().min_w(0).h(30).pl(4).pr(8).gap(7).items_center().rounded(6).cursor_pointer()
-    .when(s.active, (el) => el.bg(t.selected))
+  const row = h_flex().id(`sp-${s.id}`).flex_1().min_w(0).h(34).pl(4).pr(8).gap(8).items_center().rounded(6).cursor_pointer()
     .hover((st) => st.bg(t.hover))
     .on_click(() => run("space.select", { id: s.id }))
-    .child(div().w(2).h(14).bg(s.active ? t.accent : "#00000000"))
-    .child(div().flex_1().min_w(0).truncate().text_size(12.5).font_medium()
+    // Herdr's own space menu (rename, new tab, close, ...), as the shipped sidebar opens it.
+    .on_mouse_down("right", () => openOverlay({ mod: "menu", kind: "popup", width: 200, height: 260, props: { tab: "space", target: { id: s.id } } }))
+    .child(svg("mods/workspace-chrome/folder.svg").size(14).flex_none().text_color(s.active ? t.accent : t.muted))
+    .child(div().flex_1().min_w(0).truncate().text_size(13.5).font_semibold()
       .text_color(s.active ? t.foreground : t.muted).child(s.name))
     .when(Boolean(s.branch), (el) => el.child(div().flex_none().font_family(MONO).text_size(9.5).text_color(t.dim)
       .child(s.branch.length > 14 ? `${s.branch.slice(0, 13)}…` : s.branch)))
@@ -100,7 +104,7 @@ function usage(t) {
     .children(rows);
 }
 
-export function renderTree(view, t) {
+export function renderTree(t) {
   const list = agents();
   const all = terminals();
   const byAddress = new Map(all.map((x) => [x.address, x]));
@@ -110,11 +114,13 @@ export function renderTree(view, t) {
 
   const blocks = spaces().map((s) => {
     const mine = sorted(s.id);
-    const folded = Boolean(view.fold[s.id]);
-    if (!folded) order.push(...mine.map((a) => a.address));
-    return v_flex().gap(1)
-      .child(spaceRow(t, s, folded, mine.length, () => view.toggleFold(s.id)))
-      .when(!folded, (el) => el.children(mine.map((a) => agentRow(t, a, byAddress.get(a.address), all))));
+    const isFolded = folded(`t:${s.id}`);
+    if (!isFolded) order.push(...mine.map((a) => a.address));
+    // Each space is a card holding its agents, so the space reads as the parent.
+    return v_flex().gap(1).p(3).pb(isFolded || mine.length === 0 ? 3 : 6).rounded(8).border(1)
+      .border_color(s.active ? t.input : t.border).bg(s.active ? t.selected : "#ffffff04")
+      .child(spaceRow(t, s, isFolded, mine.length, () => toggleFold(`t:${s.id}`)))
+      .when(!isFolded, (el) => el.children(mine.map((a) => agentRow(t, a, byAddress.get(a.address), all))));
   });
   setAgentOrder(order);
 
@@ -123,14 +129,16 @@ export function renderTree(view, t) {
     .child(v_flex().id("halo-tree").flex_1().min_h(0).px(6).pb(6).gap(4).overflow_y_scrollbar()
       .child(h_flex().px(4).gap(6).items_center()
         .child(div().flex_1().child(hud(t, "SPACES", waiting ? `${waiting} WAITING` : `${list.length} AGENTS`)))
+        .child(div().id("space-waypoint").size(20).rounded(5).flex().items_center().justify_center().cursor_pointer()
+          .text_color(t.dim).hover((s) => s.bg(t.hover).text_color(t.accent))
+          .tooltip("Waypoints (cmd-shift-n) · ctrl+s inside saves the focused folder")
+          .on_click(() => run("mod.open", { name: "waypoint" }))
+          .child(svg("mods/halo/icons/waypoint.svg").size(12)))
         .child(div().id("space-new").size(20).rounded(5).flex().items_center().justify_center().cursor_pointer()
-          .text_color(t.dim).hover((s) => s.bg(t.hover).text_color(t.accent)).tooltip("New space (pick folder)")
-          .on_click((_e, cx) => cx.spawn(async () => {
-            const folder = await pickFolder({ prompt: "Folder for the new space" });
-            if (folder) run("space.new", { folder });
-          }))
+          .text_color(t.dim).hover((s) => s.bg(t.hover).text_color(t.accent)).tooltip("New space: waypoints, repos or a typed path")
+          .on_click(() => run("mod.open", { name: "halo-space" }))
           .child(svg("mods/workspace-chrome/plus.svg").size(12))))
-      .children(blocks))
+      .children(blocks).gap(6))
     .child(usage(t));
 }
 

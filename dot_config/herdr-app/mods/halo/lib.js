@@ -1,9 +1,59 @@
 // Shared helpers for the halo views: label parsing, agent lookup, formatting and the
 // HUD primitives (section header, corner brackets, segmented bar).
 
-import { div } from "gpui-kit";
-import { h_flex } from "gpui-base";
-import { terminals, agents, focused } from "herdr";
+import { div, svg } from "gpui-kit";
+import { h_flex, v_flex } from "gpui-base";
+import { terminals, agents, focused, shared, setShared } from "herdr";
+
+// UI state shared by every halo copy (tab bar chips, dock, tree) and kept by Herdr
+// across restarts (shared.json).
+const DEFAULT_PREFS = { panel: true, agents: true, columns: "auto", groups: { agent: true, git: true, dev: true } };
+
+export function prefs() {
+  const p = shared("halo.prefs");
+  return p && typeof p === "object" ? { ...DEFAULT_PREFS, ...p, groups: { ...DEFAULT_PREFS.groups, ...p.groups } } : DEFAULT_PREFS;
+}
+
+export function setPrefs(patch) {
+  setShared("halo.prefs", { ...prefs(), ...patch });
+}
+
+export function folded(id, byDefault = false) {
+  const f = shared("halo.fold");
+  return f && typeof f === "object" && id in f ? Boolean(f[id]) : byDefault;
+}
+
+export function toggleFold(id, byDefault = false) {
+  const f = shared("halo.fold");
+  setShared("halo.fold", { ...(f && typeof f === "object" ? f : {}), [id]: !folded(id, byDefault) });
+}
+
+const chevron = (t, isFolded, size = 10) =>
+  svg(`mods/workspace-chrome/chevron-${isFolded ? "right" : "down"}.svg`).size(size).text_color(t.dim);
+
+// A themed group (AGENT / GIT / DEV) or a section inside one. The header toggles the
+// fold; folded, it still shows the summary so the line stays informative.
+export function section(t, id, title, info, { group = false, byDefault = false } = {}) {
+  if (!info) return null;
+  // A one-line section (info.onOpen) has no body: its header opens something instead.
+  const isFolded = info.onOpen ? true : folded(id, byDefault);
+  const summary = info.summary
+    ? div().max_w(220).min_w(0).truncate().font_family(MONO).text_size(9.5).text_color(info.summaryColor ?? t.dim).child(info.summary)
+    : null;
+  const header = h_flex().id(`fold-${id}`).h(group ? 26 : 22).gap(7).items_center().cursor_pointer().rounded(4)
+    .hover((s) => s.bg(t.hover))
+    .on_click(() => (info.onOpen ? info.onOpen() : toggleFold(id, byDefault)))
+    .when(Boolean(info.onOpen), (el) => el.tooltip(info.tooltip ?? ""))
+    .child(div().flex_none().child(chevron(t, isFolded, group ? 11 : 9)))
+    .when(group, (el) => el.child(div().w(2).h(11).bg(t.accent)))
+    .child(div().flex_none().font_family(MONO).text_size(group ? 10.5 : 9.5).font_semibold()
+      .text_color(group ? t.accent : t.muted).child(title))
+    .child(div().flex_1().min_w(12).h(1).bg(group ? t.accent : t.border).opacity(group ? 0.2 : 0.8))
+    .when(Boolean(summary), (el) => el.child(summary));
+  return v_flex().gap(group ? 8 : 6)
+    .child(header)
+    .when(!isFolded && Boolean(info.body), (el) => el.child(div().pl(group ? 0 : 16).child(info.body)));
+}
 
 export const MONO = "JetBrainsMono Nerd Font Mono";
 export const WARN_MS = 10 * 60 * 1000;

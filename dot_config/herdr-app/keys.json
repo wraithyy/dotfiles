@@ -58,10 +58,10 @@
     "ctrl-7": "space.select:7",
     "ctrl-8": "space.select:8",
     "ctrl-9": "space.select:9",
-    "alt-h": "pane.go:left",
-    "alt-j": "pane.go:down",
-    "alt-k": "pane.go:up",
-    "alt-l": "pane.go:right",
+    "alt-h": "fellowship-status.nav-left",
+    "alt-j": "fellowship-status.nav-down",
+    "alt-k": "fellowship-status.nav-up",
+    "alt-l": "fellowship-status.nav-right",
     "cmd-g": {
       "command": "tab.new",
       "args": {
@@ -81,10 +81,11 @@
     "cmd-í": "tab.select:9",
     "cmd-o": "mod.open:openr",
     "cmd-shift-n": "mod.open:waypoint",
-    "alt-left": "pane.resize:left",
-    "alt-right": "pane.resize:right",
-    "alt-up": "pane.resize:up",
-    "alt-down": "pane.resize:down"
+    "cmd-shift-backspace": "mod.open:space-tidy",
+    "alt-left": "fellowship-status.resize-left",
+    "alt-right": "fellowship-status.resize-right",
+    "alt-up": "fellowship-status.resize-up",
+    "alt-down": "fellowship-status.resize-down"
   },
   "terminal": {
     "cmd-f": "terminal.search",
@@ -105,6 +106,9 @@
     "alt-left": "halo.resize-left",
     "alt-right": "halo.resize-right",
     "alt-up": "halo.resize-up",
-    "alt-down": "halo.resize-down"
+    "alt-down": "halo.resize-down",
+    "cmd-shift-r": "mod.open:halo-scripts",
+    "cmd-shift-j": "mod.open:halo-reply",
+    "cmd-shift-t": "mod.open:halo-task"
   }
 }

@@ -17,3 +17,9 @@ omniwm
 # Brewfile is consumed by brew bundle at source root, not a deploy target
 Brewfile
 README.md
+docs
+
+# herdr-app regenerates these type stubs inside mod folders
+.config/herdr-app/mods/*/gpui-kit.d.ts
+.config/herdr-app/mods/*/herdr.d.ts
+.config/herdr-app/mods/*/jsconfig.json
