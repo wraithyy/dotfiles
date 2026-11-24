@@ -31,9 +31,9 @@ export default class Halo extends View {
     if (this.role === "tabs") {
       cx.spawn(async (cx) => {
         for (;;) {
-          const c = await nextCommand();
           // A failing command must not end the loop, or every later key is lost.
           try {
+            const c = await nextCommand();
             await (COMMANDS[c] ?? (() => nav(c)))(this);
           } catch {
             // ignored: the next key still works

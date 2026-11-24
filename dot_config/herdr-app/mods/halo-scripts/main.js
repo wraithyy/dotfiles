@@ -21,15 +21,15 @@ async function collect(folder) {
     const pm = LOCKS.find(([lock]) => files.has(lock))?.[1] ?? "npm";
     let scripts = {};
     try { scripts = JSON.parse((await readTextFile(`${folder}/package.json`)) ?? "{}").scripts ?? {}; } catch { scripts = {}; }
-    for (const [name, body] of Object.entries(scripts)) items.push({ source: pm, name, detail: String(body), cmd: `${pm} run ${name}` });
+    for (const [name, body] of Object.entries(scripts)) items.push({ source: pm, name, detail: String(body), argv: [pm, "run", name] });
   }
   const make = ["Makefile", "makefile", "GNUmakefile"].find((f) => files.has(f));
   if (make) {
-    for (const name of parseMakefile(await readTextFile(`${folder}/${make}`))) items.push({ source: "make", name, detail: make, cmd: `make ${name}` });
+    for (const name of parseMakefile(await readTextFile(`${folder}/${make}`))) items.push({ source: "make", name, detail: make, argv: ["make", name] });
   }
   const just = ["justfile", "Justfile", ".justfile"].find((f) => files.has(f));
   if (just) {
-    for (const name of parseJustfile(await readTextFile(`${folder}/${just}`))) items.push({ source: "just", name, detail: just, cmd: `just ${name}` });
+    for (const name of parseJustfile(await readTextFile(`${folder}/${just}`))) items.push({ source: "just", name, detail: just, argv: ["just", name] });
   }
   return items;
 }
@@ -65,7 +65,9 @@ export class ScriptsState {
     if (!item) return;
     this.close();
     // A login shell runs the script and stays, so the output survives the script ending.
-    run("pane.split", { direction: "down", argv: ["/bin/zsh", "-lc", `cd ${JSON.stringify(this.folder)} && ${item.cmd}; exec /bin/zsh -l`] });
+    // Folder and command go in as positional arguments, never spliced into the script:
+    // a package.json script name is arbitrary text.
+    run("pane.split", { direction: "down", argv: ["/bin/zsh", "-lc", 'cd "$1" && shift && "$@"; exec /bin/zsh -l', "zsh", this.folder, ...item.argv] });
   }
 }
 

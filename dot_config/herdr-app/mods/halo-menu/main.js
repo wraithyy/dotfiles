@@ -5,6 +5,14 @@ import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
 import { run, exec, hc, theme, props, closeOverlay, agents, panes } from "herdr";
 
+// Same guard as the dock: the pid may be stale, so kill only the same program.
+async function stopListener(tg) {
+  const r = await exec("ps", ["-p", String(tg.pid), "-o", "comm="]).catch(() => null);
+  const comm = (r?.stdout.trim().split("/").pop() ?? "").toLowerCase();
+  const cmd = String(tg.cmd).toLowerCase();
+  if (comm && (comm.startsWith(cmd) || cmd.startsWith(comm))) await exec("kill", [String(tg.pid)]).catch(() => null);
+}
+
 const ICON = (name) => (name.startsWith("mods/") ? name : `mods/workspace-chrome/${name}.svg`);
 const copy = (text) => exec("osascript", ["-e", `set the clipboard to ${JSON.stringify(text)}`]).catch(() => null);
 const openUrl = (url) => exec("open", [url]).catch(() => null);
@@ -30,7 +38,7 @@ function portItems(tg) {
     ["Open in browser", "mods/halo/icons/next.svg", () => openUrl(url)],
     ["Copy URL", "file-text", () => copy(url)],
     ...(tg.terminal ? [["Show terminal", "terminal", () => run("pane.focus", { terminal: tg.terminal })]] : []),
-    [`Stop ${tg.cmd ?? ""} (SIGTERM)`, "x", () => exec("kill", [String(tg.pid)]).catch(() => null), "danger"],
+    [`Stop ${tg.cmd ?? ""} (SIGTERM)`, "x", () => stopListener(tg), "danger"],
   ];
 }
 

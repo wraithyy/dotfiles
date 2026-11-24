@@ -70,7 +70,8 @@ export function attribute(listeners, parents, owners) {
       pid = parents.get(pid);
     }
     if (owner?.space) (bySpace[owner.space] ??= []).push({ ...l, terminal: owner.terminal });
-    else if (DEV_PORTS.has(l.port)) foreign.push(l);
+    // Started from a Herdr terminal without a space label: ours, just unplaced; not "foreign".
+    else if (!owner && DEV_PORTS.has(l.port)) foreign.push(l);
   }
   return { bySpace, foreign };
 }
@@ -102,4 +103,16 @@ export function rollupStatus(checks) {
   if (states.some((s) => /FAILURE|ERROR|TIMED_OUT|CANCELLED|ACTION_REQUIRED/i.test(s))) return "failed";
   if (states.some((s) => /PENDING|QUEUED|IN_PROGRESS|EXPECTED/i.test(s) || s === "")) return "running";
   return "success";
+}
+
+// MRs by project, in first-seen order. ref is "group/sub/project!23" (GitLab) or "#12".
+export function groupByProject(list) {
+  const groups = new Map();
+  for (const mr of list ?? []) {
+    const path = String(mr.ref ?? "").replace(/[!#]\d+$/, "") || "other";
+    const parts = path.split("/");
+    if (!groups.has(path)) groups.set(path, { path, name: parts.pop(), parent: parts.join("/"), items: [] });
+    groups.get(path).items.push(mr);
+  }
+  return [...groups.values()];
 }

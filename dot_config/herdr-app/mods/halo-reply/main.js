@@ -49,9 +49,11 @@ export default class HaloReply extends View {
 
   loadScreen(cx) {
     const a = this.current();
-    if (!a) return;
+    if (!a || this.reading) return; // a slow hc read must not pile up under the 2 s refresh
+    this.reading = true;
     cx.spawn(async (cx) => {
       const r = await hc(["read", a.address]).catch(() => null);
+      this.reading = false;
       if (r) this.screen = { ...this.screen, [a.address]: screenTail(r.stdout) };
       cx.notify();
     });
@@ -61,18 +63,27 @@ export default class HaloReply extends View {
 
   async deliver(address, text) {
     // A lone digit answers a permission prompt as a key press; anything else is typed and sent.
-    if (/^[0-9]$/.test(text)) await hc(["keys", address, text]);
-    else await hc(["send", address, text]);
+    // --force: a waiting agent is "blocked", and hc send refuses to type into it otherwise.
+    // "--" keeps a reply starting with "-" from being read as an option.
+    const r = /^[0-9]$/.test(text) ? await hc(["keys", address, text]) : await hc(["send", "--force", address, "--", text]);
+    if (r?.code !== 0) throw new Error(r?.stderr || "hc failed");
   }
 
   send(cx) {
     const a = this.current();
     const text = this.input.value().trim();
     if (!a || !text) return;
-    this.input.set_value("");
-    this.sent = { address: a.address, text };
     cx.spawn(async (cx) => {
-      await this.deliver(a.address, text).catch(() => null);
+      try {
+        await this.deliver(a.address, text);
+      } catch (error) {
+        // Keep the text so nothing typed is lost; say why.
+        this.sent = { address: a.address, text: `FAILED: ${String(error?.message ?? error).trim().split("\n")[0]}` };
+        cx.notify();
+        return;
+      }
+      this.input.set_value("");
+      this.sent = { address: a.address, text };
       if (this.waiting().filter((x) => x.address !== a.address).length === 0) this.close();
       else this.loadScreen(cx);
       cx.notify();
@@ -99,7 +110,7 @@ export default class HaloReply extends View {
       .child(div().mt(5).size(6).rounded(3).bg(t.blocked).flex_none())
       .child(v_flex().flex_1().min_w(0).gap(2)
         .child(div().text_size(12.5).truncate().text_color(i === this.at ? t.foreground : t.muted).child(clean(x.title) || x.address))
-        .child(div().font_family(MONO).text_size(9.5).text_color(t.dim).child(`${x.space_name} · ${x.tab_name}`)));
+        .child(div().font_family(MONO).text_size(9.5).text_color(t.dim).child([x.space_name, x.tab_name].filter(Boolean).join(" · "))));
 
     return v_flex().id("halo-reply").track_focus(this.handle).size_full().p(16).gap(12).bg(t.popover)
       .on_key_down((e, cx) => {

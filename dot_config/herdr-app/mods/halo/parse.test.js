@@ -66,3 +66,17 @@ test("logged-in glab hosts", () => {
   const out = "gitlab.com\n  x No token\ngitlab.example.com\n  \u2713 Logged in to gitlab.example.com as me (/x/config.yml)\n";
   expect(loggedInHosts(out)).toEqual(["gitlab.example.com"]);
 });
+
+import { groupByProject } from "./parse.js";
+
+test("MRs group by project, first-seen order", () => {
+  const list = [
+    { id: "!3", ref: "acme/web/monorepo!3" },
+    { id: "!4", ref: "acme/tools/skynet!4" },
+    { id: "!9", ref: "acme/web/monorepo!9" },
+  ];
+  expect(groupByProject(list).map((g) => [g.name, g.parent, g.items.map((m) => m.id)])).toEqual([
+    ["monorepo", "acme/web", ["!3", "!9"]],
+    ["skynet", "acme/tools", ["!4"]],
+  ]);
+});

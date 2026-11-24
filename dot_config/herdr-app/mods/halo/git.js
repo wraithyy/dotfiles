@@ -7,13 +7,17 @@ import { div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
 import { exec, run, spaces, panes, shared, setShared, notify } from "herdr";
 import { MONO, openMenu } from "./lib.js";
-import { parseRemote, providerOf, pipelineFinished, rollupStatus, loggedInHosts } from "./parse.js";
+import { parseRemote, providerOf, pipelineFinished, rollupStatus, loggedInHosts, groupByProject } from "./parse.js";
 
 export const GIT_POLL_MS = 60000;
 const TIMEOUT = { timeout: 8000 };
 
 const json = (r) => { try { return r?.code === 0 ? JSON.parse(r.stdout) : null; } catch { return null; } };
-const run_ = (cmd, args, cwd) => exec(cmd, args, { ...TIMEOUT, cwd }).catch(() => null);
+// null when the command failed (cannot start, non-zero exit: VPN off, no auth).
+const run_ = async (cmd, args, cwd) => {
+  const r = await exec(cmd, args, { ...TIMEOUT, cwd }).catch(() => null);
+  return r?.code === 0 ? r : null;
+};
 
 function shapeMr(m) {
   return {
@@ -37,8 +41,10 @@ async function gitlabSpace(folder, remote, branch) {
 }
 
 async function githubSpace(folder) {
-  const r = await run_("gh", ["pr", "view", "--json", "number,title,url,isDraft,reviewDecision,statusCheckRollup,headRefName"], folder);
+  const r = await exec("gh", ["pr", "view", "--json", "number,title,url,isDraft,reviewDecision,statusCheckRollup,headRefName"], { ...TIMEOUT, cwd: folder }).catch(() => null);
   if (!r) return { error: "github unreachable" };
+  // gh exits non-zero both offline and when the branch has no PR; only the latter says so.
+  if (r.code !== 0) return /no pull requests found/i.test(r.stderr) ? { mr: null, pipeline: null } : { error: "github unreachable" };
   const pr = json(r);
   if (!pr) return { mr: null, pipeline: null };
   return {
@@ -79,7 +85,7 @@ async function spaceInfo(s, all) {
   return { provider, host: remote.host, repo: remote.path, branch, ...info };
 }
 
-async function queues(gitlabHost) {
+async function queues(gitlabHost, previous) {
   if (!gitlabHost) return { reviews: [], mine: [] };
   const host = ["--hostname", gitlabHost];
   const user = json(await run_("glab", ["api", ...host, "user"]))?.username;
@@ -87,10 +93,23 @@ async function queues(gitlabHost) {
     user ? run_("glab", ["api", ...host, `merge_requests?reviewer_username=${user}&state=opened&scope=all&per_page=20`]) : null,
     run_("glab", ["api", ...host, "merge_requests?scope=created_by_me&state=opened&per_page=20"]),
   ]);
-  return { reviews: (json(reviews) ?? []).map(shapeMr), mine: (json(mine) ?? []).map(shapeMr) };
+  // Offline: keep the last good lists instead of wiping them.
+  return {
+    reviews: reviews ? (json(reviews) ?? []).map(shapeMr) : previous?.reviews ?? [],
+    mine: mine ? (json(mine) ?? []).map(shapeMr) : previous?.mine ?? [],
+  };
 }
 
+let polling = false;
+let authHost = null; // glab's logged-in host, asked once
+
 export async function pollGit() {
+  if (polling) return;
+  polling = true;
+  try { await pollGitOnce(); } finally { polling = false; }
+}
+
+async function pollGitOnce() {
   const list = spaces();
   const all = panes();
   const results = await Promise.all(list.map((s) => spaceInfo(s, all).catch(() => null)));
@@ -99,15 +118,22 @@ export async function pollGit() {
   let gitlabHost = Object.values(bySpace).find((x) => x.provider === "gitlab" && !x.error)?.host;
   if (!gitlabHost) {
     // glab prints auth status on stderr; the default host need not be the logged-in one.
-    const auth = await run_("glab", ["auth", "status"]);
-    gitlabHost = loggedInHosts(`${auth?.stdout ?? ""}${auth?.stderr ?? ""}`)[0];
+    if (authHost === null) {
+      const auth = await exec("glab", ["auth", "status"], TIMEOUT).catch(() => null);
+      authHost = loggedInHosts(`${auth?.stdout ?? ""}${auth?.stderr ?? ""}`)[0] ?? "";
+    }
+    gitlabHost = authHost || undefined;
   }
   const before = shared("halo.git") ?? {};
-  const next = { bySpace, ...(await queues(gitlabHost)) };
+  const next = { bySpace, ...(await queues(gitlabHost, before)) };
+  const toasted = new Set();
   for (const [id, info] of Object.entries(bySpace)) {
     const was = before.bySpace?.[id]?.pipeline?.status;
     const now = info.pipeline?.status;
-    if (pipelineFinished(was, now)) {
+    // Several spaces on one repo and branch share a pipeline: one toast.
+    const key = `${info.repo}@${info.branch}`;
+    if (pipelineFinished(was, now) && !toasted.has(key)) {
+      toasted.add(key);
       const ok = now === "success";
       notify({ title: `Pipeline ${ok ? "passed" : now}`, body: `${info.repo.split("/").pop()} · ${info.branch}`,
         level: ok ? "success" : "error", timeout: ok ? 5000 : 15000 });
@@ -142,12 +168,24 @@ const smallButton = (t, id, label, onClick) => div().id(id).h(22).px(8).rounded(
   .hover((s) => s.bg(t.hover).text_color(t.accent)).on_click(onClick).child(label);
 
 function mrRow(t, mr, key) {
-  return h_flex().id(`${key}-${mr.ref}`).h(26).gap(8).items_center().rounded(4).px(4).cursor_pointer()
+  return h_flex().id(`${key}-${mr.ref}`).h(26).ml(14).pl(8).gap(8).items_center().rounded(4).cursor_pointer()
+    .border_l(1).border_color(t.border)
     .hover((s) => s.bg(t.hover)).tooltip(`Open ${mr.ref}`).on_click(() => openUrl(mr.url))
     .on_mouse_down("right", (_e, cx) => { cx.stop_propagation(); openMenu("mr", { id: mr.id, url: mr.url }); })
     .child(div().w(48).flex_none().font_family(MONO).text_size(10).text_color(t.accent).child(mr.id))
     .child(div().flex_1().min_w(0).truncate().text_size(12).text_color(mr.draft ? t.dim : t.foreground).child(mr.title))
-    .child(div().flex_none().max_w(120).truncate().font_family(MONO).text_size(9).text_color(t.dim).child(mr.ref.replace(/![0-9]+$/, "").split("/").pop()));
+    .when(mr.draft, (el) => el.child(div().flex_none().font_family(MONO).text_size(9).text_color(t.dim).child("DRAFT")));
+}
+
+// One block per project: a bold name with its group path, then its MRs.
+function byProject(t, list, key) {
+  return v_flex().gap(8).children(groupByProject(list).map((g) => v_flex().gap(2)
+    .child(h_flex().h(22).gap(7).items_center()
+      .child(svg("mods/workspace-chrome/folder.svg").size(12).flex_none().text_color(t.accent))
+      .child(div().flex_none().text_size(12.5).font_semibold().text_color(t.foreground).child(g.name))
+      .child(div().flex_1().min_w(0).truncate().font_family(MONO).text_size(9.5).text_color(t.dim).child(g.parent))
+      .child(div().flex_none().font_family(MONO).text_size(9.5).text_color(t.muted).child(String(g.items.length))))
+    .children(g.items.map((mr) => mrRow(t, mr, key)))));
 }
 
 // GIT › MR of the shown space.
@@ -184,11 +222,11 @@ export function mrSection(t) {
 export function reviewsSection(t) {
   const list = shared("halo.git")?.reviews ?? [];
   if (!list.length) return null;
-  return { summary: `${list.length} to review`, summaryColor: t.ansi3, body: v_flex().gap(1).children(list.map((mr) => mrRow(t, mr, "rev"))) };
+  return { summary: `${list.length} to review`, summaryColor: t.ansi3, body: byProject(t, list, "rev") };
 }
 
 export function mineSection(t) {
   const list = shared("halo.git")?.mine ?? [];
   if (!list.length) return null;
-  return { summary: `${list.length} open`, body: v_flex().gap(1).children(list.map((mr) => mrRow(t, mr, "mine"))) };
+  return { summary: `${list.length} open`, body: byProject(t, list, "mine") };
 }

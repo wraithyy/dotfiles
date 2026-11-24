@@ -13,7 +13,8 @@ export const POLL_MS = 10000;
 function owners() {
   const map = new Map();
   for (const t of terminals()) {
-    if (t.state !== "live") continue;
+    // Remote terminals ("machine/t7") carry remote pids; mixing them in would mis-attribute local ones.
+    if (t.state !== "live" || t.address.includes("/")) continue;
     const owner = { terminal: t.address, space: t.labels?.["herdr.space"] ?? null };
     if (t.pid) map.set(t.pid, owner);
     if (t.foreground?.pid) map.set(t.foreground.pid, owner);
@@ -21,7 +22,15 @@ function owners() {
   return map;
 }
 
+let polling = false;
+
 export async function pollServers() {
+  if (polling) return;
+  polling = true;
+  try { await pollServersOnce(); } finally { polling = false; }
+}
+
+async function pollServersOnce() {
   const [lsof, ps] = await Promise.all([
     exec("lsof", ["-nP", "-iTCP", "-sTCP:LISTEN", "-Fpcn"], { timeout: 5000 }).catch(() => null),
     exec("ps", ["-Ao", "pid=,ppid="], { timeout: 5000 }).catch(() => null),
@@ -37,7 +46,16 @@ export function serversOf(spaceId) {
 }
 
 const openUrl = (port) => exec("open", [`http://localhost:${port}`]).catch(() => null);
-const stop = (pid) => exec("kill", [String(pid)]).catch(() => null);
+// The pid comes from a snapshot up to POLL_MS old: kill only if it is still the same program.
+export async function stopListener(l) {
+  const r = await exec("ps", ["-p", String(l.pid), "-o", "comm="]).catch(() => null);
+  // lsof truncates names to 9 chars and case can differ from ps (python3.1 vs Python3.14).
+  const comm = (r?.stdout.trim().split("/").pop() ?? "").toLowerCase();
+  const cmd = String(l.cmd).toLowerCase();
+  if (!comm || !(comm.startsWith(cmd) || cmd.startsWith(comm))) return;
+  await exec("kill", [String(l.pid)]).catch(() => null);
+}
+const stop = (l) => stopListener(l);
 
 // One line in a space card of the tree.
 export function treeServersRow(t, spaceId) {
@@ -64,7 +82,7 @@ function serverRow(t, l, { canStop }) {
     .child(div().flex_1().min_w(0).truncate().text_size(12).text_color(t.foreground).child(l.cmd))
     .child(div().font_family(MONO).text_size(9.5).text_color(t.dim).child(l.terminal ?? `pid ${l.pid}`))
     .child(iconButton(t, `open-${l.pid}-${l.port}`, "mods/halo/icons/next.svg", `Open http://localhost:${l.port}`, t.accent, () => openUrl(l.port)))
-    .when(canStop, (el) => el.child(iconButton(t, `stop-${l.pid}-${l.port}`, "mods/workspace-chrome/x.svg", `Stop ${l.cmd} (SIGTERM pid ${l.pid})`, t.blocked, () => stop(l.pid))));
+    .when(canStop, (el) => el.child(iconButton(t, `stop-${l.pid}-${l.port}`, "mods/workspace-chrome/x.svg", `Stop ${l.cmd} (SIGTERM pid ${l.pid})`, t.blocked, () => stop(l))));
 }
 
 // DEV › SERVERS for the shown space.

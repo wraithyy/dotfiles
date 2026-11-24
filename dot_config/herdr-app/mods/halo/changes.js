@@ -7,7 +7,8 @@ import { parseChanges } from "./parse.js";
 
 const STALE_MS = 20000;
 
-export const agentFolder = (term) => term?.foreground?.cwd ?? term?.cwd ?? null;
+// Local terminals only: a remote terminal's cwd means nothing to the local git.
+export const agentFolder = (term) => (term?.address?.includes("/") ? null : term?.foreground?.cwd ?? term?.cwd ?? null);
 
 export function needsRefresh(view, term) {
   const folder = agentFolder(term);
@@ -25,8 +26,9 @@ export async function refreshChanges(view, term) {
   view.changes = { ...view.changes, [folder]: { ...(view.changes?.[folder] ?? { files: [] }), at: Date.now() } };
   try {
     const [numstat, status] = await Promise.all([
-      exec("git", ["-C", folder, "diff", "HEAD", "--numstat"], { timeout: 5000 }),
-      exec("git", ["-C", folder, "status", "--porcelain=v1", "--untracked-files=normal"], { timeout: 5000 }),
+      // --no-optional-locks: never take index.lock while the agent may be committing.
+      exec("git", ["--no-optional-locks", "-C", folder, "diff", "HEAD", "--numstat"], { timeout: 5000 }),
+      exec("git", ["--no-optional-locks", "-C", folder, "status", "--porcelain=v1", "--untracked-files=normal"], { timeout: 5000 }),
     ]);
     const root = (await exec("git", ["-C", folder, "rev-parse", "--show-toplevel"], { timeout: 5000 })).stdout.trim();
     view.changes = { ...view.changes, [folder]: { at: Date.now(), root, files: parseChanges(numstat.stdout, status.stdout) } };

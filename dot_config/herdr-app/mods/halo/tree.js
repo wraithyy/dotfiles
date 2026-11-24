@@ -125,7 +125,7 @@ export function renderTree(t) {
   const byAddress = new Map(all.map((x) => [x.address, x]));
   const order = [];
   const sorted = (spaceId) => list.filter((a) => a.space === spaceId)
-    .sort((a, b) => (RANK[b.status] ?? 0) - (RANK[a.status] ?? 0) || b.seq - a.seq);
+    .sort((a, b) => (RANK[b.status] ?? 0) - (RANK[a.status] ?? 0) || (b.seq ?? 0) - (a.seq ?? 0));
 
   const blocks = spaces().map((s) => {
     const mine = sorted(s.id);
