@@ -24,4 +24,10 @@ fi
 if [ -n "$CLAUDE_GIT_YOLO" ]; then
   decide allow "CLAUDE_GIT_YOLO set by the user for this session"
 fi
+# Mid-session opt-in: /git-yolo (mods/git-yolo) writes this flag and denies
+# the model any tool call that names it.
+SID=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('session_id',''))" 2>/dev/null)
+if [ -n "$SID" ] && [ -f "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.git-yolo-$SID" ]; then
+  decide allow "/git-yolo enabled by the user for this session"
+fi
 decide ask "git/gh/glab write operation — user confirms"

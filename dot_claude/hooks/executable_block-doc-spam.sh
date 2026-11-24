@@ -23,7 +23,19 @@ case "$file_path" in
   */docs/*|*/plans/*|*/.claude/*|*/dot_claude/*|*/rules/*|*/memory/*) exit 0 ;;
   */[Nn]otes/*) exit 0 ;;
   /tmp/*|/private/tmp/*|*/scratchpad/*) exit 0 ;;
+  */slides.md|*/slides/*) exit 0 ;;
 esac
+
+# Slidev decks are markdown by nature: allow anywhere inside a project whose
+# nearest package.json depends on @slidev
+dir=$(dirname "$file_path")
+while [ "$dir" != "/" ] && [ "$dir" != "." ]; do
+  if [ -f "$dir/package.json" ]; then
+    grep -q '"@slidev/' "$dir/package.json" && exit 0
+    break
+  fi
+  dir=$(dirname "$dir")
+done
 
 echo "Blocked: creating '$file_path' — new .md/.txt files outside docs/, plans/ or README/CLAUDE are usually unwanted. Ask the user first, or write to the scratchpad." >&2
 exit 2

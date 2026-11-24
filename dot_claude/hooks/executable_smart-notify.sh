@@ -40,9 +40,17 @@ case "$event" in
   Stop)
     # night quiet for completion pings; permission/question always pass
     if [ "$hour" -ge 23 ] || [ "$hour" -lt 7 ]; then exit 0; fi
+    # Each finished background subagent wakes the main session for a turn,
+    # and every such turn fires Stop -> one "Hotovo" ping per subagent.
+    # Notify only for turns started by a human prompt.
+    transcript=$(echo "$input" | jq -r '.transcript_path // ""')
+    if [ -f "$transcript" ]; then
+      origin=$(tail -n 400 "$transcript" | jq -r 'select(.type=="user" and ((.message.content|type)=="string" or (.message.content[0].type? != "tool_result"))) | .origin.kind // "human"' 2>/dev/null | tail -n 1)
+      [ "$origin" = "task-notification" ] && exit 0
+    fi
     title="Claude Code"
     message="Hotovo: $project"
-    sound="Glass"
+    sound="" # completion is informational; sounds are reserved for "needs you"
     tmux_color="green"
     ;;
   Notification)
@@ -100,6 +108,19 @@ send_notification() {
     return 1 # headless/unknown platform: tmux fallback below
   fi
 }
+
+# Attention routing under herdr: macOS banners only when the user is away from
+# Ghostty. In Ghostty but on another pane -> herdr in-app toast. Looking at
+# this very pane -> nothing (the prompt is already on screen).
+if [ "${HERDR_ENV:-}" = "1" ] && [ -n "${HERDR_PANE_ID:-}" ] &&
+  lsappinfo info -only name "$(lsappinfo front)" 2>/dev/null | grep -q '"Ghostty"'; then
+  focused=$(herdr pane list 2>/dev/null | jq -r '.result.panes[] | select(.focused) | .pane_id')
+  [ "$focused" = "$HERDR_PANE_ID" ] && exit 0
+  herdr_sound=none
+  [ -n "$sound" ] && herdr_sound=request
+  herdr notification show "$title – $project" --body "$message" --sound "$herdr_sound" >/dev/null 2>&1
+  exit 0
+fi
 
 # tmux status-line message only when no desktop channel exists (headless SSH);
 # otherwise it just duplicates the banner and repaints the status line

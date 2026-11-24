@@ -1,0 +1,1 @@
+{ "name": "git-yolo", "version": "0.1.0", "description": "/git-yolo: toggle auto-allow of git/gh/glab writes for this session (ask-git-remote.sh reads the flag)" }

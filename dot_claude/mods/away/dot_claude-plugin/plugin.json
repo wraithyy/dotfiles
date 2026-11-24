@@ -1,0 +1,1 @@
+{ "name": "away", "version": "0.1.0", "description": "/away: pause every Claude session (tool calls denied), toggle Amphetamine, resume on return", "types": "./types/index.d.ts" }

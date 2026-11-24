@@ -42,6 +42,13 @@ Gotchas:
   escalations); for an intentional opus/haiku subagent, unset it for that
   session or pass model in the Agent call.
 
+## Native builds (CPU)
+
+Settings env caps native build parallelism at 6 jobs (`CARGO_BUILD_JOBS`,
+`CMAKE_BUILD_PARALLEL_LEVEL`, `MAKEFLAGS=-j6`): four parallel Rust builds
+once froze the machine (load ~187). Run at most one compiling subagent at a
+time; read-only agents may run alongside. Don't override the cap per command.
+
 ## Context window
 
 Avoid last 20% of context for: large refactors, multi-file features, complex

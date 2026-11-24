@@ -9,7 +9,7 @@
 | PreToolUse Edit/Write/MultiEdit | live-edit-guard.sh | deny edits to live chezmoi-managed files, points at source path; bypass `CLAUDE_LIVE_EDIT=1 claude` |
 | PreToolUse Bash `git commit` | cc-guard commit-guard.sh (plugin) | gitleaks on staged diff, conventional subject, no emoji → deny. Config via `git config cc-guard.*` (trask repos: commitFormat=false) |
 | PreToolUse Read+Bash | block-sensitive-files.sh | deny secrets: .env*, keys, .pem, .aws/ .ssh/ ... exit 2 |
-| PreToolUse Bash + mcp__gitlab__ writes | ask-git-remote.sh | git commit/push/merge/rebase/tag/stash, gh, glab, gitlab MR/push tools → `ask`; s `CLAUDE_GIT_YOLO=1 claude` → `allow` (per-session opt-in). Nahrazuje `permissions.ask` — ask pravidla promptují vždy, nelze je pro session povolit |
+| PreToolUse Bash + mcp__gitlab__ writes | ask-git-remote.sh | git commit/push/merge/rebase/tag/stash, gh, glab, gitlab MR/push tools → `ask`; s `CLAUDE_GIT_YOLO=1 claude` → `allow` (per-session opt-in); mid-session `/git-yolo` toggle (mods/git-yolo, flag keyed by session id, model denied from touching it). Nahrazuje `permissions.ask` — ask pravidla promptují vždy, nelze je pro session povolit |
 | PreToolUse AskUserQuestion | smart-notify.sh | notify question text (Glass / blue tmux) |
 | PostToolUse Edit/Write/MultiEdit | cc-guard post-edit.sh (plugin) | biome/prettier format; block TS `any` w/o comment, bare @ts-ignore, emoji; warn console.log, TODO, eslint-disable w/o reason, Czech text, shellcheck |
 | Stop * | smart-notify.sh; stop-verify.sh | done notify (quiet 23-07); tsc + console.log audit, one nudge per session |
