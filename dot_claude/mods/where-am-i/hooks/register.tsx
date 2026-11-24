@@ -58,7 +58,16 @@ const summarize = async ($: EngineInterface, answer: string) => {
   const reply = await $.model.complete({ model: MODEL, system: SYSTEM, prompt: promptFor(recent, answer), maxTokens: 300, timeoutMs: 30_000 })
   if (!reply.isAnswered) return
   const parsed = parseWhere(reply.text)
-  if (parsed) await update($, where, () => parsed)
+  if (!parsed) return
+  await update($, where, () => parsed)
+  await publishToHerdr($, parsed)
+}
+
+// Inside herdr the halo layout shows the band from this terminal label instead.
+const publishToHerdr = async ($: EngineInterface, value: Where) => {
+  const terminal = await $.env.get('HC_TERMINAL_ID')
+  if (!terminal) return
+  await $.process.run(['hc', 'label', terminal, `halo.where=${JSON.stringify(value)}`])
 }
 
 export const register: Register = on => {

@@ -1,7 +1,7 @@
 import { describe, expect, mock, test } from 'claude-code/testing'
 import type { On } from 'claude-code'
 
-import { clockOf, isExpensive, levelOf, nextLevel, prettyModel, switchAction } from '../hooks/modes'
+import { levelOf, nextLevel, switchAction } from '../hooks/modes'
 
 describe('helpers', () => {
   test('levels cycle and parse', () => {
@@ -17,13 +17,6 @@ describe('helpers', () => {
     expect(switchAction('ponytail', 'off')).toEqual({ kind: 'prompt', text: 'stop ponytail' })
   })
 
-  test('model names and clock', () => {
-    expect(prettyModel('claude-fable-5-1')).toBe('Fable 5.1')
-    expect(prettyModel('claude-opus-5-5')).toBe('opus')
-    expect(isExpensive('Fable 5.1')).toBe(true)
-    expect(isExpensive('claude-sonnet-5-5')).toBe(false)
-    expect(clockOf(84_000)).toBe('1:24')
-  })
 })
 
 const props = {
@@ -36,7 +29,7 @@ const props = {
 } as const
 const BAND = { plugin: 'hud', surface: 'terminal', component: 'AbovePrompt', props } as const
 
-type World = { model: string; state: Record<string, unknown>; files: Record<string, string>; live: string[] }
+type World = { model: string; state: Record<string, unknown>; files: Record<string, string>; live: string[]; env?: Record<string, string> }
 
 // Stands in for the engine and the other mods: their state, the flag files,
 // the session model and the agent list.
@@ -47,10 +40,11 @@ const world = (on: On, w: World) => {
     return key in w.state ? { value: { value: w.state[key], version: 1 } } : next(e)
   })
   on('session.model', () => ({ value: w.model }))
+  on('session.id', () => ({ value: 's1' }))
   on('agent.list', () => ({
     value: w.live.map(id => ({ id, description: '', type: 'explorer', status: 'running' as const })),
   }))
-  on('env.get', ($, e) => ({ value: e.name === 'HOME' ? '/h' : undefined }))
+  on('env.get', ($, e) => ({ value: e.name === 'HOME' ? '/h' : w.env?.[e.name] }))
   on('fs.exists', ($, e) => ({ value: e.path in w.files }))
   on('fs.read', ($, e) => ({ value: w.files[e.path] ?? '' }))
   on('fs.write', ($, e) => {
@@ -72,36 +66,47 @@ const world = (on: On, w: World) => {
   return sent
 }
 
-test('one band: where-am-i, mode chips, model, and an activity row only while something runs', async ($, on) => {
-  const clock = mock.clock(on)
-  await clock.set(100_000)
+test('one compact row: where-am-i on the left, mode chips on the right, nothing else', async ($, on) => {
   const w: World = {
     model: 'claude-opus-5-5',
     state: {
       'where-am-i.where': { goal: 'Organize the band', doing: 'writing hud', waiting: 'pick a layout', next: 'test it' },
+      'run-timer.running': [{ id: 'r1', label: 'pnpm test', startedAt: 0 }],
+      'agents.tracked': [{ id: 'a1', type: 'security-reviewer', model: 'claude-sonnet-5-5', startedAt: 0, usd: 0 }],
     },
     files: { '/h/.claude/.i-have-adhd-always': '', '/h/.claude/.caveman-active': 'lite' },
-    live: [],
+    live: ['a1'],
   }
   world(on, w)
 
-  const quiet = await $.ui.mount(BAND)
-  expect(await quiet.find({ type: 'Text', text: 'Organize the band' })).toBeDefined()
-  expect(await quiet.find({ type: 'Text', text: '⏳ pick a layout' })).toBeDefined()
-  expect(await quiet.find({ key: 'toggle-adhd' })).toBeDefined()
-  expect(await quiet.find({ type: 'Text', text: 'lite' })).toBeDefined()
-  expect(await quiet.find({ type: 'Text', text: 'opus' })).toBeDefined()
-  expect(await quiet.find({ key: 'back-opusplan' })).toBeUndefined()
-  expect(await quiet.find({ type: 'Text', text: '/subagents' })).toBeUndefined()
-  await quiet.unmount()
+  const ui = await $.ui.mount(BAND)
+  expect(await ui.find({ type: 'Text', text: 'Organize the band' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: ' · ! pick a layout' })).toBeDefined()
+  expect(await ui.find({ key: 'toggle-adhd' })).toBeDefined()
+  expect(await ui.find({ key: 'toggle-yolo' })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: 'lite' })).toBeDefined()
+  // Only modes that are on get the green dot, so on/off reads at a glance.
+  expect(await ui.find({ type: 'Text', text: '●' })).toBeDefined()
+  // Model, run timer and subagents are Claude Code's own to show.
+  expect(await ui.find({ type: 'Text', text: 'opus' })).toBeUndefined()
+  expect(await ui.find({ type: 'Text', text: 'pnpm test' })).toBeUndefined()
+  expect(await ui.find({ type: 'Text', text: 'security-reviewer' })).toBeUndefined()
+  await ui.unmount()
+})
 
-  w.model = 'claude-fable-5-1'
-  w.live = ['a1']
-  w.state['agents.tracked'] = [{ id: 'a1', type: 'security-reviewer', model: 'claude-sonnet-5-5', startedAt: 78_000, usd: 0 }]
-  const busy = await $.ui.mount(BAND)
-  expect(await busy.find({ key: 'back-opusplan' })).toBeDefined()
-  expect(await busy.find({ type: 'Text', text: '/subagents' })).toBeDefined()
-  await busy.unmount()
+test('inside herdr the where-am-i text is left to the halo layout', async ($, on) => {
+  const w: World = {
+    model: 'claude-opus-5-5',
+    state: { 'where-am-i.where': { goal: 'Organize the band', doing: '', waiting: '', next: '' } },
+    files: {},
+    live: [],
+    env: { HC_TERMINAL_ID: 't1' },
+  }
+  world(on, w)
+  const ui = await $.ui.mount(BAND)
+  expect(await ui.find({ type: 'Text', text: 'Organize the band' })).toBeUndefined()
+  expect(await ui.find({ key: 'toggle-caveman' })).toBeDefined()
+  await ui.unmount()
 })
 
 test('rapid caveman presses apply only the last pick, once', async ($, on) => {
