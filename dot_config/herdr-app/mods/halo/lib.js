@@ -3,7 +3,7 @@
 
 import { div, svg } from "gpui-kit";
 import { h_flex, v_flex } from "gpui-base";
-import { terminals, agents, focused, shared, setShared } from "herdr";
+import { terminals, agents, focused, shared, setShared, openOverlay, panes } from "herdr";
 
 // UI state shared by every halo copy (tab bar toggles, docks, tree) and kept by Herdr
 // across restarts (shared.json).
@@ -26,6 +26,22 @@ export function folded(id, byDefault = false) {
 export function toggleFold(id, byDefault = false) {
   const f = shared("halo.fold");
   setShared("halo.fold", { ...(f && typeof f === "object" ? f : {}), [id]: !folded(id, byDefault) });
+}
+
+// Right-click menu (mod halo-menu) at the pointer. The popup is sized to its items,
+// counted here with the same rules the menu uses.
+function menuItemCount(kind, target) {
+  if (kind === "agent") {
+    const a = agents().find((x) => x.address === target.terminal);
+    if (!a) return 1;
+    return 4 + (a.status === "blocked") + panes().some((p) => p.pane === a.pane) + (a.status === "working");
+  }
+  if (kind === "port") return 3 + Boolean(target.terminal);
+  return 3;
+}
+
+export function openMenu(kind, target) {
+  openOverlay({ mod: "halo-menu", kind: "popup", width: 230, height: menuItemCount(kind, target) * 29 + 12, props: { kind, target } });
 }
 
 const chevron = (t, isFolded, size = 10) =>

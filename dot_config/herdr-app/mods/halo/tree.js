@@ -6,6 +6,7 @@ import { v_flex, h_flex } from "gpui-base";
 import { spaces, agents, terminals, run, setAgentOrder, openOverlay } from "herdr";
 import { treeServersRow } from "./servers.js";
 import { treeGitRow } from "./git.js";
+import { openMenu } from "./lib.js";
 import { MONO, STATUS_LABEL, label, task, cacheTtl, latestStatus, quotaColor, dur, hud, segbar, clean, folded, toggleFold } from "./lib.js";
 
 const RANK = { blocked: 4, done: 3, working: 2, idle: 1 };
@@ -14,8 +15,17 @@ export function dot(t, status, size = 7) {
   const color = t[status] ?? t.dim;
   const base = div().size(size).rounded(size / 2).flex_none();
   if (status === "idle") return base.border(1).border_color(t.dim);
-  if (status === "working") return base.bg(color).loop("opacity", { from: 0.3, to: 1, period: 1400 });
-  if (status === "blocked") return base.bg(color).loop("opacity", { from: 0.25, to: 1, period: 650 });
+  // Working: a satellite circling a faint ring (native spin of one SVG), calm but alive.
+  if (status === "working") return svg("mods/halo/icons/orbit.svg").size(size + 6).flex_none().text_color(color).spin(2400);
+  // Blocked: the same satellite, parked at the top of a solid ring, with a signal halo
+  // pulsing around it: the orbit has stopped and is calling for you.
+  if (status === "blocked") {
+    const box = size + 10;
+    return div().relative().size(box).flex_none().flex().items_center().justify_center()
+      .child(div().absolute().size(box).rounded(box / 2).border(1.5).border_color(color)
+        .loop("opacity", { from: 0, to: 0.85, period: 1500 }))
+      .child(svg("mods/halo/icons/orbit-hold.svg").size(size + 6).text_color(color));
+  }
   return base.bg(color);
 }
 
@@ -45,11 +55,14 @@ function agentRow(t, a, terminal, all) {
       .when(a.focused, (el) => el.bg(t.selected))
       .hover((s) => s.bg(t.hover))
       .on_click(() => run("agent.focus", { terminal: a.address }))
+      .on_mouse_down("right", (_e, cx) => { cx.stop_propagation(); openMenu("agent", { terminal: a.address }); })
       .child(div().pt(4).child(dot(t, a.status, 6)))
       .child(v_flex().flex_1().min_w(0).gap(2)
         .child(div().text_size(11.5).truncate().text_color(a.focused ? t.foreground : t.muted).child(where?.goal || task(a, terminal)))
-        .when(Boolean(where?.waiting || where?.doing), (el) => el.child(div().text_size(10.5).truncate()
-          .text_color(where.waiting ? t.blocked : t.dim).child(where.waiting ? `⏳ ${where.waiting}` : `▶ ${where.doing}`)))
+        .when(Boolean(where?.waiting || where?.doing), (el) => el.child(h_flex().gap(5).items_center().min_w(0)
+          .when(!where.waiting, (row) => row.child(svg("mods/halo/icons/doing.svg").size(10).flex_none().text_color(t.dim)))
+          .child(div().flex_1().min_w(0).text_size(10.5).truncate()
+            .text_color(where.waiting ? t.blocked : t.dim).child(where.waiting || where.doing))))
         .child(meta)))
     .children(subs.map((s) => h_flex().ml(13).pl(26).pr(8).py(2).gap(6).items_center()
       .border_l(1).border_color(t.border)

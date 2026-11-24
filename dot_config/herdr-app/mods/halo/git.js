@@ -6,7 +6,7 @@
 import { div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
 import { exec, run, spaces, panes, shared, setShared, notify } from "herdr";
-import { MONO } from "./lib.js";
+import { MONO, openMenu } from "./lib.js";
 import { parseRemote, providerOf, pipelineFinished, rollupStatus, loggedInHosts } from "./parse.js";
 
 export const GIT_POLL_MS = 60000;
@@ -144,6 +144,7 @@ const smallButton = (t, id, label, onClick) => div().id(id).h(22).px(8).rounded(
 function mrRow(t, mr, key) {
   return h_flex().id(`${key}-${mr.ref}`).h(26).gap(8).items_center().rounded(4).px(4).cursor_pointer()
     .hover((s) => s.bg(t.hover)).tooltip(`Open ${mr.ref}`).on_click(() => openUrl(mr.url))
+    .on_mouse_down("right", (_e, cx) => { cx.stop_propagation(); openMenu("mr", { id: mr.id, url: mr.url }); })
     .child(div().w(48).flex_none().font_family(MONO).text_size(10).text_color(t.accent).child(mr.id))
     .child(div().flex_1().min_w(0).truncate().text_size(12).text_color(mr.draft ? t.dim : t.foreground).child(mr.title))
     .child(div().flex_none().max_w(120).truncate().font_family(MONO).text_size(9).text_color(t.dim).child(mr.ref.replace(/![0-9]+$/, "").split("/").pop()));

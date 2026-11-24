@@ -17,6 +17,8 @@ Everything here lives in this repo under `dot_config/herdr-app/` (deployed to
 | `mods/halo-space` | popup | New space from waypoints, git repos under `~/Development`, worktrees, or a typed path |
 | `mods/halo-task` | dialog | Task name + prompt -> git worktree `task/<slug>` -> new space with Claude running the prompt |
 | `mods/halo-reply` | dialog | Every agent waiting on you, its screen tail, an input; Enter replies, a digit picks a permission option |
+| `mods/halo-pane` | pane header | HUD strip per pane: PROCESSING with a slow scanner beam and a running clock, AWAITING INPUT (amber, clickable to reply), STANDBY with cache TTL; quiet name/folder line for plain terminals |
+| `mods/halo-menu` | popup | Right-click menus: agents (show, peek, reply, pin, rename, interrupt, kill), ports (open, copy URL, stop), MRs (open, copy, review with Claude) |
 | `mods/halo-scripts` | popup | package.json / Makefile / justfile scripts of the focused folder, run in a split |
 | `themes/catppuccin-mocha.json` | theme | Used by the layout |
 | `mods/waypoint`, `mods/openr` | symlinks | Separate repos: saved folders, and openable paths/URLs from a terminal |
@@ -60,8 +62,8 @@ Start Herdr and switch: `herdr-app do layout.switch '{"name":"halo"}'` (or `ctrl
    mkdir -p $DST/layouts $DST/mods $DST/themes
    cp $SRC/layouts/halo.json $DST/layouts/
    cp $SRC/themes/catppuccin-mocha.json $DST/themes/
-   cp -R $SRC/mods/halo $SRC/mods/halo-reporter $SRC/mods/halo-space \
-         $SRC/mods/halo-task $SRC/mods/halo-reply $SRC/mods/halo-scripts $DST/mods/
+   cp -R $SRC/mods/halo $SRC/mods/halo-reporter $SRC/mods/halo-space $SRC/mods/halo-task \
+         $SRC/mods/halo-reply $SRC/mods/halo-scripts $SRC/mods/halo-pane $SRC/mods/halo-menu $DST/mods/
    ```
 
    Herdr never overwrites these; never copy over `AGENTS.md` or the `.d.ts` files (Herdr writes them).
@@ -120,7 +122,7 @@ Start Herdr and switch: `herdr-app do layout.switch '{"name":"halo"}'` (or `ctrl
 ## Verify
 
 ```sh
-for m in halo halo-space halo-task halo-reply halo-scripts; do herdr-app check ~/.config/herdr-app/mods/$m; done
+for m in halo halo-space halo-task halo-reply halo-scripts halo-pane halo-menu; do herdr-app check ~/.config/herdr-app/mods/$m; done
 herdr-app do layout.switch '{"name":"halo"}'
 herdr-app status            # "errors": [] expected
 python3 -I ~/.config/herdr-app/mods/halo-reporter/test_report.py

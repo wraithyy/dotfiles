@@ -5,7 +5,7 @@
 import { div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
 import { exec, terminals, shared, setShared, spaces } from "herdr";
-import { MONO } from "./lib.js";
+import { MONO, openMenu } from "./lib.js";
 import { parseListeners, parseParents, attribute } from "./parse.js";
 
 export const POLL_MS = 10000;
@@ -49,6 +49,7 @@ export function treeServersRow(t, spaceId) {
       .font_family(MONO).text_size(9.5).text_color(t.ansi2).bg(`${t.ansi2}1a`)
       .hover((s) => s.bg(`${t.ansi2}33`)).tooltip(`Open http://localhost:${l.port} (${l.cmd})`)
       .on_click(() => openUrl(l.port))
+      .on_mouse_down("right", (_e, cx) => { cx.stop_propagation(); openMenu("port", l); })
       .child(`:${l.port} ${l.cmd}`)));
 }
 
@@ -57,7 +58,8 @@ const iconButton = (t, id, icon, tip, color, onClick) => div().id(id).size(22).r
   .child(svg(icon).size(12));
 
 function serverRow(t, l, { canStop }) {
-  return h_flex().h(28).gap(10).items_center()
+  return h_flex().id(`srv-${l.pid}-${l.port}`).h(28).gap(10).items_center()
+    .on_mouse_down("right", (_e, cx) => { cx.stop_propagation(); openMenu("port", l); })
     .child(div().w(52).flex_none().font_family(MONO).text_size(12).text_color(t.ansi2).child(`:${l.port}`))
     .child(div().flex_1().min_w(0).truncate().text_size(12).text_color(t.foreground).child(l.cmd))
     .child(div().font_family(MONO).text_size(9.5).text_color(t.dim).child(l.terminal ?? `pid ${l.pid}`))

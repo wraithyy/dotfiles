@@ -122,11 +122,11 @@
                   },
                   "header": {
                     "content": {
-                      "mod": "pane"
+                      "mod": "halo-pane"
                     },
-                    "height": 28,
+                    "height": 26,
                     "position": "top",
-                    "reveal": "hover"
+                    "reveal": "always"
                   },
                   "lone": true
                 }

@@ -3,7 +3,7 @@
 
 import { div, svg, image } from "gpui-kit";
 import { h_flex } from "gpui-base";
-import { spaces, panes, agents, run, shared, layout } from "herdr";
+import { spaces, panes, agents, run, shared, layout, openOverlay } from "herdr";
 import { MONO, clean, prefs, setPrefs } from "./lib.js";
 import { visibleGroups } from "./dock.js";
 
@@ -19,7 +19,7 @@ function icon(t, program, active) {
   return program.tint ? svg(program.icon).size(13).text_color(active ? t.foreground : t.muted) : image(program.icon).w(13).h(13);
 }
 
-function pill(t, tab, all, agentTab) {
+function pill(t, tab, all, agentTab, spaceId) {
   const p = lead(tab.id, all);
   const name = agentTab ? clean(p?.title) || "agent" : tab.named ? tab.name : p?.program?.name ?? `term ${tab.index}`;
   return h_flex().id(`tab-${tab.id}`).h(26).px(10).gap(7).items_center().rounded(6).cursor_pointer().max_w(220)
@@ -28,6 +28,8 @@ function pill(t, tab, all, agentTab) {
     .hover((s) => s.bg(t.hover))
     .on_mouse_down("left", stop)
     .on_click(() => run("tab.select", { id: tab.id }))
+    // Herdr's own tab menu (rename, new tab, close), as the shipped tab bar opens it.
+    .on_mouse_down("right", (_e, cx) => { cx.stop_propagation(); openOverlay({ mod: "menu", kind: "popup", width: 200, height: 100, props: { tab: "tab", target: { id: tab.id, space: spaceId } } }); })
     .child(agentTab ? div().font_family(MONO).text_size(9.5).text_color(t.working).child("◆ AGENT") : icon(t, p?.program, tab.active))
     .child(div().min_w(0).truncate().text_size(12).text_color(tab.active ? t.foreground : t.muted).child(name));
 }
@@ -83,7 +85,7 @@ export function renderTabs(view, t) {
     .child(div().font_family(MONO).text_size(10).text_color(t.accent).flex_none().child(`◢ ${space?.name ?? "—"}`.toUpperCase()))
     .child(div().w(1).h(14).bg(t.border).mx(4))
     .child(h_flex().id("halo-tabs").flex_1().min_w(0).gap(4).overflow_x_scroll()
-      .children(tabs.map((tab) => pill(t, tab, all, isAgent(tab)))))
+      .children(tabs.map((tab) => pill(t, tab, all, isAgent(tab), space?.id))))
     .child(button(t, "new-term", "plus", "New terminal", () => run("tab.new", {})))
     .child(button(t, "new-agent", "square-pen", "New Claude", () => run("tab.new", { argv: ["claude"], name: "claude", focus: true })))
     .child(button(t, "new-task", "git-branch", "New task: worktree + Claude (cmd-shift-t)", () => run("mod.open", { name: "halo-task" })))
