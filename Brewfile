@@ -7,6 +7,7 @@ brew "neovim"
 brew "tmux"
 brew "tmuxp"
 brew "herdr"            # agent-aware multiplexer, tmux migration in progress
+cask "font-jetbrains-mono-nerd-font"  # Ghostty + herdr-app terminal font
 brew "cloudflared"      # CF tunnel: browser SSH terminal + collie remote
 brew "lazygit"
 brew "git-delta"       # lazygit pager (config.yml)

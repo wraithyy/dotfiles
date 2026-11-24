@@ -30,8 +30,22 @@ remove_if_present() {
   fi
 }
 
-add_if_missing chrome-devtools npx -y chrome-devtools-mcp@latest
-add_if_missing playwright      npx -y @playwright/mcp@latest
+# Browser MCPs are local-scoped to the projects that use them: at user scope
+# every Claude session spawned its own npx+node pair for each (~250 MB/session).
+remove_if_present chrome-devtools
+remove_if_present playwright
+
+add_local_if_missing() {
+  local dir="$1" name="$2"
+  shift 2
+  [ -d "$dir" ] || return 0
+  (cd "$dir" && claude mcp get "$name" >/dev/null 2>&1) && return 0
+  echo "installing mcp '${name}' (local scope, ${dir})"
+  (cd "$dir" && claude mcp add "$name" --scope local -- "$@")
+}
+add_local_if_missing "$HOME/Development/ilmari"           playwright      npx -y @playwright/mcp@latest --ignore-https-errors
+add_local_if_missing "$HOME/Development/pinpoint"         playwright      npx -y @playwright/mcp@latest --ignore-https-errors
+add_local_if_missing "$HOME/Development/Trask/Promptheus" chrome-devtools npx -y chrome-devtools-mcp@latest
 
 # web-fetch (fetcher-mcp) — Playwright-backed page fetch, needs chromium once
 if [ ! -d "$HOME/Library/Caches/ms-playwright" ] && [ ! -d "$HOME/.cache/ms-playwright" ]; then
