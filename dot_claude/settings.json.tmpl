@@ -100,6 +100,16 @@
         "hooks": [
           {
             "type": "command",
+            "command": "[ -n \"$HC_TERMINAL_ID\" ] && python3 -I \"{{ .chezmoi.homeDir }}/.config/herdr-app/mods/halo-reporter/report.py\" hook || true",
+            "async": true,
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
             "command": "{{ .chezmoi.homeDir }}/.local/bin/collie beacon emit # collie-beacon v1",
             "timeout": 10
           }
@@ -107,6 +117,16 @@
       }
     ],
     "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"$HC_TERMINAL_ID\" ] && python3 -I \"{{ .chezmoi.homeDir }}/.config/herdr-app/mods/halo-reporter/report.py\" hook || true",
+            "async": true,
+            "timeout": 10
+          }
+        ]
+      },
       {
         "matcher": "startup|resume",
         "hooks": [
@@ -184,6 +204,18 @@
         ]
       }
     ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"$HC_TERMINAL_ID\" ] && python3 -I \"{{ .chezmoi.homeDir }}/.config/herdr-app/mods/halo-reporter/report.py\" hook || true",
+            "async": true,
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "SubagentStart": [
       {
         "matcher": ".*",
@@ -196,6 +228,16 @@
       }
     ],
     "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"$HC_TERMINAL_ID\" ] && python3 -I \"{{ .chezmoi.homeDir }}/.config/herdr-app/mods/halo-reporter/report.py\" hook || true",
+            "async": true,
+            "timeout": 10
+          }
+        ]
+      },
       {
         "matcher": ".*",
         "hooks": [
@@ -306,6 +348,16 @@
     ],
     "PostToolUse": [
       {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"$HC_TERMINAL_ID\" ] && python3 -I \"{{ .chezmoi.homeDir }}/.config/herdr-app/mods/halo-reporter/report.py\" hook || true",
+            "async": true,
+            "timeout": 10
+          }
+        ]
+      },
+      {
         "matcher": ".*",
         "hooks": [
           {
@@ -316,6 +368,16 @@
       }
     ],
     "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"$HC_TERMINAL_ID\" ] && python3 -I \"{{ .chezmoi.homeDir }}/.config/herdr-app/mods/halo-reporter/report.py\" hook || true",
+            "async": true,
+            "timeout": 10
+          }
+        ]
+      },
       {
         "matcher": "*",
         "hooks": [
@@ -349,7 +411,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "{{ .chezmoi.homeDir }}/.local/bin/collie beacon statusline Y29tbWFuZCAtdiBjY3N0YXR1c2xpbmUgPi9kZXYvbnVsbCAyPiYxICYmIGNjc3RhdHVzbGluZSB8IHBlcmwgLUNTIC1wZSAncy9ceHsyMDAyfS9ceHthMH0vZycgfHwgdHJ1ZQ # collie-statusline v1",
+    "command": "{{ .chezmoi.homeDir }}/.local/bin/collie beacon statusline dD0kKG1rdGVtcCAiJHtUTVBESVI6LS90bXB9L2Njc2wuWFhYWFhYIikgJiYgdGVlICIkdCIgfCB7IGNvbW1hbmQgLXYgY2NzdGF0dXNsaW5lID4vZGV2L251bGwgMj4mMSAmJiBjY3N0YXR1c2xpbmUgfCBwZXJsIC1DUyAtcGUgJ3MvXHh7MjAwMn0vXHh7YTB9L2cnIHx8IHRydWU7IH07IFsgLW4gIiR7SENfVEVSTUlOQUxfSUQ6LX0iIF0gJiYgY3AgIiR0IiAiJHQuaGFsbyIgJiYgKHB5dGhvbjMgLUkgIiRIT01FLy5jb25maWcvaGVyZHItYXBwL21vZHMvaGFsby1yZXBvcnRlci9yZXBvcnQucHkiIHN0YXR1c2xpbmUgIiR0LmhhbG8iID4vZGV2L251bGwgMj4mMSAmKTsgbWtkaXIgLXAgIiRIT01FLy5jYWNoZS9jbGF1ZGUtc3RhdHVzbGluZSIgJiYgbXYgIiR0IiAiJEhPTUUvLmNhY2hlL2NsYXVkZS1zdGF0dXNsaW5lL2xhc3QuanNvbiIg # collie-statusline v1",
     "padding": 0
   },
   "enabledPlugins": {

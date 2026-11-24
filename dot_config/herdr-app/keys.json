@@ -80,7 +80,11 @@
     "cmd-á": "tab.select:8",
     "cmd-í": "tab.select:9",
     "cmd-o": "mod.open:openr",
-    "cmd-shift-n": "mod.open:waypoint"
+    "cmd-shift-n": "mod.open:waypoint",
+    "alt-left": "pane.resize:left",
+    "alt-right": "pane.resize:right",
+    "alt-up": "pane.resize:up",
+    "alt-down": "pane.resize:down"
   },
   "terminal": {
     "cmd-f": "terminal.search",
@@ -88,13 +92,19 @@
     "cmd-c": "terminal.copy",
     "cmd-v": "terminal.paste",
     "ctrl-v": "terminal.paste_image",
-    "alt-left": "pane.resize:left",
-    "alt-right": "pane.resize:right",
     "alt-backspace": "send:\u0017",
     "cmd-left": "send:\u0001",
     "cmd-right": "send:\u0005",
-    "cmd-backspace": "send:\u0015",
-    "alt-up": "pane.resize:up",
-    "alt-down": "pane.resize:down"
+    "cmd-backspace": "send:\u0015"
+  },
+  "layout:halo": {
+    "alt-h": "halo.nav-left",
+    "alt-j": "halo.nav-down",
+    "alt-k": "halo.nav-up",
+    "alt-l": "halo.nav-right",
+    "alt-left": "halo.resize-left",
+    "alt-right": "halo.resize-right",
+    "alt-up": "halo.resize-up",
+    "alt-down": "halo.resize-down"
   }
 }
