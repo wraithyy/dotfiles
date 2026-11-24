@@ -1,0 +1,155 @@
+{
+  "id": "root",
+  "type": "column",
+  "children": [
+    {
+      "id": "hall",
+      "type": "block",
+      "content": {
+        "mod": "valley-spaces"
+      },
+      "size": {
+        "px": 44
+      },
+      "background": "chrome",
+      "window_drag": true
+    },
+    {
+      "id": "body",
+      "type": "row",
+      "children": [
+        {
+          "id": "rail",
+          "type": "block",
+          "content": {
+            "mod": "valley-rail"
+          },
+          "size": {
+            "px": 56
+          },
+          "background": "chrome",
+          "radius": 12
+        },
+        {
+          "id": "main",
+          "type": "block",
+          "content": {
+            "tab": "active",
+            "pane": {
+              "header": {
+                "content": {
+                  "mod": "pane"
+                },
+                "reveal": "hover",
+                "height": 30,
+                "position": "top"
+              },
+              "background": "#10181dc8",
+              "border": {
+                "width": 1,
+                "color": "border"
+              },
+              "focus": {
+                "width": 1,
+                "color": "accent"
+              },
+              "radius": 12,
+              "gap": 10,
+              "lone": true
+            }
+          }
+        },
+        {
+          "id": "sidebar",
+          "type": "block",
+          "content": {
+            "mod": "valley-fellowship"
+          },
+          "size": {
+            "px": 250
+          },
+          "min": 200,
+          "max": 420,
+          "background": "chrome",
+          "radius": 12
+        },
+        {
+          "id": "panel",
+          "type": "column",
+          "children": [
+            {
+              "id": "panel-body",
+              "type": "stack",
+              "children": [
+                {
+                  "id": "files",
+                  "type": "block",
+                  "content": {
+                    "mod": "files"
+                  }
+                },
+                {
+                  "id": "changes",
+                  "type": "block",
+                  "content": {
+                    "mod": "changes"
+                  }
+                }
+              ],
+              "active": "changes"
+            }
+          ],
+          "size": {
+            "px": 380
+          },
+          "min": 280,
+          "max": 900,
+          "hidden": true,
+          "background": "chrome",
+          "radius": 12
+        }
+      ],
+      "padding": [
+        10,
+        10
+      ],
+      "gap": 10
+    },
+    {
+      "id": "status",
+      "type": "block",
+      "content": {
+        "mod": "fellowship-status"
+      },
+      "size": {
+        "px": 28
+      }
+    }
+  ],
+  "background": {
+    "image": "backgrounds/elven-valley.jpg",
+    "fit": "cover"
+  },
+  "colors": {
+    "accent": "#d4a85a",
+    "background": "#10181d",
+    "blocked": "#d9663a",
+    "border": "#22343a",
+    "canvas": "#00000000",
+    "chrome": "#0a121599",
+    "done": "#a7c080",
+    "hover": "#17242acc",
+    "selected": "#1c2c31cc",
+    "working": "#8fc7bd"
+  },
+  "terminal_padding": [
+    14,
+    12
+  ],
+  "terminal_opacity": 0.8199999928474426,
+  "titlebar": "none",
+  "traffic_lights": [
+    16,
+    16
+  ]
+}
