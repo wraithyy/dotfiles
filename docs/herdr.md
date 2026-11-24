@@ -12,7 +12,7 @@ Everything here lives in this repo under `dot_config/herdr-app/` (deployed to
 | Piece | Where | What it does |
 |---|---|---|
 | `layouts/halo.json` | layout | Catppuccin Mocha + teal, blurred translucent window, own traffic lights |
-| `mods/halo` | sidebar, tab bar, dock | Spaces as cards with their agents (goal, status, context %, cache TTL, subagents), 5h/7d usage; tab bar with agent-tab / sidebar / dock toggles and AGENT·GIT·DEV group chips; foldable dock with BRIEF, CONTEXT, ACTIVITY, CACHE, CHANGES |
+| `mods/halo` | sidebar, tab bar, dock | Spaces as cards with their agents (goal, status, context %, cache TTL, subagents), 5h/7d usage; tab bar with agent-tab / sidebar / dock toggles; agent dock (auto on a focused agent) with BRIEF, CONTEXT, ACTIVITY, CACHE, CHANGES; separate dev dock (server button, works without Claude) with SERVERS and OTHER APPS; dev server ports per space in the tree |
 | `mods/halo-reporter` | Claude Code hooks + statusline | Parses the session transcript incrementally and publishes `halo.*` labels on the herdr terminal (`hc label`). Local only, no network |
 | `mods/halo-space` | popup | New space from waypoints, git repos under `~/Development`, worktrees, or a typed path |
 | `mods/halo-task` | dialog | Task name + prompt -> git worktree `task/<slug>` -> new space with Claude running the prompt |
@@ -132,11 +132,15 @@ where-am-i) under `labels`, and the dock appears when you focus that agent.
 
 ## Troubleshooting
 
-- **Dock never appears**: it only shows for a focused agent (or GIT/DEV content) and when
-  the dock button in the tab bar is on. Check the AGENT chip.
+- **Agent dock never appears**: it only shows for a focused agent and when the dock
+  button (rightmost in the tab bar) is on. The dev dock has its own server button.
 - **No TTL / usage**: the statusline step is missing, or the statusline prints nothing
   (collie wrapper without collie). `hc get <t> --json | grep halo.status`.
 - **BRIEF says AUTO**: where-am-i isn't loaded in that Claude session (mods load at session start).
+- **No ports under a space**: servers are attributed by walking the process tree up to
+  the shell of a herdr terminal (`lsof` + `ps`, every 10 s). Ports 49152+ are ignored.
+  OTHER APPS lists dev ports (3000, 5173, 8080, ...) answered by something not started
+  from Herdr: a check against such a port may be talking to the wrong app.
 - **Context split looks off**: categories are estimates (chars / 3.5) scaled to the exact
   total; the total is exact.
 - **Escape hatch**: `ctrl-alt-shift-escape` resets to Herdr's default layout and keys.

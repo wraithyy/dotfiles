@@ -1,11 +1,12 @@
-// Right dock: themed, foldable groups. A group shows only when it applies (AGENT needs a
-// focused agent) and its chip in the tab bar is on; the dock hides when none shows.
+// Right docks: themed, foldable groups. The agent dock holds AGENT and follows agent focus;
+// the dev dock holds DEV (and later GIT), is toggled by hand and works without Claude.
 
 import { div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
 import { MONO, focusedAgent, prefs, setPrefs, section, brackets } from "./lib.js";
 import { briefSection, contextSection, activitySection, cacheSection } from "./agent.js";
 import { changesSection, needsRefresh, refreshChanges } from "./changes.js";
+import { serversSection, foreignSection } from "./servers.js";
 
 // Each group: id, title, sections(t) -> [[id, title, info, column]] or null when it doesn't
 // apply. column "a"/"b" places a section when the dock is wide enough for two columns.
@@ -13,6 +14,7 @@ const TWO_COLUMNS_FROM = 620;
 export const GROUPS = [
   {
     id: "agent",
+    dock: "agent",
     title: "AGENT",
     sections(t, view) {
       const term = focusedAgent();
@@ -26,11 +28,20 @@ export const GROUPS = [
       ];
     },
   },
+  {
+    id: "dev",
+    dock: "dev",
+    title: "DEV",
+    sections(t) {
+      const list = [["servers", "SERVERS", serversSection(t), "a"], ["foreign", "OTHER APPS", foreignSection(t), "b"]]
+        .filter(([, , info]) => info);
+      return list.length ? list : null;
+    },
+  },
 ];
 
-export function visibleGroups(t, view) {
-  const on = prefs().groups;
-  return GROUPS.filter((g) => on[g.id]).map((g) => ({ ...g, list: g.sections(t, view) })).filter((g) => g.list);
+export function visibleGroups(t, view, dock = "agent") {
+  return GROUPS.filter((g) => g.dock === dock).map((g) => ({ ...g, list: g.sections(t, view) })).filter((g) => g.list);
 }
 
 function summaryOf(list) {
@@ -56,15 +67,16 @@ function columnsToggle(t, mode) {
     .child(div().font_family(MONO).text_size(9).child(COLUMNS_LABEL[mode]));
 }
 
-export function renderDock(view, t, cx) {
-  const term = focusedAgent();
+export function renderDock(view, t, cx, dock = "agent") {
+  const term = dock === "agent" ? focusedAgent() : null;
   if (term && needsRefresh(view, term)) cx.spawn(async (cx) => { await refreshChanges(view, term); cx.notify(); });
-  const groups = visibleGroups(t, view);
+  const groups = visibleGroups(t, view, dock);
   const mode = String(prefs().columns ?? "auto");
   const wide = mode === "2" || (mode === "auto" && (view.size?.width ?? 0) >= TWO_COLUMNS_FROM);
   const body = v_flex().id("dock").size_full().p(12).gap(14).overflow_y_scrollbar()
     .child(h_flex().h(20).justify_end().child(columnsToggle(t, mode)))
-    .when(groups.length === 0, (el) => el.child(div().text_size(11).text_color(t.dim).child("Nothing to show here.")))
+    .when(groups.length === 0, (el) => el.child(div().text_size(11).text_color(t.dim)
+      .child(dock === "dev" ? "No dev servers in this space, nothing on dev ports." : "Nothing to show here.")))
     .children(groups.map((g) => section(t, `g:${g.id}`, g.title, {
       summary: summaryOf(g.list),
       body: groupBody(t, g.list, wide),

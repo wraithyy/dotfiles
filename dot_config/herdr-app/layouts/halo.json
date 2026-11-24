@@ -155,6 +155,28 @@
               }
             },
             {
+              "id": "devdock",
+              "type": "block",
+              "size": {
+                "px": 380
+              },
+              "min": 280,
+              "max": 700,
+              "hidden": true,
+              "background": "chrome",
+              "radius": 10,
+              "border": {
+                "width": 1,
+                "color": "border"
+              },
+              "content": {
+                "mod": "halo",
+                "props": {
+                  "role": "devdock"
+                }
+              }
+            },
+            {
               "id": "side",
               "type": "column",
               "size": {

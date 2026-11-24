@@ -5,13 +5,13 @@ import { div, svg } from "gpui-kit";
 import { h_flex, v_flex } from "gpui-base";
 import { terminals, agents, focused, shared, setShared } from "herdr";
 
-// UI state shared by every halo copy (tab bar chips, dock, tree) and kept by Herdr
+// UI state shared by every halo copy (tab bar toggles, docks, tree) and kept by Herdr
 // across restarts (shared.json).
-const DEFAULT_PREFS = { panel: true, agents: true, columns: "auto", groups: { agent: true, git: true, dev: true } };
+const DEFAULT_PREFS = { panel: true, devdock: false, agents: true, columns: "auto" };
 
 export function prefs() {
   const p = shared("halo.prefs");
-  return p && typeof p === "object" ? { ...DEFAULT_PREFS, ...p, groups: { ...DEFAULT_PREFS.groups, ...p.groups } } : DEFAULT_PREFS;
+  return p && typeof p === "object" ? { ...DEFAULT_PREFS, ...p } : DEFAULT_PREFS;
 }
 
 export function setPrefs(patch) {

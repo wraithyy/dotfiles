@@ -4,6 +4,7 @@
 import { div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
 import { spaces, agents, terminals, run, setAgentOrder, openOverlay } from "herdr";
+import { treeServersRow } from "./servers.js";
 import { MONO, STATUS_LABEL, label, task, cacheTtl, latestStatus, quotaColor, dur, hud, segbar, clean, folded, toggleFold } from "./lib.js";
 
 const RANK = { blocked: 4, done: 3, working: 2, idle: 1 };
@@ -120,7 +121,8 @@ export function renderTree(t) {
     return v_flex().gap(1).p(3).pb(isFolded || mine.length === 0 ? 3 : 6).rounded(8).border(1)
       .border_color(s.active ? t.input : t.border).bg(s.active ? t.selected : "#ffffff04")
       .child(spaceRow(t, s, isFolded, mine.length, () => toggleFold(`t:${s.id}`)))
-      .when(!isFolded, (el) => el.children(mine.map((a) => agentRow(t, a, byAddress.get(a.address), all))));
+      .when(!isFolded, (el) => el.children(mine.map((a) => agentRow(t, a, byAddress.get(a.address), all))))
+      .when(!isFolded && Boolean(treeServersRow(t, s.id)), (el) => el.child(treeServersRow(t, s.id)));
   });
   setAgentOrder(order);
 
