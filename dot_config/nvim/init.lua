@@ -15,6 +15,7 @@ require("config.title")
 require("config.auto-save")
 require("config.autoread")
 require("config.claude")
+require("config.herdr_app_nav")
 vim.opt.relativenumber = true
 vim.o.winborder = "rounded"
 

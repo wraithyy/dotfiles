@@ -39,8 +39,43 @@ local function herdr_claude_pane()
 	return nil
 end
 
+-- herdr-app: agents live in herdr-core. Pick a Claude terminal in the same space as
+-- this nvim, preferring one that isn't mid-turn.
+local function herdr_app_claude_terminal()
+	local ok, decoded = pcall(vim.json.decode, vim.fn.system({ "herdr-app", "ls" }))
+	if not ok or type(decoded) ~= "table" then
+		return nil
+	end
+	for _, space in ipairs(decoded.spaces or {}) do
+		local mine, claude = false, {}
+		for _, tab in ipairs(space.tabs or {}) do
+			for _, t in ipairs(tab.terminals or {}) do
+				if t.terminal == vim.env.HC_TERMINAL_ID then
+					mine = true
+				elseif t.app == "claude-code" then
+					table.insert(claude, t)
+				end
+			end
+		end
+		if mine then
+			table.sort(claude, function(a, b)
+				return (a.status == "working" and 1 or 0) < (b.status == "working" and 1 or 0)
+			end)
+			return claude[1] and claude[1].terminal
+		end
+	end
+	return nil
+end
+
 local function send(text)
-	if vim.env.HERDR_ENV == "1" then
+	if vim.env.HC_TERMINAL_ID then
+		local terminal = herdr_app_claude_terminal()
+		if not terminal then
+			vim.notify("No Claude Code terminal in this herdr-app space", vim.log.levels.WARN)
+			return
+		end
+		vim.fn.system({ "hc", "send", terminal, text })
+	elseif vim.env.HERDR_ENV == "1" then
 		local pane = herdr_claude_pane()
 		if not pane then
 			vim.notify("No Claude Code pane found in this herdr workspace", vim.log.levels.WARN)

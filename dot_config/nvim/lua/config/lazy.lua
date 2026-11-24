@@ -31,6 +31,15 @@ require("lazy").setup({
 	-- Configure any other settings here. See the documentation for more details.
 	-- colorscheme that will be used when installing plugins.
 	install = { colorscheme = { "habamax" } },
-	-- automatically check for plugin updates
-	checker = { enabled = true },
+	-- check for updates silently; the LazyCheck autocmd below applies them
+	checker = { enabled = true, notify = false },
+})
+
+-- Auto-sync (install + clean + update) in the background instead of nagging; lazy-lock.json lives in the
+-- chezmoi repo, so every bump still shows up as a reviewable diff.
+vim.api.nvim_create_autocmd("User", {
+	pattern = "LazyCheck",
+	callback = function()
+		require("lazy").sync({ show = false })
+	end,
 })

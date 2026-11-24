@@ -83,19 +83,22 @@ return {
 			},
 			dashboard = {
 				-- enabled = true,
+				width = 72, -- logo width, keeps it centered over the sections
 				-- preset = "advanced",
 				preset = {
 					header = [[
- █     █░ ██▀███   ▄▄▄       ██▓▄▄▄█████▓ ██░ ██▓██   ██▓
-▓█░ █ ░█░▓██ ▒ ██▒▒████▄    ▓██▒▓  ██▒ ▓▒▓██░ ██▒▒██  ██▒
-▒█░ █ ░█ ▓██ ░▄█ ▒▒██  ▀█▄  ▒██▒▒ ▓██░ ▒░▒██▀▀██░ ▒██ ██░
-░█░ █ ░█ ▒██▀▀█▄  ░██▄▄▄▄██ ░██░░ ▓██▓ ░ ░▓█ ░██  ░ ▐██▓░
-░░██▒██▓ ░██▓ ▒██▒ ▓█   ▓██▒░██░  ▒██▒ ░ ░▓█▒░██▓ ░ ██▒▓░
-░ ▓░▒ ▒  ░ ▒▓ ░▒▓░ ▒▒   ▓▒█░░▓    ▒ ░░    ▒ ░░▒░▒  ██▒▒▒
-  ▒ ░ ░    ░▒ ░ ▒░  ▒   ▒▒ ░ ▒ ░    ░     ▒ ░▒░ ░▓██ ░▒░
-  ░   ░    ░░   ░   ░   ▒    ▒ ░  ░       ░  ░░ ░▒ ▒ ░░
-    ░       ░           ░  ░ ░            ░  ░  ░░ ░
-                                                 ░ ░
+          ███     ███               ███          ███            
+         ███     ███  N E O V I M  ███  ███   ███             
+        ███     ███                      ███   ███              
+       █████████████████████████████████████████████████
+      █████████████████████████████████████████████████ 
+     ████████████     ██████  ███   ████████████  
+    ███████████████████████  ███   ████████████   
+   █████████████████████████  ████████████████████    
+  ███████████████████████████  ████████████████████     
+                                                             ███      
+███████████████████████████████████████████████████████████████       
+                                 █████████████████████████████        
 					]],
 					keys = {
 						{
@@ -140,7 +143,39 @@ return {
 					},
 				},
 				sections = {
-					{ section = "header" },
+					-- preset.header rendered with a per-row mauve->blue gradient and a dim NEOVIM tag
+					function(self)
+						local c = require("catppuccin.palettes").get_palette()
+						local function blend(a, b, t)
+							local out = "#"
+							for i = 2, 6, 2 do
+								local x, y = tonumber(a:sub(i, i + 1), 16), tonumber(b:sub(i, i + 1), 16)
+								out = out .. string.format("%02x", math.floor(x + (y - x) * t + 0.5))
+							end
+							return out
+						end
+						local lines = vim.tbl_filter(function(l)
+							return l:find("%S") ~= nil
+						end, vim.split(self.opts.preset.header, "\n"))
+						vim.api.nvim_set_hl(0, "WraithyLogoTag", { fg = c.overlay1, bold = true })
+						local text = {}
+						for i, line in ipairs(lines) do
+							local hl = "WraithyLogo" .. i
+							vim.api.nvim_set_hl(0, hl, { fg = blend(c.mauve, c.blue, (i - 1) / (#lines - 1)) })
+							local nl = i > 1 and "\n" or ""
+							local s, e = line:find("N E O V I M", 1, true)
+							if s then
+								vim.list_extend(text, {
+									{ nl .. line:sub(1, s - 1), hl = hl },
+									{ line:sub(s, e), hl = "WraithyLogoTag" },
+									{ line:sub(e + 1), hl = hl },
+								})
+							else
+								table.insert(text, { nl .. line, hl = hl })
+							end
+						end
+						return { text = text, align = "center", padding = 2 }
+					end,
 					{ icon = " ", title = "Keymaps", section = "keys", indent = 2, padding = 1 },
 					{ icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
 					{ icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },

@@ -13,7 +13,7 @@ return {
 	},
 	{
 	"mrjones2014/smart-splits.nvim",
-	cond = vim.env.HERDR_ENV ~= "1",
+	cond = vim.env.HERDR_ENV ~= "1" and vim.env.HC_TERMINAL_ID == nil,
 	config = function()
 		require("smart-splits").setup({
 			multiplexer = "tmux",
