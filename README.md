@@ -16,7 +16,7 @@ install scripts (Homebrew Brewfile on macOS, apt/dnf/pacman on Linux).
 
 | Area | Path | Notes |
 |---|---|---|
-| Herdr | `dot_config/herdr-app` | `halo` layout (spaces/agents tree, agent dock, usage) and mods; install guide: [docs/herdr.md](docs/herdr.md) |
+| Herdr | `dot_config/herdr-app` | `valley` layout, collie/space-tidy mods; `halo` layout linked from [herdr-halo](https://github.com/wraithyy/herdr-halo); see [docs/herdr.md](docs/herdr.md) |
 | Neovim | `dot_config/nvim` | lazy.nvim, blink.cmp, snacks, catppuccin; `lazy-lock.json` symlinked to source root |
 | Claude Code | `dot_claude` | agents, hooks, rules, skills, MCP servers |
 | pi agent | `dot_pi/agent`, `dot_pi-lens` | standalone Codex harness: AGENTS.md, agents, skills (browser-tools via `.chezmoiexternal.toml`), community pi packages pinned in `create_settings.json.tmpl` (subagents, plan mode, ask-user, powerline + Codex usage, permissions, pi-lens, context-mode); no MCP, no custom extensions |
