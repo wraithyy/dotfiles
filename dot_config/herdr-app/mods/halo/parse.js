@@ -74,3 +74,32 @@ export function attribute(listeners, parents, owners) {
   }
   return { bySpace, foreign };
 }
+
+// git remote URL -> { host, path } for https (with or without user@) and scp-style ssh.
+export function parseRemote(url) {
+  const u = (url ?? "").trim();
+  let m = u.match(/^[a-z+]+:\/\/(?:[^@/]+@)?([^/:]+)(?::\d+)?\/(.+?)(?:\.git)?\/?$/i);
+  if (!m) m = u.match(/^(?:[^@]+@)?([^:/]+):(.+?)(?:\.git)?\/?$/);
+  return m ? { host: m[1].toLowerCase(), path: m[2] } : null;
+}
+
+// `glab auth status` -> hosts with a working login.
+export const loggedInHosts = (text) => [...(text ?? "").matchAll(/Logged in to (\S+)/g)].map((m) => m[1]);
+
+export const providerOf = (host) => (host === "github.com" ? "github" : host?.includes("gitlab") ? "gitlab" : null);
+
+// A pipeline that was running and now isn't is worth a toast; anything else is not.
+const ACTIVE = new Set(["created", "waiting_for_resource", "preparing", "pending", "running", "IN_PROGRESS", "QUEUED", "PENDING"]);
+export function pipelineFinished(before, after) {
+  return Boolean(before && after && ACTIVE.has(before) && !ACTIVE.has(after));
+}
+
+// GitHub statusCheckRollup -> one GitLab-like pipeline status.
+export function rollupStatus(checks) {
+  const list = Array.isArray(checks) ? checks : [];
+  if (!list.length) return null;
+  const states = list.map((c) => c.conclusion || c.state || c.status || "");
+  if (states.some((s) => /FAILURE|ERROR|TIMED_OUT|CANCELLED|ACTION_REQUIRED/i.test(s))) return "failed";
+  if (states.some((s) => /PENDING|QUEUED|IN_PROGRESS|EXPECTED/i.test(s) || s === "")) return "running";
+  return "success";
+}

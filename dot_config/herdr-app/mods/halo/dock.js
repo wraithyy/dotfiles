@@ -7,6 +7,7 @@ import { MONO, focusedAgent, prefs, setPrefs, section, brackets } from "./lib.js
 import { briefSection, contextSection, activitySection, cacheSection } from "./agent.js";
 import { changesSection, needsRefresh, refreshChanges } from "./changes.js";
 import { serversSection, foreignSection } from "./servers.js";
+import { mrSection, reviewsSection, mineSection } from "./git.js";
 
 // Each group: id, title, sections(t) -> [[id, title, info, column]] or null when it doesn't
 // apply. column "a"/"b" places a section when the dock is wide enough for two columns.
@@ -26,6 +27,16 @@ export const GROUPS = [
         ["cache", "CACHE", cacheSection(t, term), "b"],
         ["changes", "CHANGES", changesSection(t, view, term), "b"],
       ];
+    },
+  },
+  {
+    id: "git",
+    dock: "dev",
+    title: "GIT",
+    sections(t) {
+      const list = [["mr", "THIS BRANCH", mrSection(t), "a"], ["reviews", "REVIEW QUEUE", reviewsSection(t), "a"], ["mine", "MY MRS", mineSection(t), "b"]]
+        .filter(([, , info]) => info);
+      return list.length ? list : null;
     },
   },
   {
@@ -76,7 +87,7 @@ export function renderDock(view, t, cx, dock = "agent") {
   const body = v_flex().id("dock").size_full().p(12).gap(14).overflow_y_scrollbar()
     .child(h_flex().h(20).justify_end().child(columnsToggle(t, mode)))
     .when(groups.length === 0, (el) => el.child(div().text_size(11).text_color(t.dim)
-      .child(dock === "dev" ? "No dev servers in this space, nothing on dev ports." : "Nothing to show here.")))
+      .child(dock === "dev" ? "No repo remote, dev servers or dev-port listeners here." : "Nothing to show here.")))
     .children(groups.map((g) => section(t, `g:${g.id}`, g.title, {
       summary: summaryOf(g.list),
       body: groupBody(t, g.list, wide),

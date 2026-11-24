@@ -1,5 +1,5 @@
 // Halo layout views. One mod, several roles (props.role) so the views share helpers:
-// brand, tree, tabs, dock (agent), devdock (servers, ports).
+// brand, tree, tabs, dock (agent), devdock (git, servers, ports).
 
 import { View } from "gpui-kit";
 import { theme, nextCommand, props, checking } from "herdr";
@@ -9,6 +9,7 @@ import { renderTabs } from "./tabs.js";
 import { renderDock } from "./dock.js";
 import { handle as nav } from "./nav.js";
 import { pollServers, POLL_MS } from "./servers.js";
+import { pollGit, GIT_POLL_MS } from "./git.js";
 
 const COMMANDS = {
   "toggle-panel": () => setPrefs({ panel: !prefs().panel }),
@@ -24,6 +25,8 @@ export default class Halo extends View {
     if (this.role === "tabs" && !checking()) {
       cx.spawn(async () => pollServers());
       cx.timer.every(POLL_MS, (cx) => cx.spawn(async () => pollServers()));
+      cx.spawn(async () => pollGit().catch(() => null));
+      cx.timer.every(GIT_POLL_MS, (cx) => cx.spawn(async () => pollGit().catch(() => null)));
     }
     if (this.role === "tabs") {
       cx.spawn(async (cx) => {

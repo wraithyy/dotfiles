@@ -12,7 +12,7 @@ Everything here lives in this repo under `dot_config/herdr-app/` (deployed to
 | Piece | Where | What it does |
 |---|---|---|
 | `layouts/halo.json` | layout | Catppuccin Mocha + teal, blurred translucent window, own traffic lights |
-| `mods/halo` | sidebar, tab bar, dock | Spaces as cards with their agents (goal, status, context %, cache TTL, subagents), 5h/7d usage; tab bar with agent-tab / sidebar / dock toggles; agent dock (auto on a focused agent) with BRIEF, CONTEXT, ACTIVITY, CACHE, CHANGES; separate dev dock (server button, works without Claude) with SERVERS and OTHER APPS; dev server ports per space in the tree |
+| `mods/halo` | sidebar, tab bar, dock | Spaces as cards with their agents (goal, status, context %, cache TTL, subagents), 5h/7d usage; tab bar with agent-tab / sidebar / dock toggles; agent dock (auto on a focused agent) with BRIEF, CONTEXT, ACTIVITY, CACHE, CHANGES; separate dev dock (`</>` button, works without Claude) with GIT (this branch's MR/PR and pipeline, review queue, your open MRs, a pipeline-finished toast) and DEV (SERVERS, OTHER APPS); dev server ports per space in the tree |
 | `mods/halo-reporter` | Claude Code hooks + statusline | Parses the session transcript incrementally and publishes `halo.*` labels on the herdr terminal (`hc label`). Local only, no network |
 | `mods/halo-space` | popup | New space from waypoints, git repos under `~/Development`, worktrees, or a typed path |
 | `mods/halo-task` | dialog | Task name + prompt -> git worktree `task/<slug>` -> new space with Claude running the prompt |
@@ -28,7 +28,7 @@ Everything here lives in this repo under `dot_config/herdr-app/` (deployed to
 - Claude Code
 - `python3` (stdlib only), `git`
 - Fonts: JetBrainsMono Nerd Font (`brew install --cask font-jetbrains-mono-nerd-font`); Geist ships with Herdr
-- Optional: `lazygit`, `yazi`, `just`, `bun` (only to run the mod tests)
+- Optional: `glab` and/or `gh`, logged in (`glab auth login`, `gh auth login`) for the GIT group; `just`; `bun` (only to run the mod tests)
 
 ## Option A: the whole dotfiles repo
 
@@ -137,6 +137,9 @@ where-am-i) under `labels`, and the dock appears when you focus that agent.
 - **No TTL / usage**: the statusline step is missing, or the statusline prints nothing
   (collie wrapper without collie). `hc get <t> --json | grep halo.status`.
 - **BRIEF says AUTO**: where-am-i isn't loaded in that Claude session (mods load at session start).
+- **GIT group empty or "offline"**: GIT uses your own `glab`/`gh` logins (no tokens in
+  the mods). A self-hosted GitLab may need VPN; failures show dim as "offline". The repo is
+  found from the live folders of the space's panes, not the folder the space started in.
 - **No ports under a space**: servers are attributed by walking the process tree up to
   the shell of a herdr terminal (`lsof` + `ps`, every 10 s). Ports 49152+ are ignored.
   OTHER APPS lists dev ports (3000, 5173, 8080, ...) answered by something not started
@@ -149,4 +152,5 @@ where-am-i) under `labels`, and the dock appears when you focus that agent.
 
 The reporter reads only the local transcript and statusline JSON and writes terminal
 labels and `~/.cache/halo/`. Usage comes from Claude Code's own statusline data; nothing
-reads credentials or calls an API.
+reads credentials. The GIT group calls GitLab/GitHub only through the `glab`/`gh` CLIs
+you are already logged in to.
